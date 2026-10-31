@@ -232,6 +232,228 @@ header.hero h1{color:var(--ink);font-weight:700}
 /* 日历“今天”：去掉投影，靠蓝底白字区分 */
 .cal-day.today.sel{box-shadow:none!important}
 
+/* ---------- 43. Hero 卡底色 ----------
+   原先是硬编码的浅蓝紫渐变，和参考应用的品牌蓝差得远。
+   两张卡是拼接的（pf 右圆角砍直角、time 左圆角砍直角），各自加渐变会在接缝处断开，
+   所以统一用品牌纯色，靠内部分隔线做层次 —— 参考应用的大蓝卡本身也是纯色。 */
+#ovBoard > .ov-slot[data-ov="pf"] > .hp-card,
+#ovBoard > .ov-slot[data-ov="time"] > .hp-card{
+  background:var(--brand)!important;
+  background-image:none!important;
+}
+/* 时钟环在纯蓝底上要提亮，否则和底色糊在一起 */
+#view-overview .hp-card.ov-time .ov-t-track{stroke:rgba(255,255,255,.28)!important}
+#view-overview .hp-card.ov-time .ov-t-fill{stroke:#fff!important}
+#view-overview .hp-card.ov-time .ov-t-dial{box-shadow:none!important}
+
+/* ===========================================================
+   44. 学生端 #stView
+   学生端样式是 JS 运行时注入的 <style id="stCss">（17,000 字符 / 183 条规则 /
+   163 处硬编码色 / 0 个 var()）。文档顺序上它排在所有静态样式之后，
+   同特异性一定它赢 —— 所以这里每条都必须带 html body #stView 前缀（0,1,2,1），
+   与已有的 11.2 块同级、靠位置更后取胜。
+   不要试图去改 #stCss 那串字符串：它在 JS 单引号里，一处括号失衡就整块静默失效。
+   =========================================================== */
+
+/* 底 */
+html body #stView{background:var(--bg);color:var(--ink)}
+html body #stView .stv{max-width:760px}
+
+/* 头部 */
+html body #stView .stv-logo{
+  background:var(--brand)!important;border-radius:12px!important;box-shadow:none!important;
+}
+html body #stView .stv-tt b{color:var(--ink);font-weight:700}
+html body #stView .stv-tt span{color:var(--ink3)}
+html body #stView .stv-up{color:var(--ink3)}
+html body #stView .stv-rf{
+  background:var(--card);color:var(--brand);border-radius:10px;
+  box-shadow:inset 0 0 0 1px var(--line);height:38px;
+}
+html body #stView .stv-rf:hover{background:var(--brand-l)}
+
+/* tab 栏：参考应用的胶囊组（选中蓝底白字），仍然顶部横向滚动，8 个 tab 塞不进底部 */
+html body #stView .stv-tabs{
+  background:var(--card);border-radius:999px;padding:5px;
+  box-shadow:none;border:1px solid var(--line);
+}
+html body #stView .stv-tab{
+  color:var(--ink2);border-radius:999px;font-weight:600;min-height:38px;padding:0 15px;
+}
+html body #stView .stv-tab:hover{background:var(--card2);color:var(--ink)}
+html body #stView .stv-tab.on{
+  background:var(--brand);color:#fff;box-shadow:none;font-weight:700;
+}
+html body #stView .stv-tabsw::after{
+  background:linear-gradient(to right,rgba(255,255,255,0),rgba(255,255,255,.9) 62%,var(--card) 100%);
+  border-radius:0 999px 999px 0;
+}
+
+/* 卡片：20px 圆角、零阴影、白底 —— 覆盖 11.2 的 14px 与 stCss 的两种阴影 */
+html body #stView .stv-card,
+html body #stView .stv2-card{
+  background:var(--card)!important;border:1px solid var(--line)!important;
+  border-radius:var(--r-card)!important;box-shadow:none!important;
+  padding:18px 18px!important;
+}
+html body #stView .stv-card h2,
+html body #stView .stv2-ch{color:var(--ink);font-size:15.5px;font-weight:700}
+html body #stView .stv-cnt,
+html body #stView .stv2-cs{color:var(--ink3)}
+html body #stView .stv-hint{color:var(--ink3);font-size:12.5px}
+html body #stView .stv-empty,
+html body #stView .stv2-empty{color:var(--ink4)}
+
+/* 今日页 Hero：原本是墨绿渐变 + 棕色 2px 边框，是全站最扎眼的一处 */
+html body #stView .stv2-hero{
+  background:var(--brand)!important;border:0!important;
+  border-radius:var(--r-card)!important;box-shadow:none!important;
+  padding:20px 20px 18px!important;
+}
+html body #stView .stv2-hero .stv2-tag{
+  background:rgba(255,255,255,.2)!important;color:#fff!important;
+}
+html body #stView .stv2-hero .stv2-ttl{color:#fff;font-size:21px;font-weight:700}
+html body #stView .stv2-hero .stv2-sub{color:rgba(255,255,255,.84)}
+html body #stView .stv2-hero .stv2-by{color:rgba(255,255,255,.72)}
+
+/* 盲盒卡：原本是紫渐变，被 11.2 压成白卡但残留紫字与紫按钮。
+   不用品牌蓝整块铺 —— 否则和上面的 Hero 撞成两个重心；改用浅蓝底做重点但不抢戏 */
+html body #stView .stv2-card.stv2-purple{
+  background:var(--brand-l)!important;border-color:var(--brand-l2)!important;color:var(--ink);
+}
+html body #stView .stv2-card.stv2-purple .stv2-ch{color:var(--ink)!important}
+html body #stView .stv2-card.stv2-purple .stv2-cs,
+html body #stView .stv2-card.stv2-purple .stv2-pnote{color:var(--ink3)!important}
+html body #stView .stv2-card.stv2-purple .stv2-big{color:var(--ink)!important}
+html body #stView .stv2-card.stv2-purple .stv2-pbtn{
+  background:var(--brand)!important;color:#fff!important;border-radius:10px;box-shadow:none!important;
+}
+html body #stView .stv2-card.stv2-purple .stv2-deco{opacity:.22}
+
+/* 作业条：原本是绿色左边条 + 浅绿底，是全站第三套绿 */
+html body #stView .stv2-hwitem{
+  border-left:3px solid var(--brand)!important;background:var(--brand-l)!important;
+  border-radius:0 12px 12px 0!important;
+}
+html body #stView .stv2-hwicon{background:rgba(255,255,255,.7)!important;border-radius:8px}
+html body #stView .stv2-hwmain{color:var(--ink)}
+html body #stView .stv2-hwmain i{color:var(--brand)!important}
+html body #stView .stv2-hwdue{color:var(--red)!important}
+html body #stView .stv2-hwdue i{color:var(--ink4)!important}
+html body #stView .stv2-hwdue.cool{color:var(--brand)!important}
+
+/* 数字与主按钮：原本是红色大数字 + 橙红渐变按钮，改成品牌蓝 */
+html body #stView .stv2-num{color:var(--brand)!important}
+html body #stView .stv2-numl{color:var(--ink3)}
+html body #stView .stv2-rbtn{
+  background:var(--brand)!important;border-radius:10px;box-shadow:none!important;height:42px;
+}
+html body #stView .stv2-pbtn{border-radius:10px}
+
+/* 通用按钮 */
+html body #stView .stv-btn{
+  background:var(--brand)!important;color:#fff;border-radius:11px;box-shadow:none!important;height:44px;
+}
+html body #stView .stv-btn:hover{background:var(--brand-d)!important}
+html body #stView .stv-btn.gh{
+  background:var(--card)!important;color:var(--ink2)!important;
+  box-shadow:inset 0 0 0 1px var(--line)!important;
+}
+html body #stView .stv-btn2,
+html body #stView .stv2-reset{
+  background:var(--card2)!important;color:var(--ink2)!important;border-radius:10px;
+}
+html body #stView .stv-mini,
+html body #stView .stv2-mini{
+  background:var(--brand-l)!important;color:var(--brand)!important;border-radius:8px;box-shadow:none!important;
+}
+
+/* 标签与分段 */
+html body #stView .stv-sub{
+  background:var(--brand-l)!important;color:var(--brand)!important;border-radius:7px;
+}
+html body #stView .stv2-chip{
+  background:var(--card2)!important;border-color:var(--line)!important;color:var(--ink2)!important;
+  border-radius:9px;
+}
+html body #stView .stv2-chip.on{
+  background:var(--brand)!important;border-color:var(--brand)!important;color:#fff!important;
+}
+html body #stView .stv2-toggle{
+  background:var(--card2)!important;color:var(--ink3)!important;border-radius:8px;
+}
+html body #stView .stv2-ntag{
+  background:var(--brand-l)!important;color:var(--brand)!important;border-radius:6px;
+}
+html body #stView .stv-seg{background:var(--card2)!important}
+html body #stView .stv-seg button{color:var(--ink2)}
+html body #stView .stv-seg button.on{
+  background:var(--card)!important;color:var(--brand)!important;box-shadow:none!important;font-weight:700;
+}
+html body #stView .stv-num{color:var(--brand)!important;background:var(--brand-l)!important}
+
+/* 列表与表格 */
+html body #stView .stv-li{border-bottom-color:var(--line2)!important}
+html body #stView .stv-li .t,
+html body #stView .stv2-rt{color:var(--ink)}
+html body #stView .stv-li .d,
+html body #stView .stv2-rd{color:var(--ink3)}
+html body #stView .stv2-rec{border-bottom-color:var(--line2)!important}
+html body #stView .stv-tbw{
+  border-radius:14px!important;box-shadow:inset 0 0 0 1px var(--line)!important;
+}
+html body #stView .stv-tb thead th{
+  background:var(--line2)!important;color:var(--ink2)!important;
+}
+html body #stView .stv-tb tbody td{border-bottom-color:var(--line2)!important;color:var(--ink)}
+html body #stView .stv-due.hot{color:var(--red)!important}
+html body #stView .stv-due.long{color:var(--ink3)!important}
+
+/* 表单 */
+html body #stView .stv-inp,
+html body #stView .stv2-inp2,
+html body #stView .stv2-ta2{
+  border-radius:10px!important;background:var(--card2)!important;
+  box-shadow:inset 0 0 0 1px var(--line)!important;color:var(--ink);
+}
+html body #stView .stv2-inp2:focus,
+html body #stView .stv2-ta2:focus{box-shadow:var(--ring)!important;background:var(--card)!important}
+html body #stView .stv2-fl>i{color:var(--ink2)}
+
+/* 课件 */
+html body #stView .stv-mat{border-bottom-color:var(--line2)!important}
+html body #stView .stv-mat .mn{color:var(--ink)}
+html body #stView .stv-mat .mn i{color:var(--ink3)}
+html body #stView .stv-gtag{color:var(--brand)!important}
+html body #stView .stv-gn,
+html body #stView .stv-gi{color:var(--ink3)}
+html body #stView .stv-grp{border-top-color:var(--line2)!important}
+html body #stView .stv-warn{
+  background:var(--amber-l)!important;box-shadow:inset 0 0 0 1px var(--amber-b)!important;
+  color:var(--amber-d)!important;border-radius:12px;
+}
+html body #stView .stv-pane{color:var(--ink)}
+html body #stView .stv-tip,
+html body #stView .stv-nomat{color:var(--ink3)}
+html body #stView .stv-hero{color:var(--ink)}
+html body #stView .stv-hero .ph{color:var(--ink4)}
+html body #stView .stv-ct h2{color:var(--ink)}
+
+/* 全屏预览层保持深色（它是浮层，脱离页面层次） */
+html body #stView .stv-ov{background:#0B1220}
+html body #stView .stv-ov-hd{background:#111A2E}
+html body #stView .stv-ov-x{background:var(--brand)}
+html body #stView .stv-toast{border-radius:12px}
+
+/* 移动端：卡片内边距收紧 */
+@media(max-width:640px){
+  html body #stView .stv{padding:12px 12px 44px}
+  html body #stView .stv-card,
+  html body #stView .stv2-card{padding:15px 14px!important;border-radius:var(--r-card)!important}
+  html body #stView .stv2-ttl{font-size:19px}
+}
+
 /* ---------- 90. 打印兜底 ----------
    D12 的打印令牌用裸 :root（0-1-0），早已被 ui-v2 的 0-1-1 压死 ——
    现状是打印会打出浅蓝底。这里补一刀，顺手修掉。 */
