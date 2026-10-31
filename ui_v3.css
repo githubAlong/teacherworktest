@@ -1,0 +1,253 @@
+/* ===========================================================
+   教师工作台 · UI v3 —— 参考应用（doubao.link）设计语言
+   由 inject_v3.py 注入为 style#ui-v3，位置在 </body> 之前（文档最后一个样式块）
+
+   硬约束（改之前先读）
+   1. 本文件内不得出现 style 标签字面量，否则会提前闭合样式块 → 整块失效且无报错
+   2. 不得使用裸 :root（特异性 0-1-0）。主题块 html[data-theme="ink"|"gov"|…] 是 0-1-1，
+      特异性优先于文档顺序，裸 :root 会被它静默打败。统一用 html:root,html[data-theme]
+   3. 卡片圆角用 --r-card，不要改 --r/--r-lg/--r-xl：--r-lg 同时被 .ov-av(44px 头像)、
+      .cfm-ico(52px)、.rm-ic(38px)、.msg-ic(32px) 使用，改成 20px 会让它们变圆球
+   4. 插入后所有字符偏移会平移，定位请跑 anchors.js 重算
+   =========================================================== */
+
+/* ---------- 30. 设计令牌（全站唯一来源） ----------
+   参考应用实测值：页底 #EBEFF5 / 白卡 / 主色 #2463EB / 零阴影 / 卡片圆角 20px
+   原则：零阴影，全靠底色差分层。这是整套视觉的骨架，比任何单个颜色都重要。 */
+html:root,html[data-theme]{
+  /* 面 —— 白卡浮在灰底上，不用投影 */
+  --bg:#EBEFF5;
+  --bg2:#FFFFFF;
+  --card:#FFFFFF;
+  --card2:#F7F9FC;
+
+  /* 线 —— --line2 一物两用：既是细边框，又是 table.tb th 的表头底色（原表 106870 处）。
+     取 #F2F5F9 两头都能用；真正的 #EBEFF5 只给 --bg，否则表头会和页底糊在一起 */
+  --line:#E0E5EB;
+  --line2:#F2F5F9;
+  --line-strong:#DDE3EA;
+
+  /* 字 */
+  --ink:#1A2433;
+  --ink2:#5A6577;
+  --ink3:#8A94A6;
+  --ink4:#A9B0BC;
+
+  /* 品牌 —— 单一蓝，全站不出现第二个强调色 */
+  --brand:#2463EB;
+  --brand-d:#1B4FC4;
+  --brand-dd:#143C99;
+  --brand-l:#EAF1FF;
+  --brand-l2:#D6E4FF;
+  --brand2:#4C86F5;
+  --brand-rgb:36,99,235;
+  --brand-d-rgb:27,79,196;
+  --brand2-rgb:76,134,245;
+  --on-brand:#FFFFFF;
+
+  /* 语义 —— 贴近参考应用的饱和度 */
+  --red:#DC2626;
+  --red-d:#B91C1C;
+  --red-l:#FEF2F2;
+  --red-b:#FECACA;
+  --amber:#F59E0B;
+  --amber-d:#B45309;
+  --amber-l:#FFFBEB;
+  --amber-b:#FDE68A;
+
+  /* 阴影全部抹平；--sh-4 保留原值给弹窗（.lm-dlg .box / #wbauth .c）维持层次 */
+  --sh:none;
+  --sh2:none;
+  --sh-3:none;
+
+  /* 圆角：只新增卡片专用档，不动既有三档 */
+  --r-card:20px;
+
+  /* 焦点环跟着品牌色 */
+  --ring:0 0 0 3px rgba(36,99,235,.18);
+  --ring-danger:0 0 0 3px rgba(220,38,38,.16);
+}
+
+/* ---------- 31. 卡片 ----------
+   参考应用零阴影、20px 圆角，白卡浮在灰底上靠底色差分层。
+   注意 ui-v2 §5 有 `.hp-card,.panel,.card{border-radius:var(--r)!important}`，
+   必须用同特异性 + !important + 更靠后的位置才压得住。 */
+.panel,.stat,.hp-card,.card,.mcard,.lm-card,.as-card,.tb-wrap,
+#view-overview .hp-card,#view-overview .hp-card.ov-pf,#view-overview .hp-card.ov-time{
+  border-radius:var(--r-card)!important;
+  box-shadow:none!important;
+}
+/* 首页问候卡与时间卡原本带一圈蓝色光晕，抹掉 */
+.ov-pf,.ov-time,.hp-card.ov-pf,.hp-card.ov-time{box-shadow:none!important}
+/* 弹窗保留层次：不动 --sh-4，只统一圆角 */
+.modal .box,.lm-dlg .box,#wbauth .c{border-radius:var(--r-card)!important}
+
+/* ---------- 32. 控件 ----------
+   小件保持 6px 不动（考勤页 .att-r1 .fld input 有 6px!important，碰了会打架） */
+.btn{border-radius:10px}
+.btn.primary,.btn.danger{border-radius:10px}
+.chip,.tag{border-radius:8px}
+.tag.now,.tag.pill{border-radius:999px}
+.fld input,.fld select,.fld textarea,.inp,select.fsel{border-radius:10px}
+.fld input:focus,.fld select:focus,.fld textarea:focus{box-shadow:var(--ring)}
+.ov-tbtn{border-radius:9px}
+
+/* ---------- 33. 表格 ----------
+   只碰颜色，绝不碰 display/width/padding/position —— D10.2 的 ≤900px 卡化靠这些属性 */
+table.tb th{background:var(--line2);color:var(--ink2);border-bottom:1px solid var(--line)}
+table.tb td{border-bottom:1px solid var(--line2)}
+table.tb tbody tr:hover{background:#F7FAFF}
+.tb-wrap{border-radius:var(--r-card);border:1px solid var(--line);background:var(--card)}
+.tb-foot{color:var(--ink3)}
+
+/* ---------- 34. 导航 ----------
+   侧栏原本是透明的，桌面满宽下和内容区糊成一片，这里给它独立底色做分区 */
+#sideNav{
+  background:var(--card)!important;
+  border-right:1px solid var(--line);
+}
+#sideNav .side-top{background:var(--card);border-bottom:1px solid var(--line2)}
+#sideNav .side-tit{color:var(--ink);font-weight:700}
+#tabs .tab{color:var(--ink2);border-radius:11px}
+#tabs .tab:hover{background:var(--card2);color:var(--ink)}
+#tabs .tab.on{background:var(--brand-l);color:var(--brand);font-weight:700}
+#tabs .tab.on svg{color:var(--brand)}
+#tabs .tab .tab-dot{background:var(--red)}
+.side-sub .ssub{color:var(--ink3);border-radius:9px}
+.side-sub .ssub.on{background:var(--brand-l);color:var(--brand)}
+.side-sub .ssub:hover{background:var(--card2);color:var(--ink)}
+
+/* 移动端底部 tab */
+.mnav{background:var(--card)!important;border-top:1px solid var(--line);box-shadow:none!important}
+.mnav .tab{color:var(--ink3)}
+.mnav .tab.on{color:var(--brand);background:none}
+.mnav .tab.on svg{color:var(--brand)}
+
+/* 顶栏 */
+header.hero{background:var(--card)!important;border-bottom:1px solid var(--line);box-shadow:none!important}
+header.hero .brand .logo{background:var(--brand)!important;border-radius:12px;box-shadow:none!important}
+header.hero h1{color:var(--ink);font-weight:700}
+.tw-topbar{background:var(--card)!important;border-bottom:1px solid var(--line);box-shadow:none!important}
+.hp-search{background:var(--bg)!important;border-radius:12px!important;box-shadow:none!important}
+.hp-search input{background:transparent;color:var(--ink)}
+
+/* ---------- 35. 标题层级 ----------
+   参考：页面标题 22-24px/700，卡片标题 15px/700，副标题 12px 灰 */
+.panel-head h3,.panel-h h2{font-size:15.5px;font-weight:700;color:var(--ink)}
+.ov-toolbar .ov-tb-tip{color:var(--ink3);font-size:12.5px}
+.hint,.sub,.muted{color:var(--ink3)!important}
+
+/* ---------- 36. 小课堂 ----------
+   #assistCss 是独立一套，令牌能穿透约八成，剩下这些是字面量 */
+.as-card{background:var(--card);box-shadow:none!important;border-radius:var(--r-card)!important}
+.as-stat{background:var(--card);box-shadow:none!important;border-radius:var(--r-card)!important}
+.as-ttl{color:var(--ink)}
+.as-sub{color:var(--ink3)}
+.as-sw{background:#D5DDE6}
+.as-chip{background:var(--brand-l);color:var(--brand)}
+
+/* ---------- 37. 全局提示条 ----------
+   顶部预览条原本是橙色满宽横幅，视觉重量过大；改成中性白底 + 蓝色按钮 */
+#wbpvBar{
+  background:var(--card)!important;color:var(--ink2)!important;
+  border-bottom:1px solid var(--line)!important;box-shadow:none!important;
+}
+#wbpvBar b{color:var(--ink)!important;font-weight:700}
+#wbpvBar button[data-pv-go]{background:var(--brand)!important;color:#fff!important;border-radius:8px}
+#wbpvBar button.g{background:var(--card2)!important;color:var(--ink2)!important;border-radius:8px}
+
+/* 离线同步条：原本是深色实心条，压得很重；降级为浅琥珀提示 */
+#syncBar.syncbar{
+  background:var(--amber-l)!important;color:var(--amber-d)!important;
+  border:1px solid var(--amber-b)!important;border-radius:14px!important;
+  box-shadow:none!important;
+}
+#syncBar .sb-dot{background:var(--amber)!important}
+#syncBar .sb-txt{color:var(--amber-d)!important}
+#syncBar .sb-btn{background:var(--amber)!important;color:#fff!important;border-radius:8px!important}
+#syncBar .sb-x{color:var(--amber-d)!important}
+
+/* toast 保留深色（它是瞬时浮层，需要脱离页面层次），只统一圆角 */
+#toast.toast{border-radius:12px}
+
+/* ---------- 39. 首页 Hero 拼接修正 ----------
+   ui-v2 把 pf 卡的右圆角砍成直角、time 卡左圆角砍成直角，两张拼成一整块蓝色 Hero。
+   这是有意的设计，不能取消；但外侧圆角要跟着放大到 20px。
+   注意特异性：原规则是 #ovBoard > .ov-slot[data-ov="pf"] > .hp-card = (1,3,0)，
+   用 #view-overview .hp-card.ov-pf = (1,2,0) 是压不住的，必须照抄同款选择器。 */
+#ovBoard > .ov-slot[data-ov="pf"] > .hp-card{
+  border-radius:var(--r-card) 0 0 var(--r-card)!important;
+}
+#ovBoard > .ov-slot[data-ov="time"] > .hp-card{
+  border-radius:0 var(--r-card) var(--r-card) 0!important;
+}
+/* 手机端两卡上下堆叠，拼接关系反过来 */
+@media(max-width:767px){
+  #ovBoard > .ov-slot[data-ov="pf"] > .hp-card{
+    border-radius:var(--r-card) var(--r-card) 0 0!important;
+  }
+  #ovBoard > .ov-slot[data-ov="time"] > .hp-card{
+    border-radius:0 0 var(--r-card) var(--r-card)!important;
+  }
+}
+
+/* ---------- 40. 首页卡片高度 ----------
+   原本同排卡片被网格强行拉伸到等高，日历卡（内容 471px）超出卡片（447px），
+   底部图例和提示文字被切到卡片外。让卡片按自身内容高度排布 —— 这也更接近参考的卡片流。 */
+#ovBoard > .ov-slot{align-self:start}
+#ovBoard > .hp-card{align-self:start}
+/* 空态卡片（如「今日上课提醒」只有一行字）会扁成一根条，给一个基础体量，
+   让同排落在 160~320 之间，落差从 7 倍收窄到 2 倍 */
+#ovBoard > .ov-slot > .hp-card{min-height:168px}
+#view-overview .hp-cal{overflow:hidden}
+/* 首页卡片内部间距收紧到参考节奏 */
+#view-overview .hp-card .panel-h{padding-bottom:12px}
+#view-overview .hp-cal .cal-leg{color:var(--ink3)}
+#view-overview .hp-cal .cal-tip{color:var(--ink4);font-size:11.5px}
+
+/* ---------- 41. Hero 卡内部 ----------
+   ov-pf 与 ov-time 拼成一整块蓝底，内部文字原本沿用页面的深灰阶，在蓝底上对比度不足 */
+#view-overview .hp-card.ov-pf .ov-name{color:#fff;font-weight:700}
+#view-overview .hp-card.ov-pf .ov-hi{color:rgba(255,255,255,.84)}
+#view-overview .hp-card.ov-pf .ov-pf-q{color:rgba(255,255,255,.94)}
+#view-overview .hp-card.ov-pf .ov-pf-q *{color:inherit}
+#view-overview .hp-card.ov-time .ov-t-top{color:rgba(255,255,255,.92)}
+#view-overview .hp-card.ov-time .ov-dayleft{color:rgba(255,255,255,.84)}
+#view-overview .hp-card.ov-time .ov-t-ringtxt{color:#fff}
+#view-overview .hp-card.ov-time .ov-clock{color:#fff}
+/* 头像：参考应用用圆形，方形圆角在蓝底上显得生硬 */
+#view-overview .ov-av{border-radius:50%;background:rgba(255,255,255,.22);color:#fff}
+
+/* ---------- 42. 残留阴影收口 ----------
+   参考应用全站零阴影。扫描后剩下的几组：主按钮的蓝色投影、头像的蓝色光晕、
+   侧栏选中项用 inset 阴影画的左侧蓝条（圆角 tab 上会露出直边，不贴合）。
+   保留下来的只有真正需要层次的：#txPanel 浮层、日历今天的轻微光晕。 */
+/* 注意：ui-v2 用的是 .btn.primary / .btn.primary.sm 这类 0-3-0 选择器 + !important，
+   同样是 !important 时按特异性决胜，必须照抄同款选择器才压得住 */
+.btn,.btn.primary,.btn.danger,.btn.ghost,.btn.sm,.btn.primary.sm,.btn.danger.sm,.btn.ghost.sm{box-shadow:none!important}
+.btn:focus-visible{box-shadow:var(--ring)!important}
+#tabs .tab.on{box-shadow:none!important}
+/* 头像：蓝底上改用白色细环，像参考应用的头像白边，而不是蓝色光晕 */
+#view-overview .ov-av{box-shadow:0 0 0 3px rgba(255,255,255,.34)!important}
+/* 日历“今天”：去掉投影，靠蓝底白字区分 */
+.cal-day.today.sel{box-shadow:none!important}
+
+/* ---------- 90. 打印兜底 ----------
+   D12 的打印令牌用裸 :root（0-1-0），早已被 ui-v2 的 0-1-1 压死 ——
+   现状是打印会打出浅蓝底。这里补一刀，顺手修掉。 */
+@media print{
+  html:root,html[data-theme]{
+    --bg:#FFFFFF;
+    --bg2:#FFFFFF;
+    --card:#FFFFFF;
+    --card2:#FFFFFF;
+    --line:#D0D5DD;
+    --line2:#EEF1F6;
+    --ink:#000000;
+    --ink2:#333333;
+    --ink3:#666666;
+    --sh:none;
+    --sh2:none;
+    --sh-3:none;
+  }
+}
