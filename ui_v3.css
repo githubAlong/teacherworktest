@@ -138,13 +138,26 @@ header.hero h1{color:var(--ink);font-weight:700}
 .hint,.sub,.muted{color:var(--ink3)!important}
 
 /* ---------- 36. 小课堂 ----------
-   #assistCss 是独立一套，令牌能穿透约八成，剩下这些是字面量 */
+   #assistCss 是独立一套，令牌能穿透约八成，剩下这些是字面量。
+   .as-board 原本是 #12263a→#0f1f2f 的近黑深蓝，在浅色页面上像挖了个洞，
+   改成品牌蓝渐变（保留"黑板"的深色隐喻，但归到同一套品牌色里）。 */
 .as-card{background:var(--card);box-shadow:none!important;border-radius:var(--r-card)!important}
 .as-stat{background:var(--card);box-shadow:none!important;border-radius:var(--r-card)!important}
+.as-board{
+  background:linear-gradient(160deg,#1B4FC4,#2463EB)!important;
+  border-radius:var(--r-card)!important;color:#F2F7FB!important;
+}
 .as-ttl{color:var(--ink)}
 .as-sub{color:var(--ink3)}
 .as-sw{background:#D5DDE6}
+.as-sw.on{background:var(--brand)!important}
 .as-chip{background:var(--brand-l);color:var(--brand)}
+.as-btn.pri{background:var(--brand)!important;border-color:var(--brand)!important;border-radius:10px}
+.as-seg button.on{background:var(--brand)!important;border-radius:8px}
+.as-inp,.as-ta{border-radius:10px!important;border-color:var(--line)!important}
+.as-inp:focus,.as-ta:focus{box-shadow:var(--ring)!important;border-color:var(--brand)!important}
+.as-item,.as-row{border-color:var(--line2)!important}
+.as-lbl,.as-num-hint{color:var(--ink3)}
 
 /* ---------- 37. 全局提示条 ----------
    顶部预览条原本是橙色满宽横幅，视觉重量过大；改成中性白底 + 蓝色按钮 */
@@ -156,12 +169,20 @@ header.hero h1{color:var(--ink);font-weight:700}
 #wbpvBar button[data-pv-go]{background:var(--brand)!important;color:#fff!important;border-radius:8px}
 #wbpvBar button.g{background:var(--card2)!important;color:var(--ink2)!important;border-radius:8px}
 
-/* 离线同步条：原本是深色实心条，压得很重；降级为浅琥珀提示 */
+/* 离线同步条：原本是深色实心条，压得很重；降级为浅琥珀提示。
+   另外它原本是 left:50% 居中的 fixed 浮层，正好压在页面正中底部的内容上
+   （表现为日历卡底部的图例像是"溢出到卡片外"）。挪到右下角，不挡主内容。 */
 #syncBar.syncbar{
   background:var(--amber-l)!important;color:var(--amber-d)!important;
   border:1px solid var(--amber-b)!important;border-radius:14px!important;
   box-shadow:none!important;
+  left:auto!important;right:16px!important;
+  max-width:min(92vw,520px)!important;
+  transform:translate(0,180%)!important;
 }
+#syncBar.syncbar.on{transform:translate(0,0)!important}
+/* 内容区留出底部空间：提示条固定在视口右下角，日历卡正好延伸到那个位置 */
+.wrap{padding-bottom:76px}
 #syncBar .sb-dot{background:var(--amber)!important}
 #syncBar .sb-txt{color:var(--amber-d)!important}
 #syncBar .sb-btn{background:var(--amber)!important;color:#fff!important;border-radius:8px!important}
@@ -474,6 +495,55 @@ html body #stView .stv-toast{border-radius:12px}
 }
 .v3-pill:hover{background:rgba(255,255,255,.3)}
 .v3-pill:active{background:rgba(255,255,255,.42)}
+
+/* ---------- 46. 移动端 ----------
+   390 宽下顶部被吃掉 217px（预览条 90 + 顶栏 62 + 搜索条 65），可用高度只剩 627。
+   预览条的说明文字在窄屏会折成三行，是主因。 */
+@media(max-width:767px){
+  /* 预览条压成一行，说明文字省掉 —— 手机上它只该是一条提示，不该占掉六分之一屏 */
+  #wbpvBar{
+    padding:5px 12px!important;flex-wrap:nowrap!important;gap:8px!important;
+    align-items:center!important;
+  }
+  #wbpvBar span{display:none!important}
+  #wbpvBar b{font-size:12px!important;white-space:nowrap}
+  #wbpvBar button{height:26px!important;padding:0 10px!important;font-size:11.5px!important;white-space:nowrap}
+
+  /* 底部 tab 栏留出空间，否则最后一张卡片被遮住；再留出提示条的位置 */
+  .wrap{padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))!important}
+  .mnav{padding-bottom:env(safe-area-inset-bottom,0px)!important}
+
+  /* 离线提示条在手机上要浮到底部 tab 之上，否则把 tab 盖住 */
+  #syncBar.syncbar{
+    bottom:calc(54px + 12px + env(safe-area-inset-bottom,0px))!important;
+    right:12px!important;left:auto!important;
+    max-width:calc(100vw - 24px)!important;font-size:11.5px!important;padding:7px 10px!important;
+  }
+
+  /* 卡片间距按参考收紧到 12px */
+  #view-overview .ov-board{gap:12px!important}
+  .stats{gap:12px!important;margin-bottom:18px!important}
+  #view-overview .hp-card{padding:16px!important}
+  #view-overview .hp-card .panel-h{padding-bottom:10px!important}
+
+  /* 快捷胶囊在小屏一行放不下就换行，但不要挤爆卡片 */
+  .v3-heroacts{gap:6px!important;margin-top:12px!important}
+  .v3-pill{height:30px;padding:0 12px;font-size:12px}
+
+  /* 页面标题在手机上略小 */
+  .panel-head h3,.panel-h h2{font-size:15px}
+}
+
+/* 手机上 Hero 拼接方向反转（上下堆叠），已在 39 节处理，这里只补内边距 */
+@media(max-width:767px){
+  #ovBoard > .ov-slot[data-ov="pf"] > .hp-card{padding-bottom:14px!important}
+  #ovBoard > .ov-slot[data-ov="time"] > .hp-card{padding-top:14px!important}
+}
+
+/* ---------- 47. 顶部预览条让位 ----------
+   #wbpvBar 是 position:fixed;top:0，header.hero 从 y=0 开始 → logo 上半截被压掉。
+   高度由 ui-v3-hero 脚本实测写入 --v3-pv-h（点「知道了」关掉后自动收回）。 */
+body.v3-haspv header.hero{margin-top:var(--v3-pv-h,38px)}
 
 /* ---------- 90. 打印兜底 ----------
    D12 的打印令牌用裸 :root（0-1-0），早已被 ui-v2 的 0-1-1 压死 ——

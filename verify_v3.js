@@ -93,6 +93,17 @@ const PROBE = `(() => {
   const val = r.result && r.result.result && r.result.result.value;
   if (!val) { console.error('探针执行失败: ' + JSON.stringify(r).slice(0, 400)); ws.close(); kill(); process.exit(1); }
   const o = JSON.parse(val);
+
+  /* 打印：D12 的打印令牌用裸 :root（0-1-0），早被 ui-v2 的 0-1-1 压死，
+     历史表现是打印打出浅蓝底。ui-v3 在末尾补了 @media print 兜底，这里验证。 */
+  await send('Emulation.setEmulatedMedia', { media: 'print' });
+  await sleep(280);
+  const printBg = await send('Runtime.evaluate', {
+    expression: `getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()`,
+    returnByValue: true
+  });
+  await send('Emulation.setEmulatedMedia', { media: '' });
+  o.print = { bg: (printBg.result && printBg.result.result ? printBg.result.result.value : '?'), shouldBe: '#FFFFFF' };
   o.errors = errs.slice(0, 6); o.errCount = errs.length;
   o.viewport = W + 'x' + H;
   console.log(JSON.stringify(o, null, 1));

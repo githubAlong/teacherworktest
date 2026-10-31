@@ -52,8 +52,29 @@ const JS = `
     if (!q) return;
     pf.insertBefore(build(), q);
   }
+  /* 顶部预览条是 position:fixed;top:0，而 header.hero 从 y=0 排起，
+     必然压住 logo 的上半截（桌面和手机都有）。这里量出实际条高，
+     写进 --v3-pv-h 让 hero 让位；点「知道了」关掉后要能自动收回。 */
+  function fixBar() {
+    var bar = document.getElementById('wbpvBar'), root = document.documentElement;
+    if (!bar) { document.body.classList.remove('v3-haspv'); return; }
+    var cs = getComputedStyle(bar);
+    var h = (cs.display === 'none' || cs.visibility === 'hidden') ? 0 : Math.round(bar.getBoundingClientRect().height);
+    if (h > 4) {
+      root.style.setProperty('--v3-pv-h', h + 'px');
+      document.body.classList.add('v3-haspv');
+    } else {
+      document.body.classList.remove('v3-haspv');
+    }
+  }
   function start() {
     mount();
+    fixBar();
+    var bar = document.getElementById('wbpvBar');
+    if (bar && !bar.__v3obs) {
+      new MutationObserver(fixBar).observe(bar, { attributes: true, attributeFilter: ['style', 'class'] });
+      bar.__v3obs = 1;
+    }
     var board = document.getElementById('ovBoard');
     if (board && !board.__v3obs) {
       /* 首次挂载后 bp()/_a() 会重写看板内容，胶囊会丢，用 observer 补回。
