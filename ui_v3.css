@@ -454,6 +454,27 @@ html body #stView .stv-toast{border-radius:12px}
   html body #stView .stv2-ttl{font-size:19px}
 }
 
+/* ---------- 45. Hero 快捷胶囊 ----------
+   参考应用的 Hero 卡带两个胶囊入口。这里放进问候卡，点击转发到侧栏导航。
+   注意：pf 与 time 是拼接成一整块的，pf 加内容变高后 time 必须跟着拉高，
+   否则蓝色块的右半会缺一角 —— 所以这两槽单独用 stretch。 */
+#ovBoard > .ov-slot[data-ov="pf"],
+#ovBoard > .ov-slot[data-ov="time"]{align-self:stretch}
+#ovBoard > .ov-slot[data-ov="pf"] > .hp-card,
+#ovBoard > .ov-slot[data-ov="time"] > .hp-card{height:100%}
+
+.v3-heroacts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.v3-pill{
+  border:0;font:inherit;font-size:12.5px;font-weight:600;line-height:1;
+  color:#fff;background:rgba(255,255,255,.18);
+  border-radius:999px;height:32px;padding:0 14px;cursor:pointer;
+  display:inline-flex;align-items:center;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  transition:background .15s;
+}
+.v3-pill:hover{background:rgba(255,255,255,.3)}
+.v3-pill:active{background:rgba(255,255,255,.42)}
+
 /* ---------- 90. 打印兜底 ----------
    D12 的打印令牌用裸 :root（0-1-0），早已被 ui-v2 的 0-1-1 压死 ——
    现状是打印会打出浅蓝底。这里补一刀，顺手修掉。 */
