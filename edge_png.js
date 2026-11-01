@@ -67,6 +67,40 @@ if (mode === 'band') {
   process.exit(0);
 }
 
+if (mode === 'region') {
+  // region x0 y0 x1 y1 —— 统计区域内出现的颜色及占比
+  const [x0, y0, x1, y1] = [process.argv[4], process.argv[5], process.argv[6], process.argv[7]].map(Number);
+  const cnt = new Map();
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    const h = hex(get(x, y)); cnt.set(h, (cnt.get(h) || 0) + 1);
+  }
+  const arr = [...cnt.entries()].sort((a, b) => b[1] - a[1]);
+  const tot = arr.reduce((s, v) => s + v[1], 0);
+  console.log('区域 %d,%d-%d,%d 共 %d 像素，%d 种颜色', x0, y0, x1, y1, tot, arr.length);
+  arr.slice(0, 12).forEach(([h, n]) => console.log('  ' + h + '  ' + n + '  ' + (n / tot * 100).toFixed(1) + '%'));
+  process.exit(0);
+}
+
+if (mode === 'anycol') {
+  // y0..y1 带内，只要该列存在任何非白像素就算“有墨”
+  const y0 = +arg, y1 = +arg2;
+  let out = [], prev = null, start = 0;
+  const cols = [];
+  for (let x = 0; x < img.w; x++) {
+    let ink = false;
+    for (let y = y0; y <= y1; y++) { const c = get(x, y); if (!(c[0] > 250 && c[1] > 250 && c[2] > 250)) { ink = true; break; } }
+    cols.push(ink ? '.' : 'W');
+  }
+  for (let x = 0; x < cols.length; x++) {
+    if (prev === null) { prev = cols[x]; start = 0; }
+    else if (cols[x] !== prev) { out.push(`${prev}:${start}-${x - 1}(${x - start})`); prev = cols[x]; start = x; }
+  }
+  out.push(`${prev}:${start}-${cols.length - 1}(${cols.length - start})`);
+  console.log('有墨列(y=' + y0 + '..' + y1 + ')  . = 有内容');
+  console.log(out.filter(o => !o.startsWith('W:')).join('  ') || '(全白)');
+  process.exit(0);
+}
+
 if (mode === 'hband') {
   const x0 = +arg, x1 = +arg2;
   let rows = [];

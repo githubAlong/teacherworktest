@@ -519,6 +519,17 @@ html body #stView .stv-toast{border-radius:12px}
   .panel-head h3,.panel-h h2{font-size:15px}
 }
 
+/* ---------- 46.5 品牌标记与导航分组（对齐参考图） ----------
+   1) 参考图的品牌标记是一枚**纯色实心圆**，圆里什么都没有；
+      这里原本内嵌了一个白色勾选 SVG（#brandLogo > svg），去掉才对齐。
+   2) 参考图在「工作」组下方只有一条短竖脊，没有横贯侧栏的分隔线。
+      那条横线是 .tab[data-view="daily"]::before 画的
+      （top:-6px; height:1px; width:204px; background:#E0E5EB），
+      用 elementsFromPoint / getNodeForLocation 都抓不到伪元素，得靠遍历 getComputedStyle(el,'::before')。
+   组与组之间的 12px 间距保留，去掉线之后仍然是两段。 */
+#brandLogo svg{display:none!important}
+#tabs .tab[data-view="daily"]::before{display:none!important}
+
 /* ---------- 47. 顶部预览条让位 ----------
    #wbpvBar 是 position:fixed;top:0，header.hero 从 y=0 开始 → logo 上半截被压掉。
    高度由 ui-v3-hero 脚本实测写入 --v3-pv-h（点「知道了」关掉后自动收回）。 */
