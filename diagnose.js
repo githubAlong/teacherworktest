@@ -42,7 +42,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await send('Page.enable'); await send('Runtime.enable');
   await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: W < 700 });
   await send('Page.bringToFront');
-  await send('Page.navigate', { url: 'file:///' + path.resolve(__dirname, 'index.html').replace(/\\/g, '/') + (QS ? '?' + QS : '') });
+  await send('Page.navigate', { url: process.env.WB_URL || ('file:///' + path.resolve(__dirname, 'index.html').replace(/\\/g, '/') + (QS ? '?' + QS : '')) });
   await sleep(2600);
   await ev(`(()=>{document.body.classList.remove('wb-locked');var g=document.getElementById('wbGate');if(g)g.remove();var c=document.getElementById('wbGateCss');if(c)c.remove();return 1})()`);
   await sleep(500);

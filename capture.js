@@ -40,12 +40,16 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await send('Page.enable'); await send('Runtime.enable');
   await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: DPR, mobile: W < 700 });
   await send('Page.bringToFront');
-  const url = 'file:///' + path.resolve(__dirname, 'index.html').replace(/\\/g, '/') + (STUDENT ? '?r=s' : '');
+  const url = process.env.WB_URL
+    ? process.env.WB_URL + (STUDENT ? (process.env.WB_URL.includes('?') ? '&' : '?') + 'r=s' : '')
+    : 'file:///' + path.resolve(__dirname, 'index.html').replace(/\\/g, '/') + (STUDENT ? '?r=s' : '');
   await send('Page.navigate', { url });
   await sleep(WAIT);
 
   // 解锁登录门
-  await evalJs(`(()=>{document.body.classList.remove('wb-locked');var g=document.getElementById('wbGate');if(g)g.remove();var c=document.getElementById('wbGateCss');if(c)c.remove();return 1})()`);
+  await evalJs(`(()=>{document.body.classList.remove('wb-locked');var g=document.getElementById('wbGate');if(g)g.remove();var c=document.getElementById('wbGateCss');if(c)c.remove();
+    if('${process.env.WB_SKIP_AUTH ? '1' : ''}'){var a=document.getElementById('wbauth');if(a)a.remove();document.documentElement.style.overflow='';document.body.style.overflow='';}
+    return 1})()`);
   await sleep(400);
 
   // 切教师端视图

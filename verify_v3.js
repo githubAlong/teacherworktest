@@ -80,7 +80,9 @@ const PROBE = `(() => {
   await send('Page.enable'); await send('Runtime.enable');
   await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: W < 700 });
   await send('Page.bringToFront');
-  const url = 'file:///' + path.resolve(__dirname, 'index.html').replace(/\\/g, '/') + (QS ? '?' + QS : '');
+  const url = process.env.WB_URL
+    ? process.env.WB_URL + (QS ? (process.env.WB_URL.includes('?') ? '&' : '?') + QS : '')
+    : 'file:///' + path.resolve(__dirname, 'index.html').replace(/\\/g, '/') + (QS ? '?' + QS : '');
   await send('Page.navigate', { url });
   await sleep(WAIT);
 
