@@ -211,6 +211,12 @@ header.hero h1{color:var(--ink);font-weight:700}
   background-image:none!important;
   border-radius:var(--r-card)!important;
 }
+/* 拼接是靠负外边距实现的，光改圆角不够：桌面 margin-right:-18px 让 pf 吃进列间距，
+   手机 margin-bottom:-18px 让两张卡上下贴死（会看成一张卡）。
+   同时接缝两侧的边框被写成了 0，白卡上会露出没有边的缺口，都要补回来。 */
+#ovBoard > .ov-slot[data-ov="pf"]{margin-right:0!important;margin-bottom:0!important}
+#ovBoard > .ov-slot[data-ov="pf"] > .hp-card{border-right:1px solid var(--line)!important;border-bottom:1px solid var(--line)!important}
+#ovBoard > .ov-slot[data-ov="time"] > .hp-card{border-left:1px solid var(--line)!important;border-top:1px solid var(--line)!important}
 
 /* ---------- 40. 首页卡片高度 ----------
    参考图里同一排的三张卡严格等高（pf/time/提醒 齐平，事项/日历/天气 齐平）。
