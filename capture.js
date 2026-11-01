@@ -49,6 +49,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   // 解锁登录门
   await evalJs(`(()=>{document.body.classList.remove('wb-locked');var g=document.getElementById('wbGate');if(g)g.remove();var c=document.getElementById('wbGateCss');if(c)c.remove();
     if('${process.env.WB_SKIP_AUTH ? '1' : ''}'){var a=document.getElementById('wbauth');if(a)a.remove();document.documentElement.style.overflow='';document.body.style.overflow='';}
+    if('${process.env.WB_CLEAN ? '1' : ''}'){['wbpvBar','syncBar','toast'].forEach(function(id){var e=document.getElementById(id);if(e)e.remove();});document.body.classList.remove('v3-haspv');}
     return 1})()`);
   await sleep(400);
 
