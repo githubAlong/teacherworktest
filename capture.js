@@ -42,7 +42,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await send('Page.bringToFront');
   const url = process.env.WB_URL
     ? process.env.WB_URL + (STUDENT ? (process.env.WB_URL.includes('?') ? '&' : '?') + 'r=s' : '')
-    : 'file:///' + path.resolve(__dirname, 'index.html').replace(/\\/g, '/') + (STUDENT ? '?r=s' : '');
+    : 'file:///' + path.resolve(__dirname, process.env.WB_FILE || 'index.html').replace(/\\/g, '/') + (STUDENT ? '?r=s' : '');
   await send('Page.navigate', { url });
   await sleep(WAIT);
 
