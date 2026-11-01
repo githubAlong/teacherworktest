@@ -1,0 +1,39 @@
+(() => {
+  const out = {};
+  const wt = document.getElementById('workTab');
+  out.workTab_class = wt ? wt.className : 'NO workTab';
+  const chev = wt ? wt.querySelector('.tw-chev') : null;
+  out.chevron_exists = !!chev;
+  if (chev) out.chevron_display = getComputedStyle(chev).display;
+  const ss = document.getElementById('sideSub');
+  out.sideSub_exists = !!ss;
+  if (ss) {
+    out.sideSub_display = getComputedStyle(ss).display;
+    out.sideSub_height = Math.round(ss.getBoundingClientRect().height);
+    out.sideSub_children = ss.children.length;
+  }
+  out.Z_view = (window.Z && Z.view) || '??';
+  out.Z_workCollapsed = (window.Z && Z.workCollapsed) || '??';
+  // Simulate clicking the workTab (navigate to work view)
+  if (wt) wt.click();
+  out.after_click_workTab_Z_view = (window.Z && Z.view) || '??';
+  const ss2 = document.getElementById('sideSub');
+  if (ss2) {
+    out.after_click_sideSub_display = getComputedStyle(ss2).display;
+    out.after_click_sideSub_height = Math.round(ss2.getBoundingClientRect().height);
+    out.after_click_sideSub_children = ss2.children.length;
+  }
+  const chev2 = wt ? wt.querySelector('.tw-chev') : null;
+  if (chev2) out.after_click_chevron_display = getComputedStyle(chev2).display;
+  // Now try clicking the chevron to collapse
+  if (chev2) {
+    try { chev2.click(); } catch(e) { out.chevron_click_err = String(e); }
+    out.after_chevron_click_Z_workCollapsed = (window.Z && Z.workCollapsed) || '??';
+    const ss3 = document.getElementById('sideSub');
+    if (ss3) {
+      out.after_chevron_click_sideSub_height = Math.round(ss3.getBoundingClientRect().height);
+      out.after_chevron_click_sideSub_children = ss3.children.length;
+    }
+  }
+  return JSON.stringify(out, null, 2);
+})()

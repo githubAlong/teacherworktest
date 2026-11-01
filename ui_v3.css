@@ -554,3 +554,12 @@ body.v3-haspv header.hero{margin-top:var(--v3-pv-h,38px)}
     --sh-3:none;
   }
 }
+
+/* §48 工作可收缩
+   主文件里有 `#skTab .tw-chev,#workTab .tw-chev{display:none}`（特异性 1,1,0），
+   把 #workTab 的折叠箭头死死压住，导致「工作」二级子菜单无法收起（点不到箭头）。
+   这里用更高特异性 (1,4,0) 把箭头在「工作」视图（tab.on）下翻出来；
+   离开工作视图仍隐藏，避免首页侧栏出现多余箭头。旋转复用主文件 .tab.group.collapsed 规则。 */
+#workTab.tab.group .tw-chev{display:none}
+#workTab.tab.group.on .tw-chev{display:block;opacity:.8}
+#workTab.tab.group.collapsed .tw-chev{transform:rotate(-90deg)}

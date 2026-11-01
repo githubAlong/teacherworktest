@@ -1,0 +1,12 @@
+(() => {
+  const out = {};
+  const wt = document.getElementById('workTab');
+  wt.click();
+  const c = wt.querySelector('.tw-chev');
+  out.transform_expanded = c ? getComputedStyle(c).transform : 'n/a';
+  if (c) c.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  out.wt_class_collapsed = wt.className;
+  out.transform_collapsed = c ? getComputedStyle(c).transform : 'n/a';
+  out.display_collapsed = c ? getComputedStyle(c).display : 'n/a';
+  return JSON.stringify(out, null, 2);
+})()

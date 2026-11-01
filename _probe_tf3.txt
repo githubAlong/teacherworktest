@@ -1,0 +1,11 @@
+(async () => {
+  const out = {};
+  const wt = document.getElementById('workTab');
+  wt.click();
+  const c = wt.querySelector('.tw-chev');
+  if (c) c.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await new Promise(r => setTimeout(r, 350));
+  out.wt_class = wt.className;
+  out.computed_transform_after_delay = c ? getComputedStyle(c).transform : 'n/a';
+  return JSON.stringify(out, null, 2);
+})()

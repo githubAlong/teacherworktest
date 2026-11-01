@@ -1,0 +1,31 @@
+(() => {
+  const out = {};
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const wt = document.getElementById('workTab');
+  const chev = wt ? wt.querySelector('.tw-chev') : null;
+  out.workTab_class_initial = wt.className;
+  out.chevron_display_initial = chev ? getComputedStyle(chev).display : 'NO chevron';
+
+  // 1) navigate to work view by clicking the work tab
+  if (wt) wt.click();
+  out.workTab_class_after_nav = wt.className;
+  out.chevron_display_after_nav = chev ? getComputedStyle(chev).display : 'NO chevron';
+
+  const ss = document.getElementById('sideSub');
+  out.sideSub_height_after_nav = ss ? Math.round(ss.getBoundingClientRect().height) : 'NO sideSub';
+  out.sideSub_children_after_nav = ss ? ss.children.length : 0;
+
+  // 2) click the chevron to COLLAPSE
+  if (chev) chev.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  out.workTab_class_after_collapse = wt.className;
+  out.sideSub_height_after_collapse = ss ? Math.round(ss.getBoundingClientRect().height) : 'NO sideSub';
+  out.sideSub_children_after_collapse = ss ? ss.children.length : 0;
+
+  // 3) click the chevron again to EXPAND
+  if (chev) chev.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  out.workTab_class_after_expand = wt.className;
+  out.sideSub_height_after_expand = ss ? Math.round(ss.getBoundingClientRect().height) : 'NO sideSub';
+  out.sideSub_children_after_expand = ss ? ss.children.length : 0;
+
+  return JSON.stringify(out, null, 2);
+})()
