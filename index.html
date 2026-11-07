@@ -18651,9 +18651,8 @@ function switchView(v) {
 /* ================= 首页 · 卡片布局（可拖拽自定义） ================= */
 var OV_KEY = 'wb_home_board_v1';
 var OV_DEFAULT = [
-  { id: 'pf', w: 4 }, { id: 'time', w: 4 },
-  { id: 'course', w: 4 }, { id: 'todo', w: 4 }, { id: 'cal', w: 4 },
-  { id: 'wx', w: 12 }
+  { id: 'pf', w: 4 }, { id: 'time', w: 4 }, { id: 'wx', w: 4 },
+  { id: 'todo', w: 4 }, { id: 'course', w: 4 }, { id: 'cal', w: 4 }
 ];
 var OV_NAME = {
   pf: '个人信息', time: '时间', course: '今日上课提醒',
@@ -18801,7 +18800,7 @@ function ovBoardInit() {
   if (!b.__ovReady) {
     b.__ovReady = true;
     var saved = lsGet(OV_KEY, null);
-    if (saved && saved.length) ovApplyLayout(saved);
+    if (saved && saved.length) ovApplyLayout(saved); else ovApplyLayout(OV_DEFAULT);
   }
   ovSlots().forEach(ovMarkW);
   if (ovBound) return;
