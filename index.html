@@ -4464,7 +4464,7 @@ try {
   db = (window.__SMART_PAGE__ && window.__SMART_PAGE__.database) ? window.__SMART_PAGE__.database : null;
 } catch (e) { db = null; }
 
-var DATABASE_ID = 'H5HKvrv0L1cZJfg0wFTHFk';
+var DATABASE_ID = 'IeFGZK4i2xU0CNEQbFgzos';
 var LS_CACHE = 'wb_mywork_cache';
 var LS_PENDING = 'wb_mywork_pending';
 var LS_DRAFT = 'wb_mywork_draft';
@@ -4604,7 +4604,7 @@ var TABLE_LABEL = {
 };
 
 /* 学习资料表（页面侧唯一入口，改表只改这里） */
-var LM_DB = 'XJdaPrZXQemZXoZV2lLrZm';
+var LM_DB = '1eKyyxxY3o2hDXTwfhSjWr';
 
 var state = {
   online: true,
@@ -5041,50 +5041,50 @@ function dayDiff(a, b) {
 
 /* ---- 多表网关：databaseId 必须内联成字面量（SDK 规范要求） ---- */
 function apiGetSchema(key) {
-  if (key === 'course') return db.getSchema({ databaseId: '15nHEIlsmG6eMhDqZCcvDp' });
-  if (key === 'classlog') return db.getSchema({ databaseId: 'eHgaD7hJz6zTRT5M9V4YPC' });
-  if (key === 'prep') return db.getSchema({ databaseId: 'qa1aHdED0cjsh9jviFjGls' });
-  if (key === 'invig') return db.getSchema({ databaseId: 'qLYD6bNc6nyXjoiFL57R9O' });
-  if (key === 'repair') return db.getSchema({ databaseId: '4XcXIhK6TdMq6OoJ7qYEI1' });
-  if (key === 'sub') return db.getSchema({ databaseId: 'xv5VJIInJLxoymCBb3egEB' });
-  if (key === 'trip') return db.getSchema({ databaseId: 'jJxzWO2LKv1n703YmZx4Nu' });
-  if (key === 'learn') return db.getSchema({ databaseId: 'C3o8rtpdW7Kqm8z1rVxUrZ' });
+  if (key === 'course') return db.getSchema({ databaseId: 'OWHTamPF6bQFyihdegPmgm' });
+  if (key === 'classlog') return db.getSchema({ databaseId: 'c75IgHonpMSinBrVZwwxkh' });
+  if (key === 'prep') return db.getSchema({ databaseId: 'VWHoVUck2Z9hGi8lGbzaRV' });
+  if (key === 'invig') return db.getSchema({ databaseId: 'hEieVpV9ZR2oVkspEeEoOn' });
+  if (key === 'repair') return db.getSchema({ databaseId: 'n89IkAK7jciX54a5RlkI63' });
+  if (key === 'sub') return db.getSchema({ databaseId: 'RJB1nlTtpZEyhJUk0DpcVc' });
+  if (key === 'trip') return db.getSchema({ databaseId: 'mhhwWIJB1CaibAeNVcsv8F' });
+  if (key === 'learn') return db.getSchema({ databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS' });
   if (key === 'learnmat') return db.getSchema({ databaseId: LM_DB });
-  if (key === 'lessoncat') return db.getSchema({ databaseId: 'Opnax5bpZu0QwahppQ9HOm' });
-  if (key === 'lesson') return db.getSchema({ databaseId: 'K6A5eYV0qt6MVnIkxC3PoQ' });
-  if (key === 'attend') return db.getSchema({ databaseId: 'f34v9SCqEsYKlGqcG5bkxO' });
-  if (key === 'attname') return db.getSchema({ databaseId: 'RSUlv7V2oLP2rgdJ2Ybz4l' });
-  if (key === 'attdef') return db.getSchema({ databaseId: 'spZHlyyDayVov1qbr2Plor' });
-  if (key === 'attphoto') return db.getSchema({ databaseId: 'hxvZxyZUf4trQdCj5aLpHg' });
-  if (key === 'attgrade') return db.getSchema({ databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu' });
-  if (key === 'attgrade') return db.getSchema({ databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu' });
-  return db.getSchema({ databaseId: 'H5HKvrv0L1cZJfg0wFTHFk' });
+  if (key === 'lessoncat') return db.getSchema({ databaseId: 'LMzKj8yBLuV95FwLQeBQSP' });
+  if (key === 'lesson') return db.getSchema({ databaseId: 'SM1l2BONT5gpw1qGwBx2FI' });
+  if (key === 'attend') return db.getSchema({ databaseId: 'PnyPkkMjn9JsTFDXAxVzMu' });
+  if (key === 'attname') return db.getSchema({ databaseId: 'NfMB9IwCNSthxn93r5tMVl' });
+  if (key === 'attdef') return db.getSchema({ databaseId: 'sEF1LuwsUaKlC9WEfOskDr' });
+  if (key === 'attphoto') return db.getSchema({ databaseId: '8L0AzRyLhA19r0yh0rBBdQ' });
+  if (key === 'attgrade') return db.getSchema({ databaseId: 'tVEwvuX3SqOr9i8iiXPYwW' });
+  if (key === 'attgrade') return db.getSchema({ databaseId: 'tVEwvuX3SqOr9i8iiXPYwW' });
+  return db.getSchema({ databaseId: 'IeFGZK4i2xU0CNEQbFgzos' });
 }
 
 function apiQuery(key, cursor, filter) {
-  if (key === 'course') return db.query(cursor ? { databaseId: '15nHEIlsmG6eMhDqZCcvDp', pageSize: 200, startCursor: cursor } : { databaseId: '15nHEIlsmG6eMhDqZCcvDp', pageSize: 200 });
-  if (key === 'classlog') return db.query(cursor ? { databaseId: 'eHgaD7hJz6zTRT5M9V4YPC', pageSize: 200, startCursor: cursor } : { databaseId: 'eHgaD7hJz6zTRT5M9V4YPC', pageSize: 200 });
-  if (key === 'prep') return db.query(cursor ? { databaseId: 'qa1aHdED0cjsh9jviFjGls', pageSize: 200, startCursor: cursor } : { databaseId: 'qa1aHdED0cjsh9jviFjGls', pageSize: 200 });
-  if (key === 'invig') return db.query(cursor ? { databaseId: 'qLYD6bNc6nyXjoiFL57R9O', pageSize: 200, startCursor: cursor } : { databaseId: 'qLYD6bNc6nyXjoiFL57R9O', pageSize: 200 });
-  if (key === 'repair') return db.query(cursor ? { databaseId: '4XcXIhK6TdMq6OoJ7qYEI1', pageSize: 200, startCursor: cursor } : { databaseId: '4XcXIhK6TdMq6OoJ7qYEI1', pageSize: 200 });
-  if (key === 'sub') return db.query(cursor ? { databaseId: 'xv5VJIInJLxoymCBb3egEB', pageSize: 200, startCursor: cursor } : { databaseId: 'xv5VJIInJLxoymCBb3egEB', pageSize: 200 });
-  if (key === 'trip') return db.query(cursor ? { databaseId: 'jJxzWO2LKv1n703YmZx4Nu', pageSize: 200, startCursor: cursor } : { databaseId: 'jJxzWO2LKv1n703YmZx4Nu', pageSize: 200 });
-  if (key === 'learn') return db.query(cursor ? { databaseId: 'C3o8rtpdW7Kqm8z1rVxUrZ', pageSize: 200, startCursor: cursor } : { databaseId: 'C3o8rtpdW7Kqm8z1rVxUrZ', pageSize: 200 });
+  if (key === 'course') return db.query(cursor ? { databaseId: 'OWHTamPF6bQFyihdegPmgm', pageSize: 200, startCursor: cursor } : { databaseId: 'OWHTamPF6bQFyihdegPmgm', pageSize: 200 });
+  if (key === 'classlog') return db.query(cursor ? { databaseId: 'c75IgHonpMSinBrVZwwxkh', pageSize: 200, startCursor: cursor } : { databaseId: 'c75IgHonpMSinBrVZwwxkh', pageSize: 200 });
+  if (key === 'prep') return db.query(cursor ? { databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', pageSize: 200, startCursor: cursor } : { databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', pageSize: 200 });
+  if (key === 'invig') return db.query(cursor ? { databaseId: 'hEieVpV9ZR2oVkspEeEoOn', pageSize: 200, startCursor: cursor } : { databaseId: 'hEieVpV9ZR2oVkspEeEoOn', pageSize: 200 });
+  if (key === 'repair') return db.query(cursor ? { databaseId: 'n89IkAK7jciX54a5RlkI63', pageSize: 200, startCursor: cursor } : { databaseId: 'n89IkAK7jciX54a5RlkI63', pageSize: 200 });
+  if (key === 'sub') return db.query(cursor ? { databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', pageSize: 200, startCursor: cursor } : { databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', pageSize: 200 });
+  if (key === 'trip') return db.query(cursor ? { databaseId: 'mhhwWIJB1CaibAeNVcsv8F', pageSize: 200, startCursor: cursor } : { databaseId: 'mhhwWIJB1CaibAeNVcsv8F', pageSize: 200 });
+  if (key === 'learn') return db.query(cursor ? { databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', pageSize: 200, startCursor: cursor } : { databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', pageSize: 200 });
   if (key === 'learnmat') return db.query(cursor ? { databaseId: LM_DB, pageSize: 200, startCursor: cursor } : { databaseId: LM_DB, pageSize: 200 });
-  if (key === 'lessoncat') return db.query(cursor ? { databaseId: 'Opnax5bpZu0QwahppQ9HOm', pageSize: 200, startCursor: cursor } : { databaseId: 'Opnax5bpZu0QwahppQ9HOm', pageSize: 200 });
-  if (key === 'lesson') return db.query(cursor ? { databaseId: 'K6A5eYV0qt6MVnIkxC3PoQ', pageSize: 200, startCursor: cursor } : { databaseId: 'K6A5eYV0qt6MVnIkxC3PoQ', pageSize: 200 });
+  if (key === 'lessoncat') return db.query(cursor ? { databaseId: 'LMzKj8yBLuV95FwLQeBQSP', pageSize: 200, startCursor: cursor } : { databaseId: 'LMzKj8yBLuV95FwLQeBQSP', pageSize: 200 });
+  if (key === 'lesson') return db.query(cursor ? { databaseId: 'SM1l2BONT5gpw1qGwBx2FI', pageSize: 200, startCursor: cursor } : { databaseId: 'SM1l2BONT5gpw1qGwBx2FI', pageSize: 200 });
   if (key === 'attend') {
-    var ap = { databaseId: 'f34v9SCqEsYKlGqcG5bkxO', pageSize: 200 };
+    var ap = { databaseId: 'PnyPkkMjn9JsTFDXAxVzMu', pageSize: 200 };
     if (cursor) ap.startCursor = cursor;
     if (filter) ap.filter = filter;
     return db.query(ap);
   }
-  if (key === 'attname') return db.query(cursor ? { databaseId: 'RSUlv7V2oLP2rgdJ2Ybz4l', pageSize: 200, startCursor: cursor } : { databaseId: 'RSUlv7V2oLP2rgdJ2Ybz4l', pageSize: 200 });
-  if (key === 'attdef') return db.query(cursor ? { databaseId: 'spZHlyyDayVov1qbr2Plor', pageSize: 200, startCursor: cursor } : { databaseId: 'spZHlyyDayVov1qbr2Plor', pageSize: 200 });
-  if (key === 'attphoto') return db.query(cursor ? { databaseId: 'hxvZxyZUf4trQdCj5aLpHg', pageSize: 200, startCursor: cursor } : { databaseId: 'hxvZxyZUf4trQdCj5aLpHg', pageSize: 200 });
-  if (key === 'attgrade') return db.query(cursor ? { databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', pageSize: 200, startCursor: cursor } : { databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', pageSize: 200 });
-  if (key === 'attgrade') return db.query(cursor ? { databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', pageSize: 200, startCursor: cursor } : { databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', pageSize: 200 });
-  return db.query(cursor ? { databaseId: 'H5HKvrv0L1cZJfg0wFTHFk', pageSize: 200, startCursor: cursor } : { databaseId: 'H5HKvrv0L1cZJfg0wFTHFk', pageSize: 200 });
+  if (key === 'attname') return db.query(cursor ? { databaseId: 'NfMB9IwCNSthxn93r5tMVl', pageSize: 200, startCursor: cursor } : { databaseId: 'NfMB9IwCNSthxn93r5tMVl', pageSize: 200 });
+  if (key === 'attdef') return db.query(cursor ? { databaseId: 'sEF1LuwsUaKlC9WEfOskDr', pageSize: 200, startCursor: cursor } : { databaseId: 'sEF1LuwsUaKlC9WEfOskDr', pageSize: 200 });
+  if (key === 'attphoto') return db.query(cursor ? { databaseId: '8L0AzRyLhA19r0yh0rBBdQ', pageSize: 200, startCursor: cursor } : { databaseId: '8L0AzRyLhA19r0yh0rBBdQ', pageSize: 200 });
+  if (key === 'attgrade') return db.query(cursor ? { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200, startCursor: cursor } : { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200 });
+  if (key === 'attgrade') return db.query(cursor ? { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200, startCursor: cursor } : { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200 });
+  return db.query(cursor ? { databaseId: 'IeFGZK4i2xU0CNEQbFgzos', pageSize: 200, startCursor: cursor } : { databaseId: 'IeFGZK4i2xU0CNEQbFgzos', pageSize: 200 });
 }
 
 /* 云表这些列已改成文本：写入前把 {select:...} 转成 {text:...}，
@@ -5126,68 +5126,68 @@ function propsFit(key, props) {
 
 function apiAdd(key, props) {
   props = propsFit(key, props);
-  if (key === 'course') return db.addRecord({ databaseId: '15nHEIlsmG6eMhDqZCcvDp', properties: props });
-  if (key === 'classlog') return db.addRecord({ databaseId: 'eHgaD7hJz6zTRT5M9V4YPC', properties: props });
-  if (key === 'prep') return db.addRecord({ databaseId: 'qa1aHdED0cjsh9jviFjGls', properties: props });
-  if (key === 'invig') return db.addRecord({ databaseId: 'qLYD6bNc6nyXjoiFL57R9O', properties: props });
-  if (key === 'repair') return db.addRecord({ databaseId: '4XcXIhK6TdMq6OoJ7qYEI1', properties: props });
-  if (key === 'sub') return db.addRecord({ databaseId: 'xv5VJIInJLxoymCBb3egEB', properties: props });
-  if (key === 'trip') return db.addRecord({ databaseId: 'jJxzWO2LKv1n703YmZx4Nu', properties: props });
-  if (key === 'learn') return db.addRecord({ databaseId: 'C3o8rtpdW7Kqm8z1rVxUrZ', properties: props });
+  if (key === 'course') return db.addRecord({ databaseId: 'OWHTamPF6bQFyihdegPmgm', properties: props });
+  if (key === 'classlog') return db.addRecord({ databaseId: 'c75IgHonpMSinBrVZwwxkh', properties: props });
+  if (key === 'prep') return db.addRecord({ databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', properties: props });
+  if (key === 'invig') return db.addRecord({ databaseId: 'hEieVpV9ZR2oVkspEeEoOn', properties: props });
+  if (key === 'repair') return db.addRecord({ databaseId: 'n89IkAK7jciX54a5RlkI63', properties: props });
+  if (key === 'sub') return db.addRecord({ databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', properties: props });
+  if (key === 'trip') return db.addRecord({ databaseId: 'mhhwWIJB1CaibAeNVcsv8F', properties: props });
+  if (key === 'learn') return db.addRecord({ databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', properties: props });
   if (key === 'learnmat') return db.addRecord({ databaseId: LM_DB, properties: props });
-  if (key === 'lessoncat') return db.addRecord({ databaseId: 'Opnax5bpZu0QwahppQ9HOm', properties: props });
-  if (key === 'lesson') return db.addRecord({ databaseId: 'K6A5eYV0qt6MVnIkxC3PoQ', properties: props });
-  if (key === 'attend') return db.addRecord({ databaseId: 'f34v9SCqEsYKlGqcG5bkxO', properties: props });
-  if (key === 'attname') return db.addRecord({ databaseId: 'RSUlv7V2oLP2rgdJ2Ybz4l', properties: props });
-  if (key === 'attdef') return db.addRecord({ databaseId: 'spZHlyyDayVov1qbr2Plor', properties: props });
-  if (key === 'attphoto') return db.addRecord({ databaseId: 'hxvZxyZUf4trQdCj5aLpHg', properties: props });
-  if (key === 'attgrade') return db.addRecord({ databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', properties: props });
-  if (key === 'attgrade') return db.addRecord({ databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', properties: props });
-  return db.addRecord({ databaseId: 'H5HKvrv0L1cZJfg0wFTHFk', properties: props });
+  if (key === 'lessoncat') return db.addRecord({ databaseId: 'LMzKj8yBLuV95FwLQeBQSP', properties: props });
+  if (key === 'lesson') return db.addRecord({ databaseId: 'SM1l2BONT5gpw1qGwBx2FI', properties: props });
+  if (key === 'attend') return db.addRecord({ databaseId: 'PnyPkkMjn9JsTFDXAxVzMu', properties: props });
+  if (key === 'attname') return db.addRecord({ databaseId: 'NfMB9IwCNSthxn93r5tMVl', properties: props });
+  if (key === 'attdef') return db.addRecord({ databaseId: 'sEF1LuwsUaKlC9WEfOskDr', properties: props });
+  if (key === 'attphoto') return db.addRecord({ databaseId: '8L0AzRyLhA19r0yh0rBBdQ', properties: props });
+  if (key === 'attgrade') return db.addRecord({ databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', properties: props });
+  if (key === 'attgrade') return db.addRecord({ databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', properties: props });
+  return db.addRecord({ databaseId: 'IeFGZK4i2xU0CNEQbFgzos', properties: props });
 }
 
 function apiUpdate(key, rid, props) {
   props = propsFit(key, props);
   if (key === 'wsconf') return db.updateRecord({ databaseId: WS_DB, recordId: rid, properties: props });
-  if (key === 'course') return db.updateRecord({ databaseId: '15nHEIlsmG6eMhDqZCcvDp', recordId: rid, properties: props });
-  if (key === 'classlog') return db.updateRecord({ databaseId: 'eHgaD7hJz6zTRT5M9V4YPC', recordId: rid, properties: props });
-  if (key === 'prep') return db.updateRecord({ databaseId: 'qa1aHdED0cjsh9jviFjGls', recordId: rid, properties: props });
-  if (key === 'invig') return db.updateRecord({ databaseId: 'qLYD6bNc6nyXjoiFL57R9O', recordId: rid, properties: props });
-  if (key === 'repair') return db.updateRecord({ databaseId: '4XcXIhK6TdMq6OoJ7qYEI1', recordId: rid, properties: props });
-  if (key === 'sub') return db.updateRecord({ databaseId: 'xv5VJIInJLxoymCBb3egEB', recordId: rid, properties: props });
-  if (key === 'trip') return db.updateRecord({ databaseId: 'jJxzWO2LKv1n703YmZx4Nu', recordId: rid, properties: props });
-  if (key === 'learn') return db.updateRecord({ databaseId: 'C3o8rtpdW7Kqm8z1rVxUrZ', recordId: rid, properties: props });
+  if (key === 'course') return db.updateRecord({ databaseId: 'OWHTamPF6bQFyihdegPmgm', recordId: rid, properties: props });
+  if (key === 'classlog') return db.updateRecord({ databaseId: 'c75IgHonpMSinBrVZwwxkh', recordId: rid, properties: props });
+  if (key === 'prep') return db.updateRecord({ databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', recordId: rid, properties: props });
+  if (key === 'invig') return db.updateRecord({ databaseId: 'hEieVpV9ZR2oVkspEeEoOn', recordId: rid, properties: props });
+  if (key === 'repair') return db.updateRecord({ databaseId: 'n89IkAK7jciX54a5RlkI63', recordId: rid, properties: props });
+  if (key === 'sub') return db.updateRecord({ databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', recordId: rid, properties: props });
+  if (key === 'trip') return db.updateRecord({ databaseId: 'mhhwWIJB1CaibAeNVcsv8F', recordId: rid, properties: props });
+  if (key === 'learn') return db.updateRecord({ databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', recordId: rid, properties: props });
   if (key === 'learnmat') return db.updateRecord({ databaseId: LM_DB, recordId: rid, properties: props });
-  if (key === 'lessoncat') return db.updateRecord({ databaseId: 'Opnax5bpZu0QwahppQ9HOm', recordId: rid, properties: props });
-  if (key === 'lesson') return db.updateRecord({ databaseId: 'K6A5eYV0qt6MVnIkxC3PoQ', recordId: rid, properties: props });
-  if (key === 'attend') return db.updateRecord({ databaseId: 'f34v9SCqEsYKlGqcG5bkxO', recordId: rid, properties: props });
-  if (key === 'attname') return db.updateRecord({ databaseId: 'RSUlv7V2oLP2rgdJ2Ybz4l', recordId: rid, properties: props });
-  if (key === 'attdef') return db.updateRecord({ databaseId: 'spZHlyyDayVov1qbr2Plor', recordId: rid, properties: props });
-  if (key === 'attphoto') return db.updateRecord({ databaseId: 'hxvZxyZUf4trQdCj5aLpHg', recordId: rid, properties: props });
-  if (key === 'attgrade') return db.updateRecord({ databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', recordId: rid, properties: props });
-  if (key === 'attgrade') return db.updateRecord({ databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', recordId: rid, properties: props });
-  return db.updateRecord({ databaseId: 'H5HKvrv0L1cZJfg0wFTHFk', recordId: rid, properties: props });
+  if (key === 'lessoncat') return db.updateRecord({ databaseId: 'LMzKj8yBLuV95FwLQeBQSP', recordId: rid, properties: props });
+  if (key === 'lesson') return db.updateRecord({ databaseId: 'SM1l2BONT5gpw1qGwBx2FI', recordId: rid, properties: props });
+  if (key === 'attend') return db.updateRecord({ databaseId: 'PnyPkkMjn9JsTFDXAxVzMu', recordId: rid, properties: props });
+  if (key === 'attname') return db.updateRecord({ databaseId: 'NfMB9IwCNSthxn93r5tMVl', recordId: rid, properties: props });
+  if (key === 'attdef') return db.updateRecord({ databaseId: 'sEF1LuwsUaKlC9WEfOskDr', recordId: rid, properties: props });
+  if (key === 'attphoto') return db.updateRecord({ databaseId: '8L0AzRyLhA19r0yh0rBBdQ', recordId: rid, properties: props });
+  if (key === 'attgrade') return db.updateRecord({ databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', recordId: rid, properties: props });
+  if (key === 'attgrade') return db.updateRecord({ databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', recordId: rid, properties: props });
+  return db.updateRecord({ databaseId: 'IeFGZK4i2xU0CNEQbFgzos', recordId: rid, properties: props });
 }
 
 function apiDelete(key, rid) {
-  if (key === 'course') return db.deleteRecord({ databaseId: '15nHEIlsmG6eMhDqZCcvDp', recordId: rid });
-  if (key === 'classlog') return db.deleteRecord({ databaseId: 'eHgaD7hJz6zTRT5M9V4YPC', recordId: rid });
-  if (key === 'prep') return db.deleteRecord({ databaseId: 'qa1aHdED0cjsh9jviFjGls', recordId: rid });
-  if (key === 'invig') return db.deleteRecord({ databaseId: 'qLYD6bNc6nyXjoiFL57R9O', recordId: rid });
-  if (key === 'repair') return db.deleteRecord({ databaseId: '4XcXIhK6TdMq6OoJ7qYEI1', recordId: rid });
-  if (key === 'sub') return db.deleteRecord({ databaseId: 'xv5VJIInJLxoymCBb3egEB', recordId: rid });
-  if (key === 'trip') return db.deleteRecord({ databaseId: 'jJxzWO2LKv1n703YmZx4Nu', recordId: rid });
-  if (key === 'learn') return db.deleteRecord({ databaseId: 'C3o8rtpdW7Kqm8z1rVxUrZ', recordId: rid });
+  if (key === 'course') return db.deleteRecord({ databaseId: 'OWHTamPF6bQFyihdegPmgm', recordId: rid });
+  if (key === 'classlog') return db.deleteRecord({ databaseId: 'c75IgHonpMSinBrVZwwxkh', recordId: rid });
+  if (key === 'prep') return db.deleteRecord({ databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', recordId: rid });
+  if (key === 'invig') return db.deleteRecord({ databaseId: 'hEieVpV9ZR2oVkspEeEoOn', recordId: rid });
+  if (key === 'repair') return db.deleteRecord({ databaseId: 'n89IkAK7jciX54a5RlkI63', recordId: rid });
+  if (key === 'sub') return db.deleteRecord({ databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', recordId: rid });
+  if (key === 'trip') return db.deleteRecord({ databaseId: 'mhhwWIJB1CaibAeNVcsv8F', recordId: rid });
+  if (key === 'learn') return db.deleteRecord({ databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', recordId: rid });
   if (key === 'learnmat') return db.deleteRecord({ databaseId: LM_DB, recordId: rid });
-  if (key === 'lessoncat') return db.deleteRecord({ databaseId: 'Opnax5bpZu0QwahppQ9HOm', recordId: rid });
-  if (key === 'lesson') return db.deleteRecord({ databaseId: 'K6A5eYV0qt6MVnIkxC3PoQ', recordId: rid });
-  if (key === 'attend') return db.deleteRecord({ databaseId: 'f34v9SCqEsYKlGqcG5bkxO', recordId: rid });
-  if (key === 'attname') return db.deleteRecord({ databaseId: 'RSUlv7V2oLP2rgdJ2Ybz4l', recordId: rid });
-  if (key === 'attdef') return db.deleteRecord({ databaseId: 'spZHlyyDayVov1qbr2Plor', recordId: rid });
-  if (key === 'attphoto') return db.deleteRecord({ databaseId: 'hxvZxyZUf4trQdCj5aLpHg', recordId: rid });
-  if (key === 'attgrade') return db.deleteRecord({ databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', recordId: rid });
-  if (key === 'attgrade') return db.deleteRecord({ databaseId: 'Rvf6aqV6AZxXGg5tFYfJLu', recordId: rid });
-  return db.deleteRecord({ databaseId: 'H5HKvrv0L1cZJfg0wFTHFk', recordId: rid });
+  if (key === 'lessoncat') return db.deleteRecord({ databaseId: 'LMzKj8yBLuV95FwLQeBQSP', recordId: rid });
+  if (key === 'lesson') return db.deleteRecord({ databaseId: 'SM1l2BONT5gpw1qGwBx2FI', recordId: rid });
+  if (key === 'attend') return db.deleteRecord({ databaseId: 'PnyPkkMjn9JsTFDXAxVzMu', recordId: rid });
+  if (key === 'attname') return db.deleteRecord({ databaseId: 'NfMB9IwCNSthxn93r5tMVl', recordId: rid });
+  if (key === 'attdef') return db.deleteRecord({ databaseId: 'sEF1LuwsUaKlC9WEfOskDr', recordId: rid });
+  if (key === 'attphoto') return db.deleteRecord({ databaseId: '8L0AzRyLhA19r0yh0rBBdQ', recordId: rid });
+  if (key === 'attgrade') return db.deleteRecord({ databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', recordId: rid });
+  if (key === 'attgrade') return db.deleteRecord({ databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', recordId: rid });
+  return db.deleteRecord({ databaseId: 'IeFGZK4i2xU0CNEQbFgzos', recordId: rid });
 }
 
 /* 选项只当建议用：id 统一等于文本，手输的值和选项走同一条路 */
@@ -5587,11 +5587,11 @@ function taskCard(t, mini, ro, drag) {
   var h = '<div class="' + cls + '" data-id="' + esc(t.id) + '"' + (drag ? ' draggable="true"' : '') + '>';
   h += '<button class="chk" data-act="toggle" title="切换完成">' + ICO.check + '</button>';
   h += '<div class="tk-body">';
-  h += '<div class="tk-title" data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">' + esc(t.title || '（无内容）') + '</div>';
+  h += '<div class="tk-title" data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">' + esc(t.title || '（无内容）') + '</div>';
   h += '<div class="tk-meta">';
   if (run) h += '<span class="tag now">正在进行</span>';
   if (t.st === '进行中') h += '<span class="tag cat">进行中</span>';
-  if (tt) h += '<span class="tag time tk-time" data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">' + esc(tt) + '</span>';
+  if (tt) h += '<span class="tag time tk-time" data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">' + esc(tt) + '</span>';
   if (isSpan(t)) h += '<span class="tag span">持续中 · 至 ' + esc(shortMD(t.endday)) + '</span>';
   if (t.cat) h += '<span class="tag cat tk-cat">' + esc(t.cat) + '</span>';
   if (t.imp && !mini) h += '<span class="tag imp tk-imp">' + esc(t.imp) + '</span>';
@@ -5599,7 +5599,7 @@ function taskCard(t, mini, ro, drag) {
   if (t.date) h += '<span class="tag date tk-date">' + esc(isSpan(t) ? (shortMD(t.date) + '–' + shortMD(t.endday)) : prettyDate(t.date)) + '</span>';
   if (over) h += '<span class="tag over">已逾期</span>';
   h += '</div>';
-  if (t.note) h += '<div class="tk-note" data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">' + esc(t.note) + '</div>';
+  if (t.note) h += '<div class="tk-note" data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">' + esc(t.note) + '</div>';
   h += '</div>';
   /* 只读（概览）时原则上不显示按钮；但该分类没有 tab 可去时例外，否则老数据永远改不了 */
   if (!ro || !catReachable(t.cat)) {
@@ -5614,7 +5614,7 @@ function taskCard(t, mini, ro, drag) {
 
 /* 表格里可点击直接改的单元格（内容 / 重要 / 紧急 / 状态 / 日期 / 备注） */
 function ieCell(field, disp, cls) {
-  return '<div class="ie ' + (cls || '') + '" data-ie="' + field + '" data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">' + disp + '</div>';
+  return '<div class="ie ' + (cls || '') + '" data-ie="' + field + '" data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">' + disp + '</div>';
 }
 
 function tableRow(t, no) {
@@ -5733,7 +5733,7 @@ function saveInline(id, f, val) {
 }
 
 function pill(label, n, cls) {
-  return '<span class="pill ' + (cls || '') + '"><b data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">' + n + '</b><span class="k">' + esc(label) + '</span></span>';
+  return '<span class="pill ' + (cls || '') + '"><b data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">' + n + '</b><span class="k">' + esc(label) + '</span></span>';
 }
 
 function renderTabCounts() {
@@ -5822,7 +5822,7 @@ function renderOverview() {
     qh += '<div class="q ' + q.k + '" data-q="' + q.k + '">' +
       '<div class="q-h"><span class="q-name"><i class="q-badge">' + (j + 1) + '</i>' + esc(q.n) +
       '<span class="hint" style="font-weight:400;margin-left:2px">' + esc(q.hint) + '</span></span>' +
-      '<span class="q-cnt" data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">' + list.length + '</span></div>' +
+      '<span class="q-cnt" data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">' + list.length + '</span></div>' +
       '<div class="q-list">' + inner + '</div></div>';
   }
   qs('#quadWrap').innerHTML = qh;
@@ -6303,7 +6303,7 @@ function noteRow(t, tod) {
   var h = '<div class="nt-item' + (done ? ' done' : '') + '" data-id="' + esc(t.id) + '">';
   h += '<button class="nt-chk" data-act="toggle" title="' + (done ? '取消完成' : '完成') + '">' + (done ? '✓' : '') + '</button>';
   h += '<div class="nt-bd">';
-  h += '<div class="nt-tit" data-act="edit" data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk" title="点一下改详情">' +
+  h += '<div class="nt-tit" data-act="edit" data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos" title="点一下改详情">' +
     esc(t.title || '（无内容）') + '</div>';
   var meta = '';
   if (t.imp) meta += '<span class="tag imp">' + esc(t.imp) + '</span>';
@@ -9186,9 +9186,9 @@ function remindHTML() {
   h += '</div>';
 
   h += '<div class="hc-stats">' +
-    '<div class="hc-stat"><b data-sp-bindable="database" data-sp-database-id="15nHEIlsmG6eMhDqZCcvDp">' + list.length + '</b><span>今日课程</span></div>' +
-    '<div class="hc-stat"><b data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">' + openCnt + '</b><span>今日事项</span></div>' +
-    '<div class="hc-stat"><b data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">' + doneCnt + '</b><span>今日完成</span></div>' +
+    '<div class="hc-stat"><b data-sp-bindable="database" data-sp-database-id="OWHTamPF6bQFyihdegPmgm">' + list.length + '</b><span>今日课程</span></div>' +
+    '<div class="hc-stat"><b data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">' + openCnt + '</b><span>今日事项</span></div>' +
+    '<div class="hc-stat"><b data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">' + doneCnt + '</b><span>今日完成</span></div>' +
   '</div>';
 
   h += '<div class="rc-set" id="remindSet"' + (state.remindOpen ? '' : ' style="display:none"') + '>';
@@ -9572,7 +9572,7 @@ var LESSON_URL = 'https://workbuddy.link/p/lI0I3j3gLKF6mOD6gvSjhA';
 /* 课件幻灯页（「教学资料库」站点，168 份 / 11 组）：卡片里的「在线预览」用它。
    若资料站重新发布，用 _gen_lesson.py 重新生成并同步 LESSON_BASE。 */
 var LESSON_BASE = "https://workbuddy-space-static.codebuddy.work/page/pwinI4ZBmL0AWaLZ9A0VZx/W6-fQ_zNMdgW/";
-/* 资料清单存在「教学资料」数据表（K6A5eYV0qt6MVnIkxC3PoQ），可在页面里直接增删改 */
+/* 资料清单存在「教学资料」数据表（SM1l2BONT5gpw1qGwBx2FI），可在页面里直接增删改 */
 
 
 var COURSE_FIELDS = [
@@ -9910,21 +9910,21 @@ function findRec(key, id) {
 
 /* 绑定标注：不同数据表用各自的 databaseId */
 function bindOpen(key, cls) {
-  if (key === 'course') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="15nHEIlsmG6eMhDqZCcvDp">';
-  if (key === 'classlog') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="eHgaD7hJz6zTRT5M9V4YPC">';
-  if (key === 'prep') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="qa1aHdED0cjsh9jviFjGls">';
-  if (key === 'invig') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="qLYD6bNc6nyXjoiFL57R9O">';
-  if (key === 'repair') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="4XcXIhK6TdMq6OoJ7qYEI1">';
-  if (key === 'sub') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="xv5VJIInJLxoymCBb3egEB">';
-  if (key === 'trip') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="jJxzWO2LKv1n703YmZx4Nu">';
-  if (key === 'learn') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="C3o8rtpdW7Kqm8z1rVxUrZ">';
-  if (key === 'lessoncat') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="Opnax5bpZu0QwahppQ9HOm">';
-  if (key === 'lesson') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="K6A5eYV0qt6MVnIkxC3PoQ">';
-  if (key === 'attend') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="f34v9SCqEsYKlGqcG5bkxO">';
-  if (key === 'attphoto') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="hxvZxyZUf4trQdCj5aLpHg">';
-  if (key === 'attgrade') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="Rvf6aqV6AZxXGg5tFYfJLu">';
-  if (key === 'attgrade') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="Rvf6aqV6AZxXGg5tFYfJLu">';
-  return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="H5HKvrv0L1cZJfg0wFTHFk">';
+  if (key === 'course') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="OWHTamPF6bQFyihdegPmgm">';
+  if (key === 'classlog') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="c75IgHonpMSinBrVZwwxkh">';
+  if (key === 'prep') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="VWHoVUck2Z9hGi8lGbzaRV">';
+  if (key === 'invig') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="hEieVpV9ZR2oVkspEeEoOn">';
+  if (key === 'repair') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="n89IkAK7jciX54a5RlkI63">';
+  if (key === 'sub') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="RJB1nlTtpZEyhJUk0DpcVc">';
+  if (key === 'trip') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="mhhwWIJB1CaibAeNVcsv8F">';
+  if (key === 'learn') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="uxtBg0OYXhLP7Mr7j0PAVS">';
+  if (key === 'lessoncat') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="LMzKj8yBLuV95FwLQeBQSP">';
+  if (key === 'lesson') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="SM1l2BONT5gpw1qGwBx2FI">';
+  if (key === 'attend') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="PnyPkkMjn9JsTFDXAxVzMu">';
+  if (key === 'attphoto') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="8L0AzRyLhA19r0yh0rBBdQ">';
+  if (key === 'attgrade') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="tVEwvuX3SqOr9i8iiXPYwW">';
+  if (key === 'attgrade') return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="tVEwvuX3SqOr9i8iiXPYwW">';
+  return '<div class="' + cls + '" data-sp-bindable="database" data-sp-database-id="IeFGZK4i2xU0CNEQbFgzos">';
 }
 
 /* ---- 时间小工具 ---- */
@@ -11244,7 +11244,7 @@ function attPeriodCN(p) {
 
 /* ================= 考勤 · 导入 Excel / 拍照存档 ================= */
 
-var ATT_PHOTO_DB = 'hxvZxyZUf4trQdCj5aLpHg';
+var ATT_PHOTO_DB = '8L0AzRyLhA19r0yh0rBBdQ';
 var attThumbs = {};          /* attachmentId -> 缩略图地址 */
 var attPrevs = {};           /* attachmentId -> 大图地址 */
 
@@ -14537,7 +14537,7 @@ function trashClearAll() {
 
 /* ================= 我的 ================= */
 var ME_KEY = 'wb_mywork_me';       /* 旧版：资料只存本机。保留兼容，新值一律以云端为准 */
-var WS_DB = 'aFX48BSaUZtJGjxVZofvG7'; /* 「工作台配置」表：一条记录 = 这套工作台的全部个人配置 */
+var WS_DB = '1gKX9XNW6FrVa4PIgZIneF'; /* 「工作台配置」表：一条记录 = 这套工作台的全部个人配置 */
 var WS_KEY = 'wb_mywork_wscfg';    /* 配置的本机缓存（断网时先读它） */
 /* JS 字段 → 云表列名。新增配置项只改这张表 */
 var WS_F = {
@@ -16734,7 +16734,7 @@ function lessonDownload(lid) {
   var name = att[0].name || (it['名称'] || '资料');
   var tid = txAdd('down', name, att[0].fileSize || 0, it['分类'] || '');
   txSet(tid, 'w', '正在获取下载链接…');
-  db.getDownloadUrl({ nodeId: 'K6A5eYV0qt6MVnIkxC3PoQ', attachmentId: att[0].attachmentId })
+  db.getDownloadUrl({ nodeId: 'SM1l2BONT5gpw1qGwBx2FI', attachmentId: att[0].attachmentId })
     .then(function (res) {
       var u = res && (res.downloadUrl || res.url || (res.data && (res.data.downloadUrl || res.data.url)));
       if (!u) throw new Error('no-url');
@@ -16759,7 +16759,7 @@ function lessonDownload(lid) {
    地址统一走平台 getPreviewUrl（预签名直链，浏览器能直接打开）；
    图片 / PDF / 音视频原生显示；Office 文件浏览器不认，就把字节取下来自己解 zip、
    读里面的 XML 抽文字——至少能确认「传上来的确实是这一份、内容也对」。 */
-var PV_LESSON_DB = 'K6A5eYV0qt6MVnIkxC3PoQ';
+var PV_LESSON_DB = 'SM1l2BONT5gpw1qGwBx2FI';
 var PV_IMG = { JPG: 1, JPEG: 1, PNG: 1, GIF: 1, WEBP: 1, BMP: 1, SVG: 1, ICO: 1, AVIF: 1 };
 var PV_MEDIA = { MP4: 1, WEBM: 1, MOV: 1, M4V: 1, MP3: 1, WAV: 1, M4A: 1, AAC: 1, OGG: 1, FLAC: 1 };
 var PV_TXT = { TXT: 1, MD: 1, CSV: 1, TSV: 1, JSON: 1, PY: 1, JS: 1, CSS: 1, HTML: 1, HTM: 1, XML: 1, LOG: 1, SQL: 1 };
@@ -17269,7 +17269,7 @@ function lessonUpload(files, isDir) {
       }
       var p = plan[i];
       txSet(p.tx, 'w', '正在上传文件…');
-      db.uploadFile({ nodeId: 'K6A5eYV0qt6MVnIkxC3PoQ', file: p.f })
+      db.uploadFile({ nodeId: 'SM1l2BONT5gpw1qGwBx2FI', file: p.f })
         .then(function (item) {
           txSet(p.tx, 'w', '正在写入资料库…');
           var props = {
@@ -17467,14 +17467,14 @@ function closeLesson() {
 /* ---- 表单：通用记录 ---- */
 /* ---- 记录字段增强：图片上传 / 选项 chips ---- */
 var REC_DB = {
-  course: '15nHEIlsmG6eMhDqZCcvDp', classlog: 'eHgaD7hJz6zTRT5M9V4YPC',
-  prep: 'qa1aHdED0cjsh9jviFjGls', invig: 'qLYD6bNc6nyXjoiFL57R9O',
-  repair: '4XcXIhK6TdMq6OoJ7qYEI1', sub: 'xv5VJIInJLxoymCBb3egEB',
-  trip: 'jJxzWO2LKv1n703YmZx4Nu', learn: 'C3o8rtpdW7Kqm8z1rVxUrZ',
-  lessoncat: 'Opnax5bpZu0QwahppQ9HOm', lesson: 'K6A5eYV0qt6MVnIkxC3PoQ'
+  course: 'OWHTamPF6bQFyihdegPmgm', classlog: 'c75IgHonpMSinBrVZwwxkh',
+  prep: 'VWHoVUck2Z9hGi8lGbzaRV', invig: 'hEieVpV9ZR2oVkspEeEoOn',
+  repair: 'n89IkAK7jciX54a5RlkI63', sub: 'RJB1nlTtpZEyhJUk0DpcVc',
+  trip: 'mhhwWIJB1CaibAeNVcsv8F', learn: 'uxtBg0OYXhLP7Mr7j0PAVS',
+  lessoncat: 'LMzKj8yBLuV95FwLQeBQSP', lesson: 'SM1l2BONT5gpw1qGwBx2FI'
 };
 
-function recDbNode(key) { return REC_DB[key] || 'H5HKvrv0L1cZJfg0wFTHFk'; }
+function recDbNode(key) { return REC_DB[key] || 'IeFGZK4i2xU0CNEQbFgzos'; }
 
 function recPick(btn) {
   var nm = btn.getAttribute('data-rpick');
@@ -19558,7 +19558,7 @@ function bindEvents() {
       if (!f2) return;
       var tid2 = txAdd('up', f2.name, f2.size || 0, '替换原件');
       txSet(tid2, 'w', '正在上传原件…');
-      db.uploadFile({ nodeId: 'K6A5eYV0qt6MVnIkxC3PoQ', file: f2 })
+      db.uploadFile({ nodeId: 'SM1l2BONT5gpw1qGwBx2FI', file: f2 })
         .then(function (item) {
           lessonEditAtt = [item];
           txSet(tid2, 'done', '');
