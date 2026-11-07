@@ -3744,7 +3744,6 @@ html[data-wide="0"] .view{max-width:1180px;margin-left:auto;margin-right:auto}
 
 /* 文件选择：label 原生触发，避免隐藏 input 的 JS click 在部分浏览器被拦 */
 .ws-file{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.ws-file-lb{cursor:pointer}
 </style>
 <script data-page-node-id="H5uiySyOLl9BfXDbu6EBe3" data-pnid-children="BV18BU5imiakvJS7X7Xuw3">
 /* 先把主题挂到 html 上再渲染，避免刷新时闪一下默认配色 */
@@ -14540,7 +14539,8 @@ function wsCleanHomeCols(row) {
     .catch(function (err) { console.warn('[配置] 旧首页字段清理失败:', err); });
 }
 
-/* 写配置：先落本机，再上云。空串也要真的写下去（否则"清空"在云上不生效） */
+/* 写配置：先同步落本机（界面立刻生效），再异步上云。
+   云端慢或失败都不该让用户以为"没保存"；空串也要真的写下去 */
 function wsPush(fields) {
   var c = wsCfg(), props = {}, k;
   for (k in fields) {
@@ -14551,26 +14551,22 @@ function wsPush(fields) {
     props[col] = (col === '教龄') ? { number: Number(v) || 0 } : { text: String(v == null ? '' : v) };
   }
   props['更新时间'] = { date: todayStr() };
-  function apply() {
-    for (k in fields) {
-      if (!Object.prototype.hasOwnProperty.call(fields, k)) continue;
-      c[k] = String(fields[k] == null ? '' : fields[k]);
-    }
-    lsSet(WS_KEY, c);
+  for (k in fields) {
+    if (!Object.prototype.hasOwnProperty.call(fields, k)) continue;
+    c[k] = String(fields[k] == null ? '' : fields[k]);
   }
-  if (!c.id) { apply(); return Promise.resolve(false); }
+  lsSet(WS_KEY, c);
+  if (!c.id) return Promise.resolve(false);
   if (state.online && db) {
     return db.updateRecord({ databaseId: WS_DB, recordId: c.id, properties: props })
-      .then(function () { apply(); return true; })
+      .then(function () { return true; })
       .catch(function (err) {
         console.error('[配置] 保存失败:', err);
         pushPending({ key: 'wsconf', type: 'update', recordId: c.id, properties: props });
-        apply();
         return false;
       });
   }
   pushPending({ key: 'wsconf', type: 'update', recordId: c.id, properties: props });
-  apply();
   return Promise.resolve(false);
 }
 
@@ -14580,16 +14576,30 @@ function wsLoad() {
   return db.query({ databaseId: WS_DB, pageSize: 1 }).then(function (res) {
     var rows = (res && res.results) || [];
     if (!rows.length) return false;
-    wsRow = wsNorm(rows[0]);
-    lsSet(WS_KEY, wsRow);
+    var remote = wsNorm(rows[0]);
+    var local = lsGet(WS_KEY, null);
+    var patch = {}, kk;
+    /* 以前整条覆盖本机缓存，会把离线时只存本机的图标/名称冲掉（刷新后变默认）。
+       云端空、本机有值的列以本机为准，并顺手补传到云端 */
+    if (local && typeof local === 'object') {
+      for (kk in WS_F) {
+        if (!Object.prototype.hasOwnProperty.call(WS_F, kk)) continue;
+        if (!remote[kk] && local[kk]) {
+          remote[kk] = String(local[kk]);
+          patch[kk] = String(local[kk]);
+        }
+      }
+      if (!remote.id && local.id) remote.id = String(local.id);
+    }
+    wsRow = remote;
+    lsSet(WS_KEY, remote);
     wsCleanHomeCols(rows[0]);
     var legacy = lsGet(ME_KEY, null);
-    var patch = {}, kk;
     if (legacy && typeof legacy === 'object') {
       for (kk in WS_F) {
         if (!Object.prototype.hasOwnProperty.call(WS_F, kk)) continue;
         if (kk === 'wsName' || kk === 'wsSub' || kk === 'welcome') continue;
-        if (!wsRow[kk] && legacy[kk]) patch[kk] = String(legacy[kk]);
+        if (!remote[kk] && legacy[kk]) patch[kk] = String(legacy[kk]);
       }
     }
     if (Object.keys(patch).length) {
@@ -14802,16 +14812,31 @@ function cropClose() {
   cropSt = null;
 }
 
+/* 选图兼容：部分浏览器/内嵌 WebView 拿到的 f.type 是空的，按扩展名兜底；
+   HEIC 等浏览器解不了的格式直接挡掉，避免"选了图却弹不出裁剪框" */
+function imgFileOk(f) {
+  if (!f) return false;
+  var tp = String(f.type || '').toLowerCase();
+  var nm = String(f.name || '');
+  if (/^image\//.test(tp)) return !/\.(heic|heif)$/i.test(nm);
+  return /\.(png|jpe?g|gif|webp|bmp)$/i.test(nm);
+}
+
 function meAvatarPick(input) {
   var f = input && input.files && input.files[0];
   if (!f) return;
-  if (!/^image\//.test(f.type || '')) { toast('请选择图片文件'); input.value = ''; return; }
+  if (!imgFileOk(f)) { toast('请选择 JPG / PNG / WebP 等图片文件'); input.value = ''; return; }
   if (f.size > 12 * 1024 * 1024) { toast('图片太大了，换一张 12MB 以内的'); input.value = ''; return; }
   var fr = new FileReader();
-  fr.onload = function () { cropOpen(String(fr.result || '')); };
-  fr.onerror = function () { toast('读取图片失败'); };
+  fr.onload = function () {
+    var src = String(fr.result || '');
+    input.value = '';
+    if (!src) { toast('图片读取为空，换一张试试'); return; }
+    cropTarget = 'me';
+    cropOpen(src);
+  };
+  fr.onerror = function () { input.value = ''; toast('这张图片读不出来，换一张 JPG 或 PNG'); };
   fr.readAsDataURL(f);
-  input.value = '';
 }
 
 function meHeroHTML() {
@@ -14879,7 +14904,7 @@ function wsSettingsHTML() {
   h += '<div class="ws-full ws-up"><div class="ws-up-av ws-icon-prev"' + wsBg(c.wsIcon) + '>' +
     (c.wsIcon ? '' : '图标') + '</div>' +
     '<div class="ws-up-t"><b>工作台图标</b><span>左上角那个方块；不传就用系统默认图标，不会拿你的头像顶替</span></div>' +
-    '<div class="ws-up-a"><label class="btn primary sm ws-file-lb" for="wsIconFile">上传</label>' +
+    '<div class="ws-up-a"><button type="button" class="btn primary sm" id="wsIconPick">上传</button>' +
     (c.wsIcon ? '<button type="button" class="btn ghost sm" id="wsIconDel">移除</button>' : '') + '</div>' +
     '<input type="file" accept="image/*" id="wsIconFile" class="ws-file"></div>';
   h += '<label><span>工作台名称</span><input id="wsName" maxlength="16" placeholder="我的工作台" value="' + esc(c.wsName || '') + '"></label>';
@@ -14900,11 +14925,12 @@ function wsSaveForm() {
   v = val('wsSub'); if (v !== null) patch.wsSub = v;
   v = val('wsWelcome'); if (v !== null) patch.welcome = v;
   if (!Object.keys(patch).length) { toast('这里没有可保存的内容'); return; }
-  wsPush(patch).then(function (synced) {
-    applyBrand();
-    renderHpGreeting();
-    renderRemind();
-    renderMe();
+  var pending = wsPush(patch);          /* 本机已同步落盘，立刻刷新界面，不等云端 */
+  applyBrand();
+  renderHpGreeting();
+  renderRemind();
+  renderMe();
+  pending.then(function (synced) {
     toast(synced ? '已保存到云端，换设备打开也是这套' : '已存本机，联网后自动同步');
   });
 }
@@ -14912,13 +14938,20 @@ function wsSaveForm() {
 function wsIconPick(input) {
   var f = input && input.files && input.files[0];
   if (!f) return;
-  if (!/^image\//.test(f.type || '')) { toast('请选择图片文件'); input.value = ''; return; }
-  if (f.size > 8 * 1024 * 1024) { toast('图标太大了，换一张 8MB 以内的'); input.value = ''; return; }
+  if (!imgFileOk(f)) { toast('请选择 JPG / PNG / WebP 等图片文件'); input.value = ''; return; }
+  if (f.size > 12 * 1024 * 1024) { toast('图片太大了，换一张 12MB 以内的'); input.value = ''; return; }
   var fr = new FileReader();
-  fr.onload = function () { cropTarget = 'icon'; cropOpen(String(fr.result || '')); };
-  fr.onerror = function () { toast('读取图片失败'); };
+  fr.onload = function () {
+    var src = String(fr.result || '');
+    /* 必须等读完再清空：部分 WebView 提前清空 input 会让正在读的 File 失效，
+       表现就是"能选图，但裁剪框不出现" */
+    input.value = '';
+    if (!src) { toast('图片读取为空，换一张试试'); return; }
+    cropTarget = 'icon';
+    cropOpen(src);
+  };
+  fr.onerror = function () { input.value = ''; toast('这张图片读不出来，换一张 JPG 或 PNG'); };
   fr.readAsDataURL(f);
-  input.value = '';
 }
 
 function meThemeHTML() {
@@ -19314,10 +19347,13 @@ function bindEvents() {
     if (closest(e.target, '#meReload')) { toast('正在同步…'); reload(); setTimeout(renderMe, 1200); return; }
     if (closest(e.target, '#meClearCache')) { clearLocalCache(); return; }
     /* ---- 我的：工作台设置 ---- */
+    if (closest(e.target, '#wsIconPick')) {
+      var _icf = qs('#wsIconFile'); if (_icf) _icf.click(); return;
+    }
     if (closest(e.target, '#wsSaveBtn')) { wsSaveForm(); return; }
     if (closest(e.target, '#wsIconDel')) {
-      wsPush({ wsIcon: '' }).then(function () { applyBrand(); renderMe(); toast('工作台图标已移除，回到默认图标'); });
-      return;
+      wsPush({ wsIcon: '' });
+      applyBrand(); renderMe(); toast('工作台图标已移除，回到默认图标'); return;
     }
 
     /* ---- 回收站 ---- */
