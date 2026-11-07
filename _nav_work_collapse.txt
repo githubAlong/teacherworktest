@@ -1,1 +1,0 @@
-(() => { var wt=document.getElementById('workTab'); if(wt) wt.click(); var c=wt.querySelector('.tw-chev'); if(c) c.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})); return 'collapsed: '+wt.className; })()

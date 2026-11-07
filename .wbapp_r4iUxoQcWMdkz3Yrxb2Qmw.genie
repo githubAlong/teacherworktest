@@ -1,0 +1,5 @@
+appId: wbapp_r4iUxoQcWMdkz3Yrxb2Qmw
+name: 教师工作台
+localDir: J:\workbuddy\teacher-workbench
+appType: web
+entryHtml: index.html

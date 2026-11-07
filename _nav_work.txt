@@ -1,1 +1,0 @@
-(() => { var wt=document.getElementById('workTab'); if(wt) wt.click(); return 'navigated: '+wt.className; })()
