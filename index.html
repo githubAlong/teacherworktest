@@ -4468,7 +4468,7 @@ var DATABASE_ID = 'IeFGZK4i2xU0CNEQbFgzos';
 var LS_CACHE = 'wb_mywork_cache';
 var LS_PENDING = 'wb_mywork_pending';
 var LS_DRAFT = 'wb_mywork_draft';
-var LS_TASKX = 'wb_mywork_taskx';     /* 任务扩展：重复 / 提前提醒 / 响铃（云端表没有这几列，存本机） */
+var LS_TASKX = 'wb_mywork_taskx';     /* 任务扩展：重复 / 提前提醒 / 响铃（业务表没这几列，统一存「工作台配置」表的「任务扩展」列，本机留镜像） */
 var REP_OPTS = [['', '仅一次'], ['day', '每天'], ['week', '每周'], ['2week', '每两周'],
   ['month', '每月'], ['year', '每年']];
 
@@ -4883,11 +4883,62 @@ function pick(v) {
   return '';
 }
 
-function lsGet(k, def) {
+/* ===== 设置上云 =====
+   9 个原本只存本机的设置，统一以 JSON 字符串写进「工作台配置」表的 text 列。
+   读：云端配置（wsRow）优先 → 本机镜像 → 代码默认值；
+   写：本机镜像立即生效 + 异步上云。无 SDK / 断网时只落本机并记脏标记，
+       下次联网由 wsLoad() 一次性补传。这样测试地址、离线、匿名浏览都照常可用。 */
+var SET_COL = {
+  'wb_mywork_theme':    { col: '主题',     f: 'setTheme' },
+  'wb_mywork_wide':     { col: '平铺整页', f: 'setWide' },
+  'wb_home_board_v1':   { col: '首页布局', f: 'setLayout' },
+  'wb_mywork_sched_v1': { col: '作息时间', f: 'setSched' },
+  'wb_mywork_taskx':    { col: '任务扩展', f: 'setTaskX' },
+  'wb_mywork_wxcity':   { col: '天气城市', f: 'setWxCity' },
+  'wb_mywork_wxhist':   { col: '最近城市', f: 'setWxHist' },
+  'wb_mywork_wxforce':  { col: '天气强制', f: 'setWxForce' },
+  'wb_mywork_remind':   { col: '提醒设置', f: 'setRemind' }
+};
+var SET_DIRTY = 'wb_settings_dirty_v1';
+var setBooted = false;  /* 云端配置读完前不推设置，避免本机旧值覆盖云端 */
+var setSilent = false;  /* 把云端值应用回界面时，不要再触发一次上云 */
+var setUserReady = false; /* init 同步阶段已结束：之后的写入算用户操作，可记待补传标记 */
+
+function lsRawGet(k, def) {
   try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; }
 }
-function lsSet(k, v) {
+function lsRawSet(k, v) {
   try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* 静默降级 */ }
+}
+function setDecode(s) {
+  if (s == null || s === '') return null;
+  try { return JSON.parse(s); } catch (e) { return String(s); }
+}
+function lsGet(k, def) {
+  var m = SET_COL[k];
+  if (!m) return lsRawGet(k, def);
+  var v = null;
+  try { v = setDecode(wsCfg()[m.f]); } catch (e) { v = null; }
+  if (v !== null) return v;
+  v = lsRawGet(k, null);
+  return v === null ? def : v;
+}
+function lsSet(k, v) {
+  lsRawSet(k, v);                      /* 本机镜像始终保留：离线兜底 + 首屏防闪 */
+  var m = SET_COL[k];
+  if (!m) return;
+  var c = wsCfg(), s = JSON.stringify(v == null ? '' : v);
+  c[m.f] = s;
+  lsRawSet('wb_mywork_wscfg', c);     /* 内存与缓存同步：否则刷新会读回旧值 */
+  if (setSilent) return;
+  if (!setBooted) {
+    /* 云端还没读回来 / 断网：只落本机并记脏，等 wsLoad() 联网后补传 */
+    if (setUserReady) lsRawSet(SET_DIRTY, 1);
+    return;
+  }
+  var p = {}; p[m.f] = s;
+  if (!db) { lsRawSet(SET_DIRTY, 1); return; }
+  wsPush(p).then(function (ok) { lsRawSet(SET_DIRTY, ok ? 0 : 1); });
 }
 
 var toastTimer = null;
@@ -14544,29 +14595,28 @@ var WS_F = {
   name: '昵称', avatar: '头像', school: '学校', subject: '任教学科',
   duty: '职务', gradeGroup: '所属年级组',
   motto: '签名', wsName: '工作台名称', wsSub: '工作台副标题', wsIcon: '工作台图标',
-  welcome: '欢迎语'
+  welcome: '欢迎语',
+  /* 设置类（值统一是 JSON 字符串）：原来只存本机，现改由资料库这一条记录统一管理 */
+  setTheme: '主题', setWide: '平铺整页', setLayout: '首页布局',
+  setSched: '作息时间', setTaskX: '任务扩展', setWxCity: '天气城市',
+  setWxHist: '最近城市', setWxForce: '天气强制', setRemind: '提醒设置'
 };
 var wsRow = null;      /* 云端那一条（含 id） */
+var wsCreating = null; /* 首次建记录的共享 Promise，避免并发建出多条 */
 var cropTarget = 'me'; /* 头像裁剪结果存到哪：me = 个人资料，icon = 工作台图标 */
 
 function wsNorm(r) {
-  var o = { id: '', name: '', avatar: '', school: '', subject: '',
-    duty: '', gradeGroup: '', motto: '',
-    wsName: '', wsSub: '', wsIcon: '', welcome: '' };
+  var o = { id: '' }, k;
+  for (k in WS_F) if (Object.prototype.hasOwnProperty.call(WS_F, k)) o[k] = '';
   if (!r) return o;
   o.id = String(r.id || r._id || r.recordId || r.record_id || '');
   /* 两种来源：云端记录用中文列名，本机缓存用 JS 字段名；以前只认前者，
      导致断网/仅本机时保存的配置刷新后读不出来（图标、名称等全变默认） */
-  var wsPairs = [
-    ['name', '昵称'], ['avatar', '头像'], ['school', '学校'], ['subject', '任教学科'],
-    ['duty', '职务'], ['gradeGroup', '所属年级组'], ['motto', '签名'],
-    ['wsName', '工作台名称'], ['wsSub', '工作台副标题'], ['wsIcon', '工作台图标'],
-    ['welcome', '欢迎语']
-  ];
-  for (var wi = 0; wi < wsPairs.length; wi++) {
-    var wk = wsPairs[wi][0], wcn = wsPairs[wi][1];
-    var wv = Object.prototype.hasOwnProperty.call(r, wk) ? r[wk] : r[wcn];
-    o[wk] = (wv === 0 || wv) ? String(wv) : '';
+  for (k in WS_F) {
+    if (!Object.prototype.hasOwnProperty.call(WS_F, k)) continue;
+    var wv = Object.prototype.hasOwnProperty.call(r, k) ? r[k] : r[WS_F[k]];
+    if (wv && typeof wv === 'object' && wv.text != null) wv = wv.text;
+    o[k] = (wv === 0 || wv) ? String(wv) : '';
   }
   return o;
 }
@@ -14588,6 +14638,15 @@ function wsCfg() {
       delete legacyMe.years; lsSet(ME_KEY, legacyMe);
     }
     wsRow = wsNorm((c && typeof c === 'object') ? c : null);
+    /* 旧版设置分散在 9 个独立本机键里：汇聚进配置对象，首轮由 wsLoad() 一次性补齐上云 */
+    for (var sk in SET_COL) {
+      if (!Object.prototype.hasOwnProperty.call(SET_COL, sk)) continue;
+      var sm = SET_COL[sk];
+      if (wsRow[sm.f]) continue;
+      var sv = lsRawGet(sk, null);
+      if (sv !== null) wsRow[sm.f] = JSON.stringify(sv);
+    }
+    lsRawSet('wb_mywork_wscfg', wsRow);
   }
   return wsRow;
 }
@@ -14624,6 +14683,33 @@ function wsCleanYears(cloudRow) {
     .catch(function (err) { console.warn('[配置] 教龄旧列清理失败:', err); });
 }
 
+/* 配置表为空（新空间首次打开）时先建一条记录，把本机已有的资料与设置一次写全。
+   否则代码只会 updateRecord，所有保存都会因为拿不到 recordId 而只落本机。 */
+function wsEnsureRow() {
+  if (wsCreating) return wsCreating;
+  if (!db) return Promise.resolve(false);
+  var c = wsCfg(), props = {}, k, dk, defByF = {};
+  for (dk in SET_COL) {
+    if (Object.prototype.hasOwnProperty.call(SET_COL, dk)) defByF[SET_COL[dk].f] = setDefaultVal(dk);
+  }
+  for (k in WS_F) {
+    if (!Object.prototype.hasOwnProperty.call(WS_F, k)) continue;
+    props[WS_F[k]] = { text: String(c[k] || defByF[k] || '') };
+  }
+  props['更新时间'] = { date: todayStr() };
+  wsCreating = db.addRecord({ databaseId: WS_DB, properties: props })
+    .then(function (res) {
+      var rid = res && (res.recordId || res.id || res.record_id || (res.record && res.record.id));
+      if (!rid) return false;
+      wsRow.id = String(rid);
+      lsRawSet('wb_mywork_wscfg', wsRow);
+      return true;
+    })
+    .catch(function (err) { console.error('[配置] 新建记录失败:', err); return false; })
+    .then(function (ok) { wsCreating = null; return ok; });
+  return wsCreating;
+}
+
 /* 写配置：先同步落本机（界面立刻生效），再异步上云。
    云端慢或失败都不该让用户以为"没保存"；空串也要真的写下去 */
 function wsPush(fields) {
@@ -14641,7 +14727,7 @@ function wsPush(fields) {
     c[k] = String(fields[k] == null ? '' : fields[k]);
   }
   lsSet(WS_KEY, c);
-  if (!c.id) return Promise.resolve(false);
+  if (!c.id) return wsEnsureRow();
   if (state.online && db) {
     return db.updateRecord({ databaseId: WS_DB, recordId: c.id, properties: props })
       .then(function () { return true; })
@@ -14655,20 +14741,72 @@ function wsPush(fields) {
   return Promise.resolve(false);
 }
 
-/* 首轮读取：云端配置 + 把老版本只存在本机的资料搬上来（只搬空着的列） */
+/* 云端这一列为空时补一个明确默认值，保证 9 个设置列在资料库里都有值，
+   换设备打开时不依赖各设备自己的默认。纯计算，不触发任何写入。 */
+function setDefaultVal(k) {
+  if (k === 'wb_mywork_theme') return JSON.stringify('gov');
+  if (k === 'wb_mywork_wide') return JSON.stringify(true);
+  if (k === 'wb_home_board_v1') return JSON.stringify(OV_DEFAULT);
+  if (k === 'wb_mywork_sched_v1') return JSON.stringify(schedClean(SCHED_DEF));
+  if (k === 'wb_mywork_taskx') return JSON.stringify({});
+  if (k === 'wb_mywork_wxcity') return JSON.stringify('');
+  if (k === 'wb_mywork_wxhist') return JSON.stringify([]);
+  if (k === 'wb_mywork_wxforce') return JSON.stringify(1);
+  if (k === 'wb_mywork_remind') return JSON.stringify({ notify: false, lead: 10, from: '00:00' });
+  return '';
+}
+
+/* 云端配置读回来后，把界面按云端值重新刷一遍（本机镜像已同步）。
+   setSilent 期间的设置写入只落本机，避免「应用云端值」反过来又推一次云端。 */
+function setApplyCloud() {
+  var prev = setSilent;
+  setSilent = true;
+  try {
+    applyTheme(curTheme());
+    applyWide(meWideOn());
+    var lay = lsGet('wb_home_board_v1', null);
+    ovApplyLayout(lay && lay.length ? lay : OV_DEFAULT);
+    loadRemindCfg();
+    lsRawSet('wb_mywork_sched_ver', SCHED_VER); /* 云端作息已是当前版本，别再升级一遍 */
+    var cloudCity = String(lsGet('wb_mywork_wxcity', '') || '').trim();
+    if (cloudCity !== String(state.wxCity || '').trim()) {
+      state.wxCity = cloudCity;
+      state.wx = null;
+      try { localStorage.removeItem('wb_mywork_wx'); } catch (e) { /* 忽略 */ }
+      renderWx();
+      renderRemind();
+      fetchWeather(false);
+    }
+    refreshAll();
+    if (state.view === '我的' || state.view === 'me') renderMe();
+  } catch (e) { console.warn('[设置] 云端配置应用失败:', e); }
+  setSilent = prev;
+}
+
+/* 首轮读取：云端配置为主 + 把老版本只存在本机的资料与设置补齐上云 */
 function wsLoad() {
+  setBooted = true;   /* 云端配置开始处理：此后用户改的设置才允许上云 */
   if (!db) return Promise.resolve(false);
   return db.query({ databaseId: WS_DB, pageSize: 1 }).then(function (res) {
-    var rows = (res && res.results) || [];
-    if (!rows.length) return false;
+    var rows = (res && (res.results || res.records || res.data)) || [];
+    if (!rows.length) {
+      /* 新空间首次打开：配置表是空的，先建一条记录，把本机已有设置一次补齐 */
+      return wsEnsureRow().then(function (ok) {
+        if (ok) { lsRawSet(SET_DIRTY, 0); setApplyCloud(); }
+        return ok;
+      });
+    }
     var remote = wsNorm(rows[0]);
-    var local = lsGet(WS_KEY, null);
-    var patch = {}, kk;
-    /* 以前整条覆盖本机缓存，会把离线时只存本机的图标/名称冲掉（刷新后变默认）。
+    var local = lsRawGet('wb_mywork_wscfg', null);
+    var patch = {}, kk, sk, sx, setFields = {}, sm, cv, lv, raw;
+    var dirty = !!lsRawGet(SET_DIRTY, 0);
+    for (sx in SET_COL) if (Object.prototype.hasOwnProperty.call(SET_COL, sx)) setFields[SET_COL[sx].f] = 1;
+
+    /* 资料列：以前整条覆盖本机缓存，会把离线时只存本机的图标/名称冲掉。
        云端空、本机有值的列以本机为准，并顺手补传到云端 */
     if (local && typeof local === 'object') {
       for (kk in WS_F) {
-        if (!Object.prototype.hasOwnProperty.call(WS_F, kk)) continue;
+        if (!Object.prototype.hasOwnProperty.call(WS_F, kk) || setFields[kk]) continue;
         if (!remote[kk] && local[kk]) {
           remote[kk] = String(local[kk]);
           patch[kk] = String(local[kk]);
@@ -14676,24 +14814,42 @@ function wsLoad() {
       }
       if (!remote.id && local.id) remote.id = String(local.id);
     }
+    /* 设置列：云端为主；离线攒下的改动（dirty）以本机为准；首次把本机旧值补齐上云 */
+    for (sk in SET_COL) {
+      if (!Object.prototype.hasOwnProperty.call(SET_COL, sk)) continue;
+      sm = SET_COL[sk];
+      cv = remote[sm.f];
+      lv = (local && typeof local === 'object' && local[sm.f]) ? local[sm.f] : '';
+      if (!lv) { raw = lsRawGet(sk, null); if (raw !== null) lv = JSON.stringify(raw); }
+      if (dirty && lv) { remote[sm.f] = lv; patch[sm.f] = lv; }
+      else if (cv) { lsRawSet(sk, setDecode(cv)); }
+      else if (lv) { remote[sm.f] = lv; patch[sm.f] = lv; }
+      else {
+        var dv = setDefaultVal(sk);
+        if (dv) { remote[sm.f] = dv; patch[sm.f] = dv; }
+      }
+    }
     wsRow = remote;
-    lsSet(WS_KEY, remote);
+    lsRawSet('wb_mywork_wscfg', remote);
     wsCleanHomeCols(rows[0]);
     wsCleanYears(rows[0]);
-    var legacy = lsGet(ME_KEY, null);
+    var legacy = lsRawGet(ME_KEY, null);
     if (legacy && typeof legacy === 'object') {
       for (kk in WS_F) {
-        if (!Object.prototype.hasOwnProperty.call(WS_F, kk)) continue;
+        if (!Object.prototype.hasOwnProperty.call(WS_F, kk) || setFields[kk]) continue;
         if (kk === 'wsName' || kk === 'wsSub' || kk === 'welcome') continue;
         if (!remote[kk] && legacy[kk]) patch[kk] = String(legacy[kk]);
       }
     }
-    if (Object.keys(patch).length) {
-      return wsPush(patch).then(function () { return true; });
-    }
-    return true;
+    var p = Object.keys(patch).length ? wsPush(patch) : Promise.resolve(true);
+    return p.then(function (ok) {
+      lsRawSet(SET_DIRTY, ok ? 0 : 1);
+      setApplyCloud();
+      return true;
+    });
   }).catch(function (err) {
     console.error('[配置] 读取失败，先用本机缓存:', err);
+    setApplyCloud();
     return false;
   });
 }
@@ -15740,7 +15896,7 @@ function recRowHTML(key, r, i, showNo) {
 
 /* ---- 渲染：课表 ---- */
 /* 作息表：周课表左侧那条时间轴。节次名、上下课时间、午休/早餐这些休息时段都在这里定义。
-   存本机（和「我的」资料一样），改完立即生效；课程数据在云端，不受影响。 */
+   和其它设置一样以资料库为主、本机留镜像，改完立即生效；课程数据在业务表，不受影响。 */
 var LS_SCHED = 'wb_mywork_sched_v1';
 var SCHED_DEF = [
   { id: 's-zc', name: '早餐', s: '07:20', e: '07:50', k: 'break' },
@@ -19725,6 +19881,7 @@ function init() {
   ovBoardInit();
 
   bindEvents();
+  setUserReady = true;   /* 之后的设置改动都算用户操作：断网时记脏，联网自动补传 */
 
   loadSchema().then(function () {
     fillSelects();
