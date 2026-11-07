@@ -2505,19 +2505,34 @@ body.ov-dragging{user-select:none;cursor:grabbing}
 #view-overview .ov-pf-txt{min-width:0}
 #view-overview .ov-name{font-size:19px;font-weight:800;color:var(--ink);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #view-overview .ov-hi{font-size:13px;color:var(--ink3);margin-top:6px;line-height:1.45}
-/* 时间卡：左列（日期/大号时间/今日剩余）+ 右侧当日进度环 */
-#view-overview .ov-time{position:relative;display:flex;align-items:stretch;justify-content:space-between;gap:14px;
+/* 个人卡右上角：更换外观 / 首页布局（浅色圆角小按钮，沿用蓝色体系） */
+#view-overview .ov-pf-act{display:flex;align-items:center;gap:8px;margin-left:auto;flex:0 0 auto;align-self:flex-start}
+#view-overview .ov-pf-ico{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:11px;border:1px solid rgba(var(--brand-rgb),.14);background:rgba(var(--brand-rgb),.055);
+  color:var(--brand);cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+#view-overview .ov-pf-ico:hover{background:var(--brand-l);border-color:var(--brand-l2);transform:translateY(-1px)}
+#view-overview .ov-pf-ico svg{width:17px;height:17px}
+/* 时间卡：顶部标题 + 右上三个日期标签；下方左列（大号时间/今日剩余）+ 右侧进度环 */
+#view-overview .ov-time{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:14px;
   container-type:inline-size;
   padding:16px 18px 16px 22px;text-align:left;overflow:hidden;
   background:linear-gradient(148deg,#fff 0%,#fff 56%,rgba(var(--brand-rgb),.065) 100%)}
+#view-overview .ov-t-head{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+#view-overview .ov-t-title{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;
+  font-size:13px;font-weight:700;color:var(--ink2);white-space:nowrap}
+#view-overview .ov-t-title svg{width:15px;height:15px;color:var(--brand)}
+#view-overview .ov-t-chips{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
+#view-overview .ov-t-body{position:relative;z-index:1;display:flex;align-items:stretch;justify-content:space-between;
+  gap:14px;flex:1 1 auto}
 #view-overview .ov-t-main{position:relative;z-index:1;min-width:0;flex:1;display:flex;flex-direction:column;
   justify-content:space-between;gap:6px}
-#view-overview .ov-t-top{display:flex;align-items:center;gap:8px;min-width:0}
-#view-overview .ov-date{font-size:17px;font-weight:800;color:var(--brand-dd);letter-spacing:0;
-  background:var(--brand-l);border-radius:10px;padding:5px 13px;line-height:1.3;
+#view-overview .ov-date{flex:0 0 auto;font-size:13px;font-weight:800;color:var(--brand-dd);letter-spacing:0;
+  background:var(--brand-l);border-radius:8px;padding:4px 9px;line-height:1.3;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:inset 0 0 0 1px rgba(var(--brand-rgb),.18)}
-#view-overview .ov-wk{flex:0 0 auto;font-size:12.5px;font-weight:700;color:var(--brand-dd);background:var(--brand-l);
-  border-radius:8px;padding:4px 9px;line-height:1.35;letter-spacing:.2px}
+#view-overview .ov-wk{flex:0 0 auto;font-size:12.5px;font-weight:700;color:#a45b12;background:#fff3df;
+  border-radius:8px;padding:4px 9px;line-height:1.35;letter-spacing:.2px;white-space:nowrap}
+#view-overview .ov-wkn{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink3);background:#f1f5f9;
+  border-radius:8px;padding:4px 9px;line-height:1.35;white-space:nowrap}
 #view-overview .ov-clock{display:flex;align-items:baseline;gap:5px;line-height:1;
   font-variant-numeric:tabular-nums;font-feature-settings:'tnum'}
 #view-overview .ov-clock b{font-size:clamp(44px,3.6vw,58px);font-weight:800;letter-spacing:-2.4px;color:var(--ink)}
@@ -2526,20 +2541,25 @@ body.ov-dragging{user-select:none;cursor:grabbing}
 #view-overview .ov-clock i::before{content:':';opacity:.55;margin-right:1px}
 #view-overview .ov-dayleft{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;
   color:var(--ink3);line-height:1}
-#view-overview .ov-dayleft b{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.2px;
+#view-overview .ov-dayleft b{font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-.4px;
   font-variant-numeric:tabular-nums}
-/* 卡片变窄时日期会放不下：按卡片自己的宽度降档，最后允许「周四」换行，绝不出现省略号 */
+/* 卡片变窄时日期标签会放不下：按卡片自己的宽度降档，最后允许换行，绝不出现省略号 */
 @container (max-width:320px){
-  #view-overview .ov-date{font-size:14px;padding:4px 10px;border-radius:9px}
+  /* 三分之一宽的卡片放不下「标题 + 三个标签」同一行：标签整行换到下面，日期绝不省略 */
+  #view-overview .ov-t-head{flex-wrap:wrap;row-gap:5px}
+  #view-overview .ov-t-chips{width:100%;justify-content:flex-end}
+  #view-overview .ov-date{font-size:12px;padding:3px 7px;border-radius:8px}
   #view-overview .ov-wk{font-size:11.5px;padding:3px 7px}
-  #view-overview .ov-dayleft b{font-size:17px}
+  #view-overview .ov-wkn{font-size:11px;padding:3px 7px}
+  #view-overview .ov-dayleft b{font-size:22px}
 }
 @container (max-width:272px){
-  #view-overview .ov-t-top{flex-wrap:wrap;row-gap:4px}
-  #view-overview .ov-date{font-size:13px;padding:3px 8px;border-radius:8px}
+  #view-overview .ov-t-chips{width:100%;flex-wrap:wrap;justify-content:flex-end;row-gap:4px}
+  #view-overview .ov-date{font-size:11.5px;padding:3px 6px}
   #view-overview .ov-wk{font-size:11px;padding:2px 6px}
+  #view-overview .ov-wkn{font-size:10.5px;padding:2px 6px}
   #view-overview .ov-dayleft{font-size:12px}
-  #view-overview .ov-dayleft b{font-size:15.5px}
+  #view-overview .ov-dayleft b{font-size:19px}
 }
 #view-overview .ov-t-dot{width:6px;height:6px;border-radius:50%;background:var(--brand);flex:0 0 6px;
   animation:ovTick 2.4s ease-out infinite}
@@ -2779,6 +2799,7 @@ html[data-theme="night"] #hpRingGrad stop:last-of-type{stop-color:var(--brand-dd
 }
 @media (max-width:680px){
   #view-overview .ov-time{padding:14px 14px 14px 16px;gap:10px}
+  #view-overview .ov-t-title{font-size:12px}
   #view-overview .ov-clock b{font-size:36px;letter-spacing:-1.6px}
   #view-overview .ov-clock i{font-size:16px;margin-top:8px}
   #view-overview .ov-t-dial{width:74px;flex:0 0 auto}
@@ -3856,6 +3877,10 @@ try {
           <div data-page-node-id="A54lZF0UitXwRHnURfu2un" class="ov-name" id="sideName"><!--pnid:11Xgd2IyRNe6xGZryyEf9j-->老师</div>
           <div data-page-node-id="rEPxOtvEiNHDyQDSH428W6" class="ov-hi" id="sideGreet"><!--pnid:YpY8QQ3Pt9X0u4SRnSZ4GL-->新的一天</div>
         </div>
+        <div class="ov-pf-act">
+          <button type="button" class="ov-pf-ico" id="pfThemeBtn" title="更换首页及工作台主题外观" aria-label="更换外观"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
+          <button type="button" class="ov-pf-ico" id="pfLayoutBtn" title="自定义首页布局" aria-label="首页布局"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg></button>
+        </div>
         </div>
         <div data-page-node-id="TS0GbWrjLJ91g9sj5rQOm8" class="ov-pf-q">
           <div data-page-node-id="SiY75j6XGNK7UfxaRkJsnB" class="hpq-h"><b data-page-node-id="LTK1YiIeLTxnM3scsonD9t"><!--pnid:XoxlocKgpB7Ua4Mzb7WWY6-->每日一句</b><button data-page-node-id="0EIvilSFFrFQX0vZgBitWV" class="hpq-swap" id="quoteSwap" type="button"><!--pnid:roA1IOW2PlvXpzZY0oUauz-->换一句</button></div>
@@ -3864,26 +3889,32 @@ try {
           <button data-page-node-id="iQr22NiNxghZCr5MYvP5RE" class="hpq-tts" id="quoteTts" type="button"><span data-page-node-id="Colbb7UQXZBWoDetOCO85D" class="hpq-ico"><!--pnid:a2rZ9U66t5q4hFuEL3R9b5-->🔊</span><span data-page-node-id="oEgJ82xO02hR4SmjchTA3h" id="quoteTtsTx"><!--pnid:Y1gG6D2bHXFRzqA104AO8S-->朗读英文</span></button>
         </div>
       </div><div data-page-node-id="0wCFujCBuZGkqodWHYxG0x" class="ov-tool"><span data-page-node-id="2Mv68twGl3V4ZY4zrAkp5V" class="ov-grip" title="拖动排序"><svg data-page-node-id="Mi1dYFRoUk74HF58SBNiwU" aria-hidden="true" fill="currentColor" viewBox="0 0 12 14"><circle data-page-node-id="MurSSoXskmySynABZDBfCF" cx="3" cy="3" r="1.4"/><circle data-page-node-id="vUVJrIUl75lXac5CXcdlD3" cx="9" cy="3" r="1.4"/><circle data-page-node-id="MxqfA2ySRUWmfRo8pNCfWl" cx="3" cy="7" r="1.4"/><circle data-page-node-id="DlY7jVpyW2gjNGXUAhlaXG" cx="9" cy="7" r="1.4"/><circle data-page-node-id="XFZ9NXmBBvjSRW4AJ2FwVF" cx="3" cy="11" r="1.4"/><circle data-page-node-id="oKdFYfFnno05P1z2UaF3aW" cx="9" cy="11" r="1.4"/></svg></span><button data-page-node-id="H8hVFheJCsqTNkpZjmjueC" class="ov-w" data-ovw="4" title="三分之一宽" type="button"><!--pnid:m6HS9NRKRDjGBv1rjHt4Jk-->⅓</button><button data-page-node-id="T9pViru80QfZAWEO1jsqaO" class="ov-w" data-ovw="6" title="一半宽" type="button"><!--pnid:Xf51oK7gPgV8au8FGyKSCU-->½</button><button data-page-node-id="err3K3Bghn0oSXP3f1uU1P" class="ov-w" data-ovw="12" title="整行" type="button"><!--pnid:qRBt6jaQkuljwfUKQOsT6E-->全</button></div></div><div data-page-node-id="fLez63GdTXy83A8k8hcxUZ" class="ov-slot" data-ov="time" data-w="4"><div data-page-node-id="tx5nBopmzU25ZT03hOnm6u" class="hp-card ov-time">
-        <div data-page-node-id="BEGqAv2p1uatOL4WBhqk6s" class="ov-t-main">
-          <div data-page-node-id="LPW61hM750IGW0Evi4g48X" class="ov-t-top">
-            <span data-page-node-id="4S3qdntlw0Ztxq8QN7Ucwo" class="ov-date" id="hpDate"><!--pnid:CR8k00u69Tu1npxtNmmyuP-->—</span>
-            <span data-page-node-id="eCTWf06BurU9Mc3tenFhqd" class="ov-wk" id="hpWeek"><!--pnid:O50pIexBWSRLdxo1KpQmxt-->周三</span>
+          <div class="ov-t-head">
+            <div class="ov-t-title"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>日期与时间</span></div>
+            <div class="ov-t-chips">
+              <span class="ov-date" id="hpDate">&mdash;</span>
+              <span class="ov-wk" id="hpWeek">周三</span>
+              <span class="ov-wkn" id="hpWeekNo">第 &mdash; 周</span>
+            </div>
           </div>
-          <div data-page-node-id="yZZaeYWCLJhFhcHNNMg0LN" class="ov-clock"><b data-page-node-id="ac88CBqZ8FVB3aFe2vrCKH" id="hpClockHM"><!--pnid:VFa5PsMn8QdUhH0fQ3n7wB-->00:00</b><i data-page-node-id="joH4EccQ3PMlZjYtQHCr4W" id="hpClockS"><!--pnid:8FNGw49VOHVAGt2bO0zpDM-->00</i></div>
-          <div data-page-node-id="XNjefcg9IiGLJzaY9IHbbK" class="ov-dayleft"><i data-page-node-id="7ba4MKiBbd9hQN9FJg7PLQ" class="ov-t-dot"></i><span data-page-node-id="d6UzNivfmyUuiIdE715eyC"><!--pnid:HLuggLmwTUm5F6pWScW1nV-->今日剩余</span><b data-page-node-id="96zd28Sd9Y7lxuFTFzbiYv" id="hpDayLeft"><!--pnid:778wED4HwxTmkaSmuGigdm-->00:00:00</b></div>
-        </div>
-        <div data-page-node-id="gWLpp2cczSx0kp0Sqb4ua4" aria-hidden="true" class="ov-t-dial">
-          <svg data-page-node-id="f5n0ZkiymCMGsdON0zOFCF" viewBox="0 0 100 100">
-            <defs data-page-node-id="pRMeUVrbeylIIg3o4sWnnw"><linearGradient data-page-node-id="rBEvlB2x3IA5zV1WLOlFmH" id="hpRingGrad" x1="0" x2="1" y1="0" y2="1">
-              <stop data-page-node-id="Jb362XJW2HlzgZbwUSs9EJ" offset="0%" stop-color="#06b6d4"></stop>
-              <stop data-page-node-id="GhfjvYXUEDUjhW7cdgCQGk" offset="100%" stop-color="#10b981"></stop>
-            </linearGradient></defs>
-            <circle data-page-node-id="bCbM6746RRoRYeNjo03Xmr" class="ov-t-track" cx="50" cy="50" r="38"></circle>
-            <circle data-page-node-id="5kYyVD5wUahx7Ikt1DK6Wr" class="ov-t-fill" cx="50" cy="50" id="hpRing" pathLength="100" r="38"></circle>
-          </svg>
-          <div data-page-node-id="q27UByG8qvoUBWfjQGbLGF" class="ov-t-ringtxt"><b data-page-node-id="wEfvy2XX0I5Mfj0WBeKnMS"><span data-page-node-id="dsIgnakfWn8S89DhK2Lvmx" id="hpDayPct"><!--pnid:WCbM9opyiDlzCNvQ1pfgq7-->0</span><span data-page-node-id="r0Di12ox1lQA81HfeYakia" class="pc"><!--pnid:smLTdmiDmaaIBOsFSdBw5S-->%</span></b><em data-page-node-id="Xkh0XqQ14DULK72UwdJ8A7"><!--pnid:D4rfNh7UBhMsEDjPVycbsi-->今日已过</em></div>
-        </div>
-      </div><div data-page-node-id="kctN6DOg4gbI3mz8sUkKJN" class="ov-tool"><span data-page-node-id="UUldGNp1x1fcIl0hYH9d0a" class="ov-grip" title="拖动排序"><svg data-page-node-id="DdaCuILnkTOnJ79NwhSRxe" aria-hidden="true" fill="currentColor" viewBox="0 0 12 14"><circle data-page-node-id="yME6fgGqp9PugyvGuI7Kbz" cx="3" cy="3" r="1.4"/><circle data-page-node-id="g8kC0MnQKr1DI7XBxCIIys" cx="9" cy="3" r="1.4"/><circle data-page-node-id="9X9r3q5nziPp18pa6F3PcB" cx="3" cy="7" r="1.4"/><circle data-page-node-id="9GdDbeGxbl2AW40ELpDsLt" cx="9" cy="7" r="1.4"/><circle data-page-node-id="vCAhOPz1ainhrCLi4htiDJ" cx="3" cy="11" r="1.4"/><circle data-page-node-id="zOntmyVQ88vkrTe8to86Sa" cx="9" cy="11" r="1.4"/></svg></span><button data-page-node-id="bZKi9cHYAPYSFyCzVTYnZM" class="ov-w" data-ovw="4" title="三分之一宽" type="button"><!--pnid:x0qf2egXrViVnMaaM5BJp3-->⅓</button><button data-page-node-id="0YMMEm2LH5He2qEtNsjjxq" class="ov-w" data-ovw="6" title="一半宽" type="button"><!--pnid:JDovdOnQLFO9YfEuuXfzxw-->½</button><button data-page-node-id="WAx9WuPoD98H3yaTVFt26d" class="ov-w" data-ovw="12" title="整行" type="button"><!--pnid:nL2cFnrbrgiykNb6aetW9d-->全</button></div></div><div data-page-node-id="MeOtmiVBmpuJHD4PXMKEEL" class="ov-slot" data-ov="course" data-w="4"><div data-page-node-id="BgBSXXLxmMNhLPnETfGXFt" class="hp-card hp-courses">
+          <div class="ov-t-body">
+            <div class="ov-t-main">
+              <div data-page-node-id="yZZaeYWCLJhFhcHNNMg0LN" class="ov-clock"><b data-page-node-id="ac88CBqZ8FVB3aFe2vrCKH" id="hpClockHM">00:00</b><i data-page-node-id="joH4EccQ3PMlZjYtQHCr4W" id="hpClockS">00</i></div>
+              <div data-page-node-id="XNjefcg9IiGLJzaY9IHbbK" class="ov-dayleft"><i data-page-node-id="7ba4MKiBbd9hQN9FJg7PLQ" class="ov-t-dot"></i><span data-page-node-id="d6UzNivfmyUuiIdE715eyC">今日剩余</span><b data-page-node-id="96zd28Sd9Y7lxuFTFzbiYv" id="hpDayLeft">00:00:00</b></div>
+            </div>
+            <div data-page-node-id="gWLpp2cczSx0kp0Sqb4ua4" aria-hidden="true" class="ov-t-dial">
+              <svg data-page-node-id="f5n0ZkiymCMGsdON0zOFCF" viewBox="0 0 100 100">
+                <defs data-page-node-id="pRMeUVrbeylIIg3o4sWnnw"><linearGradient data-page-node-id="rBEvlB2x3IA5zV1WLOlFmH" id="hpRingGrad" x1="0" x2="1" y1="0" y2="1">
+                  <stop data-page-node-id="Jb362XJW2HlzgZbwUSs9EJ" offset="0%" stop-color="#06b6d4"></stop>
+                  <stop data-page-node-id="GhfjvYXUEDUjhW7cdgCQGk" offset="100%" stop-color="#10b981"></stop>
+                </linearGradient></defs>
+                <circle data-page-node-id="bCbM6746RRoRYeNjo03Xmr" class="ov-t-track" cx="50" cy="50" r="38"></circle>
+                <circle data-page-node-id="5kYyVD5wUahx7Ikt1DK6Wr" class="ov-t-fill" cx="50" cy="50" id="hpRing" pathLength="100" r="38"></circle>
+              </svg>
+              <div data-page-node-id="q27UByG8qvoUBWfjQGbLGF" class="ov-t-ringtxt"><b data-page-node-id="wEfvy2XX0I5Mfj0WBeKnMS"><span data-page-node-id="dsIgnakfWn8S89DhK2Lvmx" id="hpDayPct">0</span><span data-page-node-id="r0Di12ox1lQA81HfeYakia" class="pc">%</span></b><em data-page-node-id="Xkh0XqQ14DULK72UwdJ8A7">今日已过</em></div>
+            </div>
+          </div>
+        </div><div data-page-node-id="kctN6DOg4gbI3mz8sUkKJN" class="ov-tool"><span data-page-node-id="UUldGNp1x1fcIl0hYH9d0a" class="ov-grip" title="拖动排序"><svg data-page-node-id="DdaCuILnkTOnJ79NwhSRxe" aria-hidden="true" fill="currentColor" viewBox="0 0 12 14"><circle data-page-node-id="yME6fgGqp9PugyvGuI7Kbz" cx="3" cy="3" r="1.4"/><circle data-page-node-id="g8kC0MnQKr1DI7XBxCIIys" cx="9" cy="3" r="1.4"/><circle data-page-node-id="9X9r3q5nziPp18pa6F3PcB" cx="3" cy="7" r="1.4"/><circle data-page-node-id="9GdDbeGxbl2AW40ELpDsLt" cx="9" cy="7" r="1.4"/><circle data-page-node-id="vCAhOPz1ainhrCLi4htiDJ" cx="3" cy="11" r="1.4"/><circle data-page-node-id="zOntmyVQ88vkrTe8to86Sa" cx="9" cy="11" r="1.4"/></svg></span><button data-page-node-id="bZKi9cHYAPYSFyCzVTYnZM" class="ov-w" data-ovw="4" title="三分之一宽" type="button"><!--pnid:x0qf2egXrViVnMaaM5BJp3-->⅓</button><button data-page-node-id="0YMMEm2LH5He2qEtNsjjxq" class="ov-w" data-ovw="6" title="一半宽" type="button"><!--pnid:JDovdOnQLFO9YfEuuXfzxw-->½</button><button data-page-node-id="WAx9WuPoD98H3yaTVFt26d" class="ov-w" data-ovw="12" title="整行" type="button"><!--pnid:nL2cFnrbrgiykNb6aetW9d-->全</button></div></div><div data-page-node-id="MeOtmiVBmpuJHD4PXMKEEL" class="ov-slot" data-ov="course" data-w="4"><div data-page-node-id="BgBSXXLxmMNhLPnETfGXFt" class="hp-card hp-courses">
           <div data-page-node-id="unj2KC7H5X02r4fAhHRvbL" class="panel-h"><h2 data-page-node-id="NdhmybYXPVqq1EZBNpYANy"><!--pnid:4LV7LP4mwxUgz2rDX69KEP-->今日上课提醒 <span data-page-node-id="b87CElIaXEQBlLhleADIBc" class="cnt" id="courseBadge"><!--pnid:qZ4f30ar39HqkZGtAP16g4-->0</span></h2><span data-page-node-id="bTJiguVT42yErocLLQghFm" class="hint" id="courseNext"></span></div>
           <div data-page-node-id="j7MOE37F16mr96eR7zuV2v" id="homeCourseWrap"></div>
         </div><div data-page-node-id="JBKFUoh64QFrkhekXOynnU" class="ov-tool"><span data-page-node-id="nXJAb9colv1thQIfi2tW6L" class="ov-grip" title="拖动排序"><svg data-page-node-id="wyaz6C4maqrWx4rt08mWd5" aria-hidden="true" fill="currentColor" viewBox="0 0 12 14"><circle data-page-node-id="tE8FrSeVtIyxtZsXtRclsl" cx="3" cy="3" r="1.4"/><circle data-page-node-id="CJbdN6cri123TaJrclkmCs" cx="9" cy="3" r="1.4"/><circle data-page-node-id="6K4hobcR6CvUNfaWExDaA8" cx="3" cy="7" r="1.4"/><circle data-page-node-id="XOSxe5PPbaxcHA817d3knI" cx="9" cy="7" r="1.4"/><circle data-page-node-id="2XP9MdvKYbiLipUnzkMStT" cx="3" cy="11" r="1.4"/><circle data-page-node-id="4Wm0s8bVdgUxD3boe79Uor" cx="9" cy="11" r="1.4"/></svg></span><button data-page-node-id="qetzVJmmsJX0t4Mjvkm9EH" class="ov-w" data-ovw="4" title="三分之一宽" type="button"><!--pnid:exPfHHi3rEZIWTEmuYCHGc-->⅓</button><button data-page-node-id="ub9H1ZeH63pQDSJ88GIBYf" class="ov-w" data-ovw="6" title="一半宽" type="button"><!--pnid:ZGm4wLK7OAx9kl4aqLPL1x-->½</button><button data-page-node-id="E9edDIu5Zj9HL43yyaJw5Y" class="ov-w" data-ovw="12" title="整行" type="button"><!--pnid:HISQIKaKkEWuQlStCquPyQ-->全</button></div></div><div data-page-node-id="E954V0V23fZlsYZTnxWl4h" class="ov-slot" data-ov="todo" data-w="4"><div data-page-node-id="J51xIGYgLmRsG1V1maePUn" class="hp-card hp-today">
@@ -7781,6 +7812,14 @@ function renderHpGreeting() {
 }
 
 /* ---------- 时钟：精确到秒 + 当日倒计时 ---------- */
+/* ISO 周数：周一为一周之始，跨年时归到所属 ISO 年 */
+function isoWeek(d) {
+  var t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  var day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day);
+  var y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return Math.ceil((((t - y0) / 86400000) + 1) / 7);
+}
 function hpTickClock() {
   var d = new Date();
   var WD = ['日', '一', '二', '三', '四', '五', '六'];
@@ -7789,9 +7828,11 @@ function hpTickClock() {
   var sc = qs('#hpClockS');
   if (sc) sc.textContent = hpTwo(d.getSeconds());
   var dt = qs('#hpDate');
-  if (dt) dt.textContent = d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  if (dt) dt.textContent = d.getFullYear() + '-' + hpTwo(d.getMonth() + 1) + '-' + hpTwo(d.getDate());
   var wk = qs('#hpWeek');
-  if (wk) wk.textContent = '周' + WD[d.getDay()];
+  if (wk) wk.textContent = '星期星期' + WD[d.getDay()];
+  var wn = qs('#hpWeekNo');
+  if (wn) wn.textContent = '第 ' + isoWeek(d) + ' 周';
   var sec = 86400 - (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds());
   if (sec < 0) sec = 0;
   var left = qs('#hpDayLeft');
@@ -18992,6 +19033,9 @@ function bindEvents() {
     if (closest(e.target, '[data-cfclose]')) { closeCfm(false); return; }
     if (attClick(e)) return;
 
+    /* ---- 首页个人卡右上角：换外观 / 自定义布局 ---- */
+    if (closest(e.target, '#pfThemeBtn')) { state.meOpen = 'theme'; switchView('me'); return; }
+    if (closest(e.target, '#pfLayoutBtn')) { ovEditMode(!state.ovEdit); return; }
     /* ---- 首页：卡片布局 ---- */
     if (closest(e.target, '#ovLayoutBtn')) { ovEditMode(!state.ovEdit); return; }
     if (closest(e.target, '#ovDoneBtn')) { ovEditMode(false); return; }
