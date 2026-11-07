@@ -2337,8 +2337,6 @@ td.c-act{white-space:nowrap;text-align:right}
   font-variant-numeric:tabular-nums}
 .hpx-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .hpx-city{font-weight:700;font-size:14.5px;color:var(--ink)}
-.hpx-switch{font-size:11.5px;color:var(--brand-d);background:var(--brand-l);border:0;border-radius:8px;padding:3px 8px;cursor:pointer}
-.hpx-switch:hover{background:var(--brand-l2)}
 .hpx-now{display:flex;align-items:baseline;gap:9px;margin:10px 0 7px}
 .hpx-temp{font-size:36px;font-weight:800;color:var(--ink);line-height:1}
 .hpx-w{font-size:13px;color:var(--ink2)}
@@ -2450,7 +2448,9 @@ td.c-act{white-space:nowrap;text-align:right}
 
 /* 顶部三卡：个人信息 / 时间 / 每日一句 */
 /* 首页 · 卡片画布（可拖拽自定义布局） */
-#view-overview .ov-toolbar{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+#view-overview .ov-toolbar{display:none;align-items:center;gap:10px;margin:0 0 12px}
+/* 常态不显示整条工具栏；点个人卡右上角的布局图标进入编辑后，才显示「恢复默认 / 完成」 */
+body.ov-editing #view-overview .ov-toolbar{display:flex}
 #view-overview .ov-tb-tip{flex:1;min-width:0;font-size:12.5px;color:var(--ink3);line-height:1.4}
 #view-overview .ov-lbtn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:10px;
   border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:13px;font-weight:700;
@@ -2695,8 +2695,12 @@ html[data-theme="night"] #hpRingGrad stop:last-of-type{stop-color:var(--brand-dd
 #view-overview .hpx-more{flex:0 0 auto}
 #view-overview .hpx-h{display:flex;align-items:center;gap:8px}
 #view-overview .hpx-city{font-size:15px;font-weight:800;color:var(--ink)}
-#view-overview .hpx-switch{margin-left:auto;border:1px solid var(--line);background:var(--line2);color:var(--ink2);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer;transition:.15s}
-#view-overview .hpx-switch:hover{border-color:var(--brand);color:var(--brand-d)}
+/* 定位图标 + 城市名 + 来源标签：整块作为「自动定位 / 手动切换城市」的入口 */
+#view-overview .hpx-loc{display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:100%;
+  border:0;background:transparent;padding:3px 6px;margin:-3px -6px;border-radius:9px;
+  font-family:inherit;cursor:pointer;transition:background .15s}
+#view-overview .hpx-loc:hover{background:var(--brand-l)}
+#view-overview .hpx-loc:hover .hpx-city{color:var(--brand-d)}
 #view-overview .hpx-now{font-size:30px;font-weight:800;color:var(--ink);line-height:1.1;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 #view-overview .hpx-now .hpx-idle{font-size:14px;color:var(--ink3);font-weight:600}
 #view-overview .hpx-tip{font-size:12.5px;color:var(--ink2);line-height:1.5;min-height:18px}
@@ -2919,8 +2923,6 @@ html[data-theme="night"] #hpRingGrad stop:last-of-type{stop-color:var(--brand-dd
 #view-overview .ov-pf-q .hpq-tts #quoteTtsTx{display:none}
 #view-overview .ov-pf-q .hpq-tts.on{background:var(--brand-l);border-color:var(--brand-l2);color:var(--brand-dd)}
 
-/* 编辑态：隐藏「自定义布局」按钮，避免与「恢复默认 / 完成」重叠 */
-body.ov-editing #view-overview .ov-lbtn{display:none}
 /* 每日一句：卡内竖排（旧横排规则会把内容压成一行，这里按更高特异性覆盖） */
 /* 每日一句：卡内竖排（旧 .hp-quote 横排规则会把内容压成一行，这里按更高特异性覆盖） */
 
@@ -3883,8 +3885,8 @@ try {
       <div data-page-node-id="IDm66riOHnmuHDCakn3mVW" class="hp-sr" id="hpSearchRes"></div>
     </div>
 
-    <div data-page-node-id="7RP54s3WTv5dqczkjLPqvQ" class="ov-toolbar"><span data-page-node-id="5NDLgBH8ZurpuiyInKmwHA" class="ov-tb-tip" id="ovTbTip"><!--pnid:ErEOVZCnb43dyNfJQRHChn-->拖一拖，把首页排成你想要的样子</span><button data-page-node-id="qAMxNghwp2Bp3IxlGgPUDZ" class="ov-lbtn" id="ovLayoutBtn" title="自定义首页布局" type="button"><svg data-page-node-id="fqi8w0W5JYr1OVJSCBdVVa" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect data-page-node-id="giKTECtVAVJwK9Uc9XsoPy" height="7" rx="1.6" width="7" x="3" y="3"/><rect data-page-node-id="6ErMc1l7yGtDXiUZH2duNv" height="7" rx="1.6" width="7" x="14" y="3"/><rect data-page-node-id="vulN2EPpcTuKS1Gp5Z6qg8" height="7" rx="1.6" width="7" x="3" y="14"/><rect data-page-node-id="0GqKGuYzQwxgdBgipAPJEB" height="7" rx="1.6" width="7" x="14" y="14"/></svg><span data-page-node-id="N3xkH4mvUfKBfppuIEVQ9d"><!--pnid:oMQ0BjrCWcJl11FppfuUr1-->自定义布局</span></button><div data-page-node-id="YiKvzGIEaXm4wRRRbUBPQN" class="ov-tb-act" id="ovTbAct"><button data-page-node-id="0gh2c3HhqMYQHsRpA6mW4R" class="ov-tbtn" id="ovResetBtn" type="button"><!--pnid:ct6qBkIEroosWfZL3b7Vcw-->恢复默认</button><button data-page-node-id="TUxehkEbXMSi4FSYO7ldPV" class="ov-tbtn primary" id="ovDoneBtn" type="button"><!--pnid:4TIP6K9VPo688ozEK9R626-->完成</button></div></div><div data-page-node-id="wAqv5jJFjjhdFkpc78f9jC" class="ov-board" id="ovBoard"><div data-page-node-id="5MhtYgBx7nHKYOvSY53pWc" class="ov-slot" data-ov="pf" data-w="4"><div data-page-node-id="7vEWlANsQtBGJ6dX1jzd0E" class="hp-card ov-pf ov-pf-x">
-        <div class="ov-card-hd ov-pf-hd"><svg class="ov-hd-ic" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span>个人设置</span>
+    <div data-page-node-id="7RP54s3WTv5dqczkjLPqvQ" class="ov-toolbar"><span data-page-node-id="5NDLgBH8ZurpuiyInKmwHA" class="ov-tb-tip" id="ovTbTip"><!--pnid:ErEOVZCnb43dyNfJQRHChn-->拖一拖，把首页排成你想要的样子</span><div data-page-node-id="YiKvzGIEaXm4wRRRbUBPQN" class="ov-tb-act" id="ovTbAct"><button data-page-node-id="0gh2c3HhqMYQHsRpA6mW4R" class="ov-tbtn" id="ovResetBtn" type="button"><!--pnid:ct6qBkIEroosWfZL3b7Vcw-->恢复默认</button><button data-page-node-id="TUxehkEbXMSi4FSYO7ldPV" class="ov-tbtn primary" id="ovDoneBtn" type="button"><!--pnid:4TIP6K9VPo688ozEK9R626-->完成</button></div></div><div data-page-node-id="wAqv5jJFjjhdFkpc78f9jC" class="ov-board" id="ovBoard"><div data-page-node-id="5MhtYgBx7nHKYOvSY53pWc" class="ov-slot" data-ov="pf" data-w="4"><div data-page-node-id="7vEWlANsQtBGJ6dX1jzd0E" class="hp-card ov-pf ov-pf-x">
+        <div class="ov-card-hd ov-pf-hd"><svg class="ov-hd-ic" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span>个人名片</span>
         <div class="ov-pf-act">
           <button type="button" class="ov-pf-ico" id="pfThemeBtn" title="更换首页及工作台主题外观" aria-label="更换外观"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
           <button type="button" class="ov-pf-ico" id="pfLayoutBtn" title="自定义首页布局" aria-label="首页布局"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg></button>
@@ -3947,7 +3949,7 @@ try {
           </div>
         </div><div data-page-node-id="gjVUjZuUcl9w67OhHm1e1N" class="ov-tool"><span data-page-node-id="53ScLRYi9xCMmYVOh3H1Nx" class="ov-grip" title="拖动排序"><svg data-page-node-id="rtOoiL3smGeD8rSimbY7CS" aria-hidden="true" fill="currentColor" viewBox="0 0 12 14"><circle data-page-node-id="82YYSUIwsTmVYwcWrr13gm" cx="3" cy="3" r="1.4"/><circle data-page-node-id="6qIgCOYvNZGI3BfWJEFaRt" cx="9" cy="3" r="1.4"/><circle data-page-node-id="mHFFV6B32hK3iRtS3v9p1z" cx="3" cy="7" r="1.4"/><circle data-page-node-id="xkx1eVRcP1gWNHgDYIW3Tr" cx="9" cy="7" r="1.4"/><circle data-page-node-id="BCrBg1g9vqvIcwA6n0J5KE" cx="3" cy="11" r="1.4"/><circle data-page-node-id="TH6mArrRxT9X4rVt5eyUzj" cx="9" cy="11" r="1.4"/></svg></span><button data-page-node-id="0uFFjBJEEgoU69Tesqbwdi" class="ov-w" data-ovw="4" title="三分之一宽" type="button"><!--pnid:dnszHGsJ275CNjQvOMdQSk-->⅓</button><button data-page-node-id="C419GKRCCar7knXv22sSVz" class="ov-w" data-ovw="6" title="一半宽" type="button"><!--pnid:5ZjdMGbdDocr7Lcz4uXihq-->½</button><button data-page-node-id="8LCeyudjq71JlhXDmzty01" class="ov-w" data-ovw="12" title="整行" type="button"><!--pnid:MXUSn0EDTtHYzzx9TOJMMa-->全</button></div></div><div data-page-node-id="ZlCAkx4pifrGzS9LtzhayZ" class="ov-slot" data-ov="wx" data-w="12"><div data-page-node-id="vHdxVAYXPJ0Olcaxc4GfIa" class="hp-card hp-wx">
           <div class="ov-card-hd ov-wx-hd"><svg class="ov-hd-ic" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="7.5" cy="7.5" r="3"/><path d="M7.5 1.5v1.5M7.5 12v1.5M1.5 7.5H3M12 7.5h1.5M3.3 3.3l1 1M10.7 10.7l1 1"/><path d="M8 19.5h9.5a3.5 3.5 0 0 0 0-7 5 5 0 0 0-9.3 1.3A3.1 3.1 0 0 0 8 19.5z"/></svg><span>天气</span></div>
-          <div data-page-node-id="FgI9j2b9RBoxfFo14DvDnN" class="hpx-h"><span data-page-node-id="dj16d8O5ANauZLU1A0Shzz" class="hpx-city" id="wxCity"><!--pnid:az7INhrb4Q3cIWIGKhtmPX-->定位中…</span><span data-page-node-id="NLC0gI6yiYlUWO2Uac0JDE" class="hpx-src" id="wxSrc"></span><button data-page-node-id="tHuTArwxQ6sR0tPd0OXc79" class="hpx-switch" id="wxSwitch" type="button"><!--pnid:12nBT4kqI8DqFQ9dIgvjo5-->切换城市</button></div>
+          <div data-page-node-id="FgI9j2b9RBoxfFo14DvDnN" class="hpx-h"><button type="button" class="hpx-loc" id="wxLocBtn" title="点这里：自动定位，或手动切换城市" aria-label="天气定位设置"><span data-page-node-id="dj16d8O5ANauZLU1A0Shzz" class="hpx-city" id="wxCity"><!--pnid:az7INhrb4Q3cIWIGKhtmPX-->定位中…</span><span data-page-node-id="NLC0gI6yiYlUWO2Uac0JDE" class="hpx-src" id="wxSrc"></span></button></div>
           <div data-page-node-id="jbDZUX3qzXIreTamfTgMvQ" class="hpx-now" id="wxNow"><span data-page-node-id="OgAgCaKpR3HzR8Rxcyy1ag" class="hpx-idle"><!--pnid:GAspFXZOHQsGcTLXsbGl9g-->天气获取中…</span></div><div data-page-node-id="pAipHXZZnZWoUuoH4Hg1BE" class="hpx-meta" id="wxMeta"></div>
           <div data-page-node-id="03u0WP9g2Y7UbAKT2y1AP3" class="hpx-tip" id="wxTip"></div><div data-page-node-id="5MKIgZjdzcKyHBm9i9KqXX" class="hpx-7" id="wx7"></div>
           <button data-page-node-id="wIGAscHRxJacercVeMQYvG" class="hpx-more" id="wxDetailBtn" type="button"><!--pnid:9MX4rdTFFI1dM1zJiB3c1O-->详情天气 ›</button>
@@ -7901,7 +7903,7 @@ function renderHpWeather() {
   var cityName = wxCurCity() || ((w && w.err === 2) ? '未定位' : (w ? '当前位置' : '定位中…'));
   if (cityEl) {
     cityEl.innerHTML = '<svg class="hpx-pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.1 7 13 7 13s7-7.9 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>' + esc(cityName);
-    cityEl.title = (w && w.from === 'city') ? '手动指定的城市' : '按自动定位获取';
+    cityEl.title = '点这里：自动定位，或手动切换城市';
   }
   var srcEl = qs('#wxSrc');
   if (srcEl) {
@@ -7912,8 +7914,8 @@ function renderHpWeather() {
     srcEl.textContent = lab;
     srcEl.title = lab === '定位' ? '已按设备位置获取'
       : lab === '上次位置' ? '浏览器定位没成功，暂时用上次取到天气的位置'
-      : lab === '手动' ? '手动指定的城市，点「切换城市」可改'
-      : lab === '定位失败' ? '浏览器定位被拒绝或超时，点「切换城市」选一个'
+      : lab === '手动' ? '手动指定的城市，点城市名可改'
+      : lab === '定位失败' ? '浏览器定位被拒绝或超时，点城市名手动选一个'
       : '天气来源';
   }
   if (!w) {
@@ -7925,8 +7927,8 @@ function renderHpWeather() {
   }
   if (w.err) {
     nowEl.innerHTML = '<span class="hpx-idle">' + (w.err === 2
-      ? '没拿到定位，点「切换城市」选一个城市'
-      : '没取到「' + esc(w.city || state.wxCity || '这个城市') + '」的天气，点「切换城市」换个城市或稍后重试') + '</span>';
+      ? '没拿到定位，点天气卡上的城市名选一个城市'
+      : '没取到「' + esc(w.city || state.wxCity || '这个城市') + '」的天气，点城市名换个城市或稍后重试') + '</span>';
     if (tipEl) tipEl.textContent = '';
     if (metaEl) metaEl.textContent = '';
     renderWx7(null);
@@ -8042,7 +8044,11 @@ function hpWxSwitch() {
   });
   var x = qs('#wxpClose'); if (x) x.onclick = close;
   var ok = qs('#wxpOk'); if (ok) ok.onclick = function () { apply(inp ? inp.value : ''); };
-  var au = qs('#wxpAuto'); if (au) au.onclick = function () { apply(''); };
+  /* 自动定位：清掉手选城市与「强制用这个城市」，立刻重新走一次设备定位 */
+  var au = qs('#wxpAuto'); if (au) au.onclick = function () {
+    close();
+    if (typeof wxSetCity === 'function') wxSetCity('', { force: false });
+  };
   if (inp) {
     inp.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); apply(inp.value); }
@@ -8068,7 +8074,7 @@ function hpWxDetail() {
   var body = qs('#wxmBody');
   if (!body) return;
   if (!w || w.err || !(w.days && w.days.length)) {
-    body.innerHTML = '<div class="hpx-idle">天气还没取到，稍后再试；也可以点「切换城市」重新获取</div>';
+    body.innerHTML = '<div class="hpx-idle">天气还没取到，稍后再试；也可以点天气卡上的城市名重新获取</div>';
     return;
   }
   var wdd = ['日', '一', '二', '三', '四', '五', '六'];
@@ -8460,7 +8466,7 @@ document.addEventListener('click', function (e) {
   if (closest(t, '#quoteTts')) { hpSpeak(); return; }
   if (closest(t, '#hpSearchBtn')) { hpSearchRun(); return; }
   if (closest(t, '#wxDetailBtn')) { hpWxDetail(); return; }
-  if (closest(t, '#wxSwitch')) { hpWxSwitch(); return; }
+  if (closest(t, '#wxLocBtn')) { hpWxSwitch(); return; }
   if (closest(t, '#hpTaskSend')) { addHomeTask(); return; }
   if (closest(t, '.hpc-rec')) { toast('上课记录：进入「学习」页记录本节课'); return; }
   var dcell = closest(t, '.cal-day[data-day]');
@@ -9081,7 +9087,7 @@ function fetchWeather(force) {
     /* 定位不可用又没有手动城市：明确占位（err=2），不偷偷换成别的城市 */
     var noLoc = !city;
     wxSave({ err: noLoc ? 2 : 1, temp: null, code: null, city: city });
-    if (noLoc) toast('自动定位没成功，点「切换城市」选一个城市');
+    if (noLoc) toast('自动定位没成功，点天气卡上的城市名选一个城市');
   });
 }
 
@@ -18939,9 +18945,8 @@ function ovApplyLayout(list) {
 function ovEditMode(on) {
   state.ovEdit = !!on;
   document.body.classList.toggle('ov-editing', state.ovEdit);
-  var bar = qs('#ovTbAct'), btn = qs('#ovLayoutBtn'), tip = qs('#ovTbTip');
+  var bar = qs('#ovTbAct'), tip = qs('#ovTbTip');
   if (bar) bar.classList.toggle('on', state.ovEdit);
-  if (btn) btn.classList.toggle('on', state.ovEdit);
   if (tip) {
     tip.textContent = state.ovEdit
       ? '拖动卡片换位置；右上角 ⅓ / ½ / 全 调宽度。改完点「完成」'
@@ -19053,7 +19058,6 @@ function bindEvents() {
     if (closest(e.target, '#pfThemeBtn')) { state.meOpen = 'theme'; switchView('me'); return; }
     if (closest(e.target, '#pfLayoutBtn')) { ovEditMode(!state.ovEdit); return; }
     /* ---- 首页：卡片布局 ---- */
-    if (closest(e.target, '#ovLayoutBtn')) { ovEditMode(!state.ovEdit); return; }
     if (closest(e.target, '#ovDoneBtn')) { ovEditMode(false); return; }
     if (closest(e.target, '#ovResetBtn')) { ovResetLayout(); return; }
     var ovwBtn = closest(e.target, '[data-ovw]');
