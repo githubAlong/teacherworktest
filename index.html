@@ -1948,6 +1948,10 @@ td.c-act{white-space:nowrap;text-align:right}
 .me-row b{display:block;font-size:14px;font-weight:600}
 .me-row span{display:block;font-size:12.5px;color:var(--ink3);margin-top:2px}
 .me-foot{text-align:center;font-size:12px;color:var(--ink3);padding:8px 0 22px}
+.me-logout{margin-top:8px;border-top:1px solid var(--line)!important}
+.me-logout .me-ni,.me-logout .me-nt b{color:#c0392b}
+.me-logout .me-ni{background:rgba(192,57,43,.10)}
+.me-uid{color:var(--brand-d);font-weight:700}
 
 
 /* ---------- 首页 · 今日概览 ---------- */
@@ -4464,6 +4468,89 @@ try {
   db = (window.__SMART_PAGE__ && window.__SMART_PAGE__.database) ? window.__SMART_PAGE__.database : null;
 } catch (e) { db = null; }
 
+/* ================= 账号与数据隔离 =================
+   平台 SDK 的 getUserInfo() 返回当前登录用户；云端 18 张表都有「用户ID」列，
+   查询按 uid 过滤、写入自动打标，因此不同账号看到的是各自的数据。
+   没有 SDK（GitHub Pages / 离线）时降级为本机单用户，界面照常可用。 */
+var UID_COL = '用户ID';
+var UID_LOCAL = 'local-guest';
+var LS_UID = 'wb_current_uid_v1';
+var CUR_UID = UID_LOCAL;
+var CUR_USER = null;
+
+function uidFilter() {
+  return { property: { property: UID_COL, text: { equals: CUR_UID } } };
+}
+/* 所有查询统一从这里走：自动附加「只看本账号」条件；
+   已有的业务 filter（考勤按月份）用 and 合并 */
+function dbQuery(p) {
+  p = p || {};
+  var uf = uidFilter();
+  p.filter = p.filter ? { and: [uf, p.filter] } : uf;
+  return db.query(p);
+}
+function uidProps(props) {
+  var o = {}, k;
+  for (k in props) if (Object.prototype.hasOwnProperty.call(props, k)) o[k] = props[k];
+  o[UID_COL] = { text: CUR_UID };
+  return o;
+}
+function recId(r) {
+  return String((r && (r.id || r._id || r.recordId || r.record_id)) || '');
+}
+function recUid(r) {
+  if (!r) return '';
+  var p = r.properties || r, v = p && p[UID_COL];
+  if (!v) return '';
+  if (typeof v === 'object') v = v.text || v.select || v.value || '';
+  return String(v || '');
+}
+function initIdentity() {
+  if (!db || typeof db.getUserInfo !== 'function') {
+    CUR_UID = UID_LOCAL; CUR_USER = null;
+    return Promise.resolve(false);
+  }
+  return db.getUserInfo().then(function (res) {
+    var info = res && res.userInfo;
+    CUR_UID = (info && info.id) ? String(info.id) : UID_LOCAL;
+    CUR_USER = info || null;
+    return !!info;
+  }).catch(function () {
+    CUR_UID = UID_LOCAL; CUR_USER = null;
+    return false;
+  });
+}
+function clearAllLocal() {
+  try {
+    var keys = [], i, k;
+    for (i = 0; i < localStorage.length; i++) {
+      k = localStorage.key(i);
+      if (k && k.indexOf('wb_') === 0) keys.push(k);
+    }
+    for (i = 0; i < keys.length; i++) localStorage.removeItem(keys[i]);
+  } catch (e) { /* 本机不可用就跳过 */ }
+}
+/* 换了账号（含首次从匿名切到登录）就把上一个账号的本机缓存、设置、
+   待同步队列全部清掉，避免首屏闪出别人的数据或用旧 recordId 写错记录 */
+function uidNamespaceGuard() {
+  var prev = '';
+  try { prev = localStorage.getItem(LS_UID) || ''; } catch (e) {}
+  if (prev && prev !== CUR_UID) clearAllLocal();
+  try { localStorage.setItem(LS_UID, CUR_UID); } catch (e) {}
+}
+function doLogout() {
+  askConfirm({
+    title: '退出登录',
+    html: '将清除本机的缓存、设置与待同步内容，并回到登录页。<br><b>云端数据不会删除</b>，下次用同一账号登录还能看到。<br>如需换成别的账号，请在 WorkBuddy 的账号菜单里先退出。',
+    ok: '退出登录', cancel: '取消', danger: true, ico: false
+  }).then(function (yes) {
+    if (!yes) return;
+    clearAllLocal();
+    var back = location.href.split('#')[0];
+    location.href = 'https://www.workbuddy.cn/login/?platform=buddylink&redirect_uri=' + encodeURIComponent(back);
+  });
+}
+
 var DATABASE_ID = 'IeFGZK4i2xU0CNEQbFgzos';
 var LS_CACHE = 'wb_mywork_cache';
 var LS_PENDING = 'wb_mywork_pending';
@@ -5113,29 +5200,29 @@ function apiGetSchema(key) {
 }
 
 function apiQuery(key, cursor, filter) {
-  if (key === 'course') return db.query(cursor ? { databaseId: 'OWHTamPF6bQFyihdegPmgm', pageSize: 200, startCursor: cursor } : { databaseId: 'OWHTamPF6bQFyihdegPmgm', pageSize: 200 });
-  if (key === 'classlog') return db.query(cursor ? { databaseId: 'c75IgHonpMSinBrVZwwxkh', pageSize: 200, startCursor: cursor } : { databaseId: 'c75IgHonpMSinBrVZwwxkh', pageSize: 200 });
-  if (key === 'prep') return db.query(cursor ? { databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', pageSize: 200, startCursor: cursor } : { databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', pageSize: 200 });
-  if (key === 'invig') return db.query(cursor ? { databaseId: 'hEieVpV9ZR2oVkspEeEoOn', pageSize: 200, startCursor: cursor } : { databaseId: 'hEieVpV9ZR2oVkspEeEoOn', pageSize: 200 });
-  if (key === 'repair') return db.query(cursor ? { databaseId: 'n89IkAK7jciX54a5RlkI63', pageSize: 200, startCursor: cursor } : { databaseId: 'n89IkAK7jciX54a5RlkI63', pageSize: 200 });
-  if (key === 'sub') return db.query(cursor ? { databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', pageSize: 200, startCursor: cursor } : { databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', pageSize: 200 });
-  if (key === 'trip') return db.query(cursor ? { databaseId: 'mhhwWIJB1CaibAeNVcsv8F', pageSize: 200, startCursor: cursor } : { databaseId: 'mhhwWIJB1CaibAeNVcsv8F', pageSize: 200 });
-  if (key === 'learn') return db.query(cursor ? { databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', pageSize: 200, startCursor: cursor } : { databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', pageSize: 200 });
-  if (key === 'learnmat') return db.query(cursor ? { databaseId: LM_DB, pageSize: 200, startCursor: cursor } : { databaseId: LM_DB, pageSize: 200 });
-  if (key === 'lessoncat') return db.query(cursor ? { databaseId: 'LMzKj8yBLuV95FwLQeBQSP', pageSize: 200, startCursor: cursor } : { databaseId: 'LMzKj8yBLuV95FwLQeBQSP', pageSize: 200 });
-  if (key === 'lesson') return db.query(cursor ? { databaseId: 'SM1l2BONT5gpw1qGwBx2FI', pageSize: 200, startCursor: cursor } : { databaseId: 'SM1l2BONT5gpw1qGwBx2FI', pageSize: 200 });
+  if (key === 'course') return dbQuery(cursor ? { databaseId: 'OWHTamPF6bQFyihdegPmgm', pageSize: 200, startCursor: cursor } : { databaseId: 'OWHTamPF6bQFyihdegPmgm', pageSize: 200 });
+  if (key === 'classlog') return dbQuery(cursor ? { databaseId: 'c75IgHonpMSinBrVZwwxkh', pageSize: 200, startCursor: cursor } : { databaseId: 'c75IgHonpMSinBrVZwwxkh', pageSize: 200 });
+  if (key === 'prep') return dbQuery(cursor ? { databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', pageSize: 200, startCursor: cursor } : { databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', pageSize: 200 });
+  if (key === 'invig') return dbQuery(cursor ? { databaseId: 'hEieVpV9ZR2oVkspEeEoOn', pageSize: 200, startCursor: cursor } : { databaseId: 'hEieVpV9ZR2oVkspEeEoOn', pageSize: 200 });
+  if (key === 'repair') return dbQuery(cursor ? { databaseId: 'n89IkAK7jciX54a5RlkI63', pageSize: 200, startCursor: cursor } : { databaseId: 'n89IkAK7jciX54a5RlkI63', pageSize: 200 });
+  if (key === 'sub') return dbQuery(cursor ? { databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', pageSize: 200, startCursor: cursor } : { databaseId: 'RJB1nlTtpZEyhJUk0DpcVc', pageSize: 200 });
+  if (key === 'trip') return dbQuery(cursor ? { databaseId: 'mhhwWIJB1CaibAeNVcsv8F', pageSize: 200, startCursor: cursor } : { databaseId: 'mhhwWIJB1CaibAeNVcsv8F', pageSize: 200 });
+  if (key === 'learn') return dbQuery(cursor ? { databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', pageSize: 200, startCursor: cursor } : { databaseId: 'uxtBg0OYXhLP7Mr7j0PAVS', pageSize: 200 });
+  if (key === 'learnmat') return dbQuery(cursor ? { databaseId: LM_DB, pageSize: 200, startCursor: cursor } : { databaseId: LM_DB, pageSize: 200 });
+  if (key === 'lessoncat') return dbQuery(cursor ? { databaseId: 'LMzKj8yBLuV95FwLQeBQSP', pageSize: 200, startCursor: cursor } : { databaseId: 'LMzKj8yBLuV95FwLQeBQSP', pageSize: 200 });
+  if (key === 'lesson') return dbQuery(cursor ? { databaseId: 'SM1l2BONT5gpw1qGwBx2FI', pageSize: 200, startCursor: cursor } : { databaseId: 'SM1l2BONT5gpw1qGwBx2FI', pageSize: 200 });
   if (key === 'attend') {
     var ap = { databaseId: 'PnyPkkMjn9JsTFDXAxVzMu', pageSize: 200 };
     if (cursor) ap.startCursor = cursor;
     if (filter) ap.filter = filter;
-    return db.query(ap);
+    return dbQuery(ap);
   }
-  if (key === 'attname') return db.query(cursor ? { databaseId: 'NfMB9IwCNSthxn93r5tMVl', pageSize: 200, startCursor: cursor } : { databaseId: 'NfMB9IwCNSthxn93r5tMVl', pageSize: 200 });
-  if (key === 'attdef') return db.query(cursor ? { databaseId: 'sEF1LuwsUaKlC9WEfOskDr', pageSize: 200, startCursor: cursor } : { databaseId: 'sEF1LuwsUaKlC9WEfOskDr', pageSize: 200 });
-  if (key === 'attphoto') return db.query(cursor ? { databaseId: '8L0AzRyLhA19r0yh0rBBdQ', pageSize: 200, startCursor: cursor } : { databaseId: '8L0AzRyLhA19r0yh0rBBdQ', pageSize: 200 });
-  if (key === 'attgrade') return db.query(cursor ? { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200, startCursor: cursor } : { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200 });
-  if (key === 'attgrade') return db.query(cursor ? { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200, startCursor: cursor } : { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200 });
-  return db.query(cursor ? { databaseId: 'IeFGZK4i2xU0CNEQbFgzos', pageSize: 200, startCursor: cursor } : { databaseId: 'IeFGZK4i2xU0CNEQbFgzos', pageSize: 200 });
+  if (key === 'attname') return dbQuery(cursor ? { databaseId: 'NfMB9IwCNSthxn93r5tMVl', pageSize: 200, startCursor: cursor } : { databaseId: 'NfMB9IwCNSthxn93r5tMVl', pageSize: 200 });
+  if (key === 'attdef') return dbQuery(cursor ? { databaseId: 'sEF1LuwsUaKlC9WEfOskDr', pageSize: 200, startCursor: cursor } : { databaseId: 'sEF1LuwsUaKlC9WEfOskDr', pageSize: 200 });
+  if (key === 'attphoto') return dbQuery(cursor ? { databaseId: '8L0AzRyLhA19r0yh0rBBdQ', pageSize: 200, startCursor: cursor } : { databaseId: '8L0AzRyLhA19r0yh0rBBdQ', pageSize: 200 });
+  if (key === 'attgrade') return dbQuery(cursor ? { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200, startCursor: cursor } : { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200 });
+  if (key === 'attgrade') return dbQuery(cursor ? { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200, startCursor: cursor } : { databaseId: 'tVEwvuX3SqOr9i8iiXPYwW', pageSize: 200 });
+  return dbQuery(cursor ? { databaseId: 'IeFGZK4i2xU0CNEQbFgzos', pageSize: 200, startCursor: cursor } : { databaseId: 'IeFGZK4i2xU0CNEQbFgzos', pageSize: 200 });
 }
 
 /* 云表这些列已改成文本：写入前把 {select:...} 转成 {text:...}，
@@ -5176,7 +5263,7 @@ function propsFit(key, props) {
 }
 
 function apiAdd(key, props) {
-  props = propsFit(key, props);
+  props = propsFit(key, uidProps(props));
   if (key === 'course') return db.addRecord({ databaseId: 'OWHTamPF6bQFyihdegPmgm', properties: props });
   if (key === 'classlog') return db.addRecord({ databaseId: 'c75IgHonpMSinBrVZwwxkh', properties: props });
   if (key === 'prep') return db.addRecord({ databaseId: 'VWHoVUck2Z9hGi8lGbzaRV', properties: props });
@@ -5198,7 +5285,7 @@ function apiAdd(key, props) {
 }
 
 function apiUpdate(key, rid, props) {
-  props = propsFit(key, props);
+  props = propsFit(key, uidProps(props));
   if (key === 'wsconf') return db.updateRecord({ databaseId: WS_DB, recordId: rid, properties: props });
   if (key === 'course') return db.updateRecord({ databaseId: 'OWHTamPF6bQFyihdegPmgm', recordId: rid, properties: props });
   if (key === 'classlog') return db.updateRecord({ databaseId: 'c75IgHonpMSinBrVZwwxkh', recordId: rid, properties: props });
@@ -5426,6 +5513,7 @@ function loadAll() {
 }
 
 function pushPending(op) {
+  if (op && !op.uid) op.uid = CUR_UID;   /* 队列带上归属，避免切账号补传错人 */
   var q = lsGet(LS_PENDING, []) || [];
   q.push(op);
   lsSet(LS_PENDING, q);
@@ -5543,6 +5631,7 @@ function flushPending() {
   function step() {
     if (i >= q.length) { reload(); return; }
     var op = q[i++];
+    if (op.uid && op.uid !== CUR_UID) return step();  /* 别的账号攒的改动，不补传 */
     var key = op.key || 'tasks';
     var p;
     if (op.type === 'add') p = apiAdd(key, op.properties);
@@ -14697,6 +14786,7 @@ function wsEnsureRow() {
     props[WS_F[k]] = { text: String(c[k] || defByF[k] || '') };
   }
   props['更新时间'] = { date: todayStr() };
+  props[UID_COL] = { text: CUR_UID };
   wsCreating = db.addRecord({ databaseId: WS_DB, properties: props })
     .then(function (res) {
       var rid = res && (res.recordId || res.id || res.record_id || (res.record && res.record.id));
@@ -14722,6 +14812,7 @@ function wsPush(fields) {
     props[col] = { text: String(v == null ? '' : v) };
   }
   props['更新时间'] = { date: todayStr() };
+  props[UID_COL] = { text: CUR_UID };
   for (k in fields) {
     if (!Object.prototype.hasOwnProperty.call(fields, k)) continue;
     c[k] = String(fields[k] == null ? '' : fields[k]);
@@ -14783,20 +14874,14 @@ function setApplyCloud() {
   setSilent = prev;
 }
 
-/* 首轮读取：云端配置为主 + 把老版本只存在本机的资料与设置补齐上云 */
+/* 首轮读取：云端配置为主 + 按账号隔离。
+   一条记录 = 一个账号的配置；本账号还没有记录时，先把旧版留下的
+   「无主记录」认领过来（历史数据全部归给当前账号），否则新建一条。 */
 function wsLoad() {
   setBooted = true;   /* 云端配置开始处理：此后用户改的设置才允许上云 */
   if (!db) return Promise.resolve(false);
-  return db.query({ databaseId: WS_DB, pageSize: 1 }).then(function (res) {
-    var rows = (res && (res.results || res.records || res.data)) || [];
-    if (!rows.length) {
-      /* 新空间首次打开：配置表是空的，先建一条记录，把本机已有设置一次补齐 */
-      return wsEnsureRow().then(function (ok) {
-        if (ok) { lsRawSet(SET_DIRTY, 0); setApplyCloud(); }
-        return ok;
-      });
-    }
-    var remote = wsNorm(rows[0]);
+  function finish(row) {
+    var remote = wsNorm(row);
     var local = lsRawGet('wb_mywork_wscfg', null);
     var patch = {}, kk, sk, sx, setFields = {}, sm, cv, lv, raw;
     var dirty = !!lsRawGet(SET_DIRTY, 0);
@@ -14831,8 +14916,8 @@ function wsLoad() {
     }
     wsRow = remote;
     lsRawSet('wb_mywork_wscfg', remote);
-    wsCleanHomeCols(rows[0]);
-    wsCleanYears(rows[0]);
+    wsCleanHomeCols(row);
+    wsCleanYears(row);
     var legacy = lsRawGet(ME_KEY, null);
     if (legacy && typeof legacy === 'object') {
       for (kk in WS_F) {
@@ -14846,6 +14931,33 @@ function wsLoad() {
       lsRawSet(SET_DIRTY, ok ? 0 : 1);
       setApplyCloud();
       return true;
+    });
+  }
+  function createMine() {
+    return wsEnsureRow().then(function (ok) {
+      if (ok) { lsRawSet(SET_DIRTY, 0); setApplyCloud(); }
+      return ok;
+    });
+  }
+  return dbQuery({ databaseId: WS_DB, pageSize: 5 }).then(function (res) {
+    var rows = (res && (res.results || res.records || res.data)) || [], mine = null, i;
+    for (i = 0; i < rows.length; i++) {
+      if (recUid(rows[i]) === CUR_UID) { mine = rows[i]; break; }
+    }
+    if (mine) return finish(mine);
+    /* 本账号还没有配置记录：查一页无主记录，认领第一条 */
+    return db.query({ databaseId: WS_DB, pageSize: 50 }).then(function (r2) {
+      var all = (r2 && (r2.results || r2.records || r2.data)) || [], orphan = null, j;
+      for (j = 0; j < all.length; j++) {
+        if (!recUid(all[j])) { orphan = all[j]; break; }
+      }
+      if (orphan && recId(orphan)) {
+        var pp = {}; pp[UID_COL] = { text: CUR_UID };
+        return db.updateRecord({ databaseId: WS_DB, recordId: recId(orphan), properties: pp })
+          .then(function () { return finish(orphan); })
+          .catch(function () { return createMine(); });
+      }
+      return createMine();
     });
   }).catch(function (err) {
     console.error('[配置] 读取失败，先用本机缓存:', err);
@@ -15426,10 +15538,12 @@ function renderMe() {
       '<span class="me-na">›</span></button>';
     if (on) h += '<div class="me-pane">' + mePaneHTML(r.k) + '</div>';
   }
+  h += '<button type="button" class="me-nav me-logout" data-logout="1"><span class="me-ni"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span><span class="me-nt"><b>退出登录</b><span>清除本机数据并返回登录页</span></span><span class="me-na">›</span></button>';
   h += '</div>';
-  h += '<div class="me-foot">' +
-    '个人资料和工作台设置存在云端，换设备登录后自动读取；' +
-    '任务、课表等业务数据同样在云端 · 用 WorkBuddy 资料库搭建</div>';
+  var who = (CUR_USER && (CUR_USER.nickName || CUR_USER.id)) || (CUR_UID === UID_LOCAL ? '本机试用（未登录）' : CUR_UID);
+  h += '<div class="me-foot">当前账号：<span class="me-uid">' + esc(who) + '</span><br>' +
+    '个人资料和工作台设置按账号存云端，换设备登录后自动读取；' +
+    '任务、课表等业务数据同样按账号隔离 · 用 WorkBuddy 资料库搭建</div>';
   el.innerHTML = h;
 }
 
@@ -19590,6 +19704,7 @@ function bindEvents() {
     if (closest(e.target, '#meAvDel')) {
       meSave({ avatar: '' }); renderMe(); renderHpGreeting(); applyBrand(); toast('已移除头像'); return;
     }
+    if (closest(e.target, '[data-logout]')) { doLogout(); return; }
     var mnv = closest(e.target, '[data-menav]');
     if (mnv) { meToggle(mnv.getAttribute('data-menav')); return; }
     var mgo = closest(e.target, '[data-mego]');
@@ -19881,9 +19996,12 @@ function init() {
   ovBoardInit();
 
   bindEvents();
-  setUserReady = true;   /* 之后的设置改动都算用户操作：断网时记脏，联网自动补传 */
 
-  loadSchema().then(function () {
+  initIdentity().then(function () {
+    uidNamespaceGuard();
+    setUserReady = true;   /* 身份确定后，之后的设置改动才允许上云 */
+    return loadSchema();
+  }).then(function () {
     fillSelects();
     return loadAll();
   }).then(function () {
