@@ -4463,10 +4463,172 @@ try {
 'use strict';
 
 /* ================= 状态与工具 ================= */
+/* ============== 本机账号系统（LOCAL_MODE）：账号/密码/数据全部存浏览器本机 ============== */
+var LOCAL_MODE = true;
+
+/* 本机数据库：伪装成云端 SDK 接口（query/addRecord/updateRecord/deleteRecord），
+   数据按「账号」分库存进 localStorage，从而天然实现账号隔离 */
+function LocalDb() {}
+LocalDb.prototype._key = function (databaseId) {
+  return 'wb_db_' + (CUR_UID || 'guest') + '_' + databaseId;
+};
+LocalDb.prototype._all = function (databaseId) {
+  try { return JSON.parse(localStorage.getItem(this._key(databaseId)) || '[]') || []; }
+  catch (e) { return []; }
+};
+LocalDb.prototype._save = function (databaseId, rows) {
+  try { localStorage.setItem(this._key(databaseId), JSON.stringify(rows)); } catch (e) {}
+};
+LocalDb.prototype._prim = function (v) {
+  if (v === null || v === undefined) return '';
+  if (typeof v !== 'object') return String(v);
+  if (v.text !== undefined) return String(v.text);
+  if (v.number !== undefined) return String(v.number);
+  if (v.date !== undefined) return String(v.date);
+  if (v.select !== undefined) return String(v.select);
+  if (v.value !== undefined) return String(v.value);
+  return '';
+};
+LocalDb.prototype._match = function (cond, record) {
+  var name = cond.property, val = this._prim(record[name]), c = cond.text || cond.select || cond.number || cond.date || {}, ok = true;
+  if (c.equals !== undefined) ok = (val === String(c.equals));
+  else if (c.contains !== undefined) ok = (val.indexOf(String(c.contains)) >= 0);
+  else if (c.is_empty !== undefined) ok = c.is_empty ? (val === '') : (val !== '');
+  else if (c.gt !== undefined) ok = (Number(val) > Number(c.gt));
+  else if (c.lt !== undefined) ok = (Number(val) < Number(c.lt));
+  return ok;
+};
+LocalDb.prototype._eval = function (filter, record) {
+  if (!filter) return true;
+  if (filter.and) return filter.and.every(function (f) { return this._eval(f, record); }, this);
+  if (filter.or) return filter.or.some(function (f) { return this._eval(f, record); }, this);
+  if (filter.property) return this._match(filter, record);
+  return true;
+};
+LocalDb.prototype.query = function (p) {
+  p = p || {};
+  var self = this;
+  var rows = this._all(p.databaseId).map(function (r) {
+    var o = { id: r.id, properties: r.properties };
+    for (var k in r.properties) if (Object.prototype.hasOwnProperty.call(r.properties, k)) o[k] = r.properties[k];
+    return o;
+  });
+  if (p.filter) rows = rows.filter(function (r) { return self._eval(p.filter, r); });
+  return Promise.resolve({ records: rows, results: rows, data: rows, hasMore: false, nextCursor: null });
+};
+LocalDb.prototype.addRecord = function (p) {
+  var rows = this._all(p.databaseId);
+  var id = 'loc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  rows.push({ id: id, properties: p.properties || {} });
+  this._save(p.databaseId, rows);
+  return Promise.resolve({ recordId: id, id: id, record: { id: id } });
+};
+LocalDb.prototype.updateRecord = function (p) {
+  var rows = this._all(p.databaseId), rid = String(p.recordId), found = null, i;
+  for (i = 0; i < rows.length; i++) { if (String(rows[i].id) === rid) { found = rows[i]; break; } }
+  if (found) {
+    var props = p.properties || {};
+    for (var k in props) if (Object.prototype.hasOwnProperty.call(props, k)) found.properties[k] = props[k];
+    this._save(p.databaseId, rows);
+  }
+  return Promise.resolve({ recordId: rid, id: rid });
+};
+LocalDb.prototype.deleteRecord = function (p) {
+  var rows = this._all(p.databaseId), rid = String(p.recordId);
+  rows = rows.filter(function (r) { return String(r.id) !== rid; });
+  this._save(p.databaseId, rows);
+  return Promise.resolve({});
+};
+
+/* 账号注册表 + 登录态（本机） */
+var LS_ACCOUNTS = 'wb_accounts_v1';
+var LS_SESSION = 'wb_session_v1';
+var bootAuthResolve = null;
+function accAll() { try { return JSON.parse(localStorage.getItem(LS_ACCOUNTS) || '{}') || {}; } catch (e) { return {}; } }
+function accGet(a) { var m = accAll(); return (a && m[a]) ? m[a] : null; }
+function accSave(a, obj) { var m = accAll(); m[a] = obj; try { localStorage.setItem(LS_ACCOUNTS, JSON.stringify(m)); } catch (e) {} }
+function sessGet() { try { return localStorage.getItem(LS_SESSION) || ''; } catch (e) { return ''; } }
+function sessSet(a) { try { localStorage.setItem(LS_SESSION, a || ''); } catch (e) {} }
+function setIdentity(a) { CUR_UID = a || UID_LOCAL; CUR_USER = a ? { id: a, nickName: a } : null; }
+
+/* 清掉本账号的运行时缓存，但保留：账号注册表、登录态、以及各账号自己的数据(wb_db_) */
+function clearRuntimeLocal() {
+  try {
+    var keys = [], i, k;
+    for (i = 0; i < localStorage.length; i++) { k = localStorage.key(i); if (k && k.indexOf('wb_') === 0) keys.push(k); }
+    for (i = 0; i < keys.length; i++) {
+      k = keys[i];
+      if (k === LS_ACCOUNTS || k === LS_SESSION) continue;
+      if (k.indexOf('wb_db_') === 0) continue;
+      localStorage.removeItem(k);
+    }
+  } catch (e) {}
+}
+
+function showAuthScreen(onLogin) {
+  if (!qs('#authStyle')) {
+    var st = document.createElement('style'); st.id = 'authStyle';
+    st.textContent = '#authScreen{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;font-family:inherit;}' +
+      '.auth-mask{position:absolute;inset:0;background:rgba(15,23,42,.55);}' +
+      '.auth-card{position:relative;width:340px;max-width:92vw;background:#fff;border-radius:16px;padding:26px 24px;box-shadow:0 20px 60px rgba(0,0,0,.25);}' +
+      '.auth-logo{font-size:20px;font-weight:700;color:#1e3a8a;}.auth-sub{font-size:12px;color:#94a3b8;margin-bottom:14px;}' +
+      '.auth-tabs{display:flex;gap:8px;margin-bottom:10px;}.atab{flex:1;padding:8px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc;color:#475569;cursor:pointer;font-size:14px;}.atab.on{background:#1e3a8a;color:#fff;border-color:#1e3a8a;}' +
+      '.auth-msg{min-height:18px;color:#dc2626;font-size:13px;margin-bottom:4px;}' +
+      '.auth-form label{display:block;font-size:13px;color:#334155;margin:10px 0 4px;}.auth-form input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;}' +
+      '.auth-btn{width:100%;margin-top:16px;padding:11px;border:0;border-radius:10px;background:#1e3a8a;color:#fff;font-size:15px;cursor:pointer;}.auth-btn:hover{background:#1d4ed8;}' +
+      '.auth-hint{margin-top:12px;font-size:12px;color:#94a3b8;line-height:1.5;}';
+    (document.head || document.documentElement).appendChild(st);
+  }
+  var old = qs('#authScreen'); if (old && old.parentNode) old.parentNode.removeChild(old);
+  var box = document.createElement('div'); box.id = 'authScreen';
+  box.innerHTML = '<div class="auth-mask"></div>' +
+    '<div class="auth-card"><div class="auth-logo">阿龙教师工作台</div><div class="auth-sub">just do it!</div>' +
+    '<div class="auth-tabs"><button type="button" class="atab on" data-tab="login">登录</button><button type="button" class="atab" data-tab="reg">注册</button></div>' +
+    '<div class="auth-msg" id="authMsg"></div>' +
+    '<form class="auth-form" id="authForm" autocomplete="off">' +
+    '<label>账号（11 位数字）<input id="authAcc" inputmode="numeric" maxlength="11" placeholder="例如 13800138000"></label>' +
+    '<label>密码<input id="authPwd" type="password" placeholder="任意密码均可"></label>' +
+    '<label id="authPwd2Wrap" style="display:none">确认密码<input id="authPwd2" type="password" placeholder="再输一次"></label>' +
+    '<button type="submit" class="auth-btn" id="authSubmit">登录</button></form>' +
+    '<div class="auth-hint">账号自己创建、密码自己设定；两个都正确即可登录。账号为 11 位数字，密码不做限制。</div></div>';
+  document.body.appendChild(box);
+  var tab = 'login';
+  function setTab(t) {
+    tab = t;
+    var tabs = box.querySelectorAll('.atab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-tab') === t);
+    qs('#authPwd2Wrap', box).style.display = (t === 'reg') ? '' : 'none';
+    qs('#authSubmit', box).textContent = (t === 'reg') ? '注册并登录' : '登录';
+    qs('#authMsg', box).textContent = '';
+  }
+  box.querySelectorAll('.atab').forEach(function (b) { b.addEventListener('click', function () { setTab(b.getAttribute('data-tab')); }); });
+  qs('#authForm', box).addEventListener('submit', function (e) {
+    e.preventDefault();
+    var acc = qs('#authAcc', box).value.trim();
+    var pwd = qs('#authPwd', box).value;
+    var msg = qs('#authMsg', box);
+    if (!/^\d{11}$/.test(acc)) { msg.textContent = '账号必须是 11 位数字'; return; }
+    if (!pwd) { msg.textContent = '密码不能为空'; return; }
+    if (tab === 'reg') {
+      var pwd2 = qs('#authPwd2', box).value;
+      if (pwd !== pwd2) { msg.textContent = '两次密码不一致'; return; }
+      if (accGet(acc)) { msg.textContent = '该账号已存在，请直接登录'; return; }
+      accSave(acc, { pwd: pwd, nick: acc, created: Date.now() });
+    } else {
+      var a = accGet(acc);
+      if (!a) { msg.textContent = '账号不存在，请先注册'; return; }
+      if (a.pwd !== pwd) { msg.textContent = '密码错误'; return; }
+    }
+    sessSet(acc);
+    if (box.parentNode) box.parentNode.removeChild(box);
+    if (onLogin) onLogin();
+  });
+  setTab('login');
+}
+
 var db = null;
-try {
-  db = (window.__SMART_PAGE__ && window.__SMART_PAGE__.database) ? window.__SMART_PAGE__.database : null;
-} catch (e) { db = null; }
+if (LOCAL_MODE) { db = new LocalDb(); }
+else { try { db = (window.__SMART_PAGE__ && window.__SMART_PAGE__.database) ? window.__SMART_PAGE__.database : null; } catch (e) { db = null; } }
 
 /* ================= 账号与数据隔离 =================
    平台 SDK 的 getUserInfo() 返回当前登录用户；云端 18 张表都有「用户ID」列，
@@ -4506,18 +4668,30 @@ function recUid(r) {
   return String(v || '');
 }
 function initIdentity() {
-  if (!db || typeof db.getUserInfo !== 'function') {
-    CUR_UID = UID_LOCAL; CUR_USER = null;
-    return Promise.resolve(false);
+  if (!LOCAL_MODE) {
+    if (!db || typeof db.getUserInfo !== 'function') {
+      CUR_UID = UID_LOCAL; CUR_USER = null;
+      return Promise.resolve(false);
+    }
+    return db.getUserInfo().then(function (res) {
+      var info = res && res.userInfo;
+      CUR_UID = (info && info.id) ? String(info.id) : UID_LOCAL;
+      CUR_USER = info || null;
+      return !!info;
+    }).catch(function () {
+      CUR_UID = UID_LOCAL; CUR_USER = null;
+      return false;
+    });
   }
-  return db.getUserInfo().then(function (res) {
-    var info = res && res.userInfo;
-    CUR_UID = (info && info.id) ? String(info.id) : UID_LOCAL;
-    CUR_USER = info || null;
-    return !!info;
-  }).catch(function () {
-    CUR_UID = UID_LOCAL; CUR_USER = null;
-    return false;
+  /* 本机账号模式：已登录直接进；未登录弹出自建登录/注册页，登录成功后再继续启动 */
+  var a = sessGet();
+  if (a && accGet(a)) { setIdentity(a); return Promise.resolve(true); }
+  return new Promise(function (resolve) {
+    bootAuthResolve = resolve;
+    showAuthScreen(function () {
+      setIdentity(sessGet());
+      if (bootAuthResolve) { var r = bootAuthResolve; bootAuthResolve = null; r(true); }
+    });
   });
 }
 function clearAllLocal() {
@@ -4535,19 +4709,19 @@ function clearAllLocal() {
 function uidNamespaceGuard() {
   var prev = '';
   try { prev = localStorage.getItem(LS_UID) || ''; } catch (e) {}
-  if (prev && prev !== CUR_UID) clearAllLocal();
+  if (prev && prev !== CUR_UID) { LOCAL_MODE ? clearRuntimeLocal() : clearAllLocal(); }
   try { localStorage.setItem(LS_UID, CUR_UID); } catch (e) {}
 }
 function doLogout() {
   askConfirm({
     title: '退出登录',
-    html: '将清除本机的缓存、设置与待同步内容，并回到登录页。<br><b>云端数据不会删除</b>，下次用同一账号登录还能看到。<br>如需换成别的账号，请在 WorkBuddy 的账号菜单里先退出。',
+    html: '将退出当前账号并返回登录页。<br><b>本机数据会按账号保留</b>（账号、密码、各模块数据都还在），用同一账号重新登录后原样可见。<br>想换成别的账号，退出后直接登录另一个即可。',
     ok: '退出登录', cancel: '取消', danger: true, ico: false
   }).then(function (yes) {
     if (!yes) return;
-    clearAllLocal();
-    var back = location.href.split('#')[0];
-    location.href = 'https://www.workbuddy.cn/login/?platform=buddylink&redirect_uri=' + encodeURIComponent(back);
+    sessSet('');
+    clearRuntimeLocal();
+    location.reload();
   });
 }
 
@@ -5349,7 +5523,7 @@ function fillSelOpts(k, m) {
 }
 
 function loadSchema() {
-  if (!db) { applyDefaultSchema(); return Promise.resolve(false); }
+  if (LOCAL_MODE || !db) { applyDefaultSchema(); return Promise.resolve(false); }
   return Promise.all(KEYS.map(function (k) {
     return apiGetSchema(k).then(function (schema) {
       var props = (schema && schema.properties) || [];
@@ -5513,6 +5687,7 @@ function loadAll() {
 }
 
 function pushPending(op) {
+  if (LOCAL_MODE) return;   /* 本机模式直接落本机，不走离线补传队列 */
   if (op && !op.uid) op.uid = CUR_UID;   /* 队列带上归属，避免切账号补传错人 */
   var q = lsGet(LS_PENDING, []) || [];
   q.push(op);
@@ -15538,12 +15713,12 @@ function renderMe() {
       '<span class="me-na">›</span></button>';
     if (on) h += '<div class="me-pane">' + mePaneHTML(r.k) + '</div>';
   }
-  h += '<button type="button" class="me-nav me-logout" data-logout="1"><span class="me-ni"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span><span class="me-nt"><b>退出登录</b><span>清除本机数据并返回登录页</span></span><span class="me-na">›</span></button>';
+  h += '<button type="button" class="me-nav me-logout" data-logout="1"><span class="me-ni"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span><span class="me-nt"><b>退出登录</b><span>退出当前账号并返回登录页</span></span><span class="me-na">›</span></button>';
   h += '</div>';
   var who = (CUR_USER && (CUR_USER.nickName || CUR_USER.id)) || (CUR_UID === UID_LOCAL ? '本机试用（未登录）' : CUR_UID);
   h += '<div class="me-foot">当前账号：<span class="me-uid">' + esc(who) + '</span><br>' +
-    '个人资料和工作台设置按账号存云端，换设备登录后自动读取；' +
-    '任务、课表等业务数据同样按账号隔离 · 用 WorkBuddy 资料库搭建</div>';
+    '账号、密码与全部数据都保存在本机浏览器中，按账号互相隔离；' +
+    '换浏览器或清除缓存后，用同一账号重新登录即可读取。</div>';
   el.innerHTML = h;
 }
 
