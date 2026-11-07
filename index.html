@@ -3759,6 +3759,10 @@ html[data-theme="gov"] body{background:var(--bg)}
 .me-msg-empty{padding:18px;text-align:center;font-size:13px;color:var(--ink3)}
 .me-msg-sys{padding:8px 2px 2px;font-size:12px;color:var(--ink3);border-top:1px solid var(--line2);margin-top:2px}
 html[data-wide="0"] .view{max-width:1180px;margin-left:auto;margin-right:auto}
+
+/* 文件选择：label 原生触发，避免隐藏 input 的 JS click 在部分浏览器被拦 */
+.ws-file{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.ws-file-lb{cursor:pointer}
 </style>
 <script data-page-node-id="H5uiySyOLl9BfXDbu6EBe3" data-pnid-children="BV18BU5imiakvJS7X7Xuw3">
 /* 先把主题挂到 html 上再渲染，避免刷新时闪一下默认配色 */
@@ -14508,20 +14512,21 @@ function wsNorm(r) {
     homeAvMode: '', homeAv: '', homeNameMode: '', homeName: '' };
   if (!r) return o;
   o.id = String(r.id || r._id || r.recordId || r.record_id || '');
-  o.name = String(r['昵称'] || '');
-  o.avatar = String(r['头像'] || '');
-  o.school = String(r['学校'] || '');
-  o.subject = String(r['任教学科'] || '');
-  o.years = (r['教龄'] === 0 || r['教龄']) ? String(r['教龄']) : '';
-  o.motto = String(r['签名'] || '');
-  o.wsName = String(r['工作台名称'] || '');
-  o.wsSub = String(r['工作台副标题'] || '');
-  o.wsIcon = String(r['工作台图标'] || '');
-  o.welcome = String(r['欢迎语'] || '');
-  o.homeAvMode = String(r['首页头像模式'] || '');
-  o.homeAv = String(r['首页头像'] || '');
-  o.homeNameMode = String(r['首页昵称模式'] || '');
-  o.homeName = String(r['首页昵称'] || '');
+  /* 两种来源：云端记录用中文列名，本机缓存用 JS 字段名；以前只认前者，
+     导致断网/仅本机时保存的配置刷新后读不出来（图标、名称等全变默认） */
+  var wsPairs = [
+    ['name', '昵称'], ['avatar', '头像'], ['school', '学校'], ['subject', '任教学科'],
+    ['years', '教龄'], ['motto', '签名'],
+    ['wsName', '工作台名称'], ['wsSub', '工作台副标题'], ['wsIcon', '工作台图标'],
+    ['welcome', '欢迎语'],
+    ['homeAvMode', '首页头像模式'], ['homeAv', '首页头像'],
+    ['homeNameMode', '首页昵称模式'], ['homeName', '首页昵称']
+  ];
+  for (var wi = 0; wi < wsPairs.length; wi++) {
+    var wk = wsPairs[wi][0], wcn = wsPairs[wi][1];
+    var wv = Object.prototype.hasOwnProperty.call(r, wk) ? r[wk] : r[wcn];
+    o[wk] = (wv === 0 || wv) ? String(wv) : '';
+  }
   return o;
 }
 
@@ -14885,9 +14890,9 @@ function wsSettingsHTML() {
   h += '<div class="ws-full ws-up"><div class="ws-up-av ws-icon-prev"' + wsBg(c.wsIcon) + '>' +
     (c.wsIcon ? '' : '图标') + '</div>' +
     '<div class="ws-up-t"><b>工作台图标</b><span>左上角那个方块；不传就用系统默认图标，不会拿你的头像顶替</span></div>' +
-    '<div class="ws-up-a"><button type="button" class="btn primary sm" id="wsIconPick">上传</button>' +
+    '<div class="ws-up-a"><label class="btn primary sm ws-file-lb" for="wsIconFile">上传</label>' +
     (c.wsIcon ? '<button type="button" class="btn ghost sm" id="wsIconDel">移除</button>' : '') + '</div>' +
-    '<input type="file" accept="image/*" id="wsIconFile" hidden></div>';
+    '<input type="file" accept="image/*" id="wsIconFile" class="ws-file"></div>';
   h += '<label><span>工作台名称</span><input id="wsName" maxlength="16" placeholder="我的工作台" value="' + esc(c.wsName || '') + '"></label>';
   h += '<label><span>副标题</span><input id="wsSub" maxlength="24" placeholder="Workbench" value="' + esc(c.wsSub || '') + '"></label>';
   h += '<label class="ws-full"><span>欢迎语</span>' +
@@ -14916,9 +14921,9 @@ function wsHomeHTML() {
   h += '<div class="ws-full ws-custom" data-for="wsAvMode"' + (avMode === '自定义' ? '' : ' style="display:none"') + '>' +
     '<div class="ws-up"><div class="ws-up-av"' + wsBg(c.homeAv) + '>' + (c.homeAv ? '' : '未设置') + '</div>' +
     '<div class="ws-up-t"><b>自定义首页头像</b><span>只影响首页个人卡；个人资料头像和左上角图标都不变</span></div>' +
-    '<div class="ws-up-a"><button type="button" class="btn primary sm" id="wsHomeAvPick">上传</button>' +
+    '<div class="ws-up-a"><label class="btn primary sm ws-file-lb" for="wsHomeAvFile">上传</label>' +
     (c.homeAv ? '<button type="button" class="btn ghost sm" id="wsHomeAvDel">移除</button>' : '') + '</div>' +
-    '<input type="file" accept="image/*" id="wsHomeAvFile" hidden></div></div>';
+    '<input type="file" accept="image/*" id="wsHomeAvFile" class="ws-file"></div></div>';
   h += '<div class="ws-full"><span class="ws-lb">首页昵称</span>' + wsSeg('wsNmMode', nmMode, ['跟随个人资料', '自定义']) + '</div>';
   h += '<label class="ws-full ws-custom" data-for="wsNmMode"' + (nmMode === '自定义' ? '' : ' style="display:none"') + '>' +
     '<span>首页显示的昵称</span><input id="wsHomeName" maxlength="12" placeholder="留空则跟随个人资料" value="' + esc(c.homeName || '') + '"></label>';
@@ -19379,8 +19384,6 @@ function bindEvents() {
       return;
     }
     if (closest(e.target, '#wsSaveBtn') || closest(e.target, '#wsSaveBtn2')) { wsSaveForm(); return; }
-    if (closest(e.target, '#wsHomeAvPick')) { var _waf = qs('#wsHomeAvFile'); if (_waf) _waf.click(); return; }
-    if (closest(e.target, '#wsIconPick')) { var _wif = qs('#wsIconFile'); if (_wif) _wif.click(); return; }
     if (closest(e.target, '#wsIconDel')) {
       wsPush({ wsIcon: '' }).then(function () { applyBrand(); renderMe(); toast('工作台图标已移除，回到默认图标'); });
       return;
