@@ -3721,6 +3721,44 @@ html[data-theme="gov"] body{background:var(--bg)}
   .att-r1 .fld:has(select){width:128px!important}
   .att-r1 .fld:has(#attTime){width:142px!important}
 }
+
+/* ---------- 我的 · 列表式个人中心 ---------- */
+.me-head{padding:2px 2px 14px}
+.me-eyebrow{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--brand);text-transform:uppercase}
+.me-head h1{margin:5px 0 2px;font-size:22px;font-weight:800;color:var(--ink)}
+.me-head p{margin:0;font-size:12.5px;color:var(--ink3)}
+.me-list{padding:0;overflow:hidden}
+.me-nav{display:flex;align-items:center;gap:12px;width:100%;padding:13px 16px;background:transparent;
+  border:0;border-bottom:1px solid var(--line2);text-align:left;cursor:pointer;color:var(--ink);
+  font:inherit;transition:background .15s}
+.me-nav:hover{background:var(--brand-l)}
+.me-nav.on{background:var(--brand-l)}
+.me-ni{width:34px;height:34px;flex:0 0 auto;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;background:var(--brand-l);color:var(--brand-d)}
+.me-nav:hover .me-ni,.me-nav.on .me-ni{background:var(--card)}
+.me-ni svg{width:17px;height:17px}
+.me-nt{flex:1 1 auto;min-width:0}
+.me-nt b{display:block;font-size:14px;font-weight:700}
+.me-nt span{display:block;font-size:12px;color:var(--ink3);margin-top:2px}
+.me-ns{flex:0 0 auto;font-size:12px;color:var(--brand-d);white-space:nowrap}
+.me-na{flex:0 0 auto;color:var(--ink3);font-size:18px;line-height:1;transition:transform .15s}
+.me-nav.on .me-na{transform:rotate(90deg)}
+.me-pane{padding:2px 14px 16px;background:var(--bg)}
+.me-pane > .panel{margin:10px 0 0;box-shadow:none;border:1px solid var(--line);border-radius:var(--r2)}
+.me-msgs{display:flex;flex-direction:column;gap:8px}
+.me-msg{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:1px solid var(--line2);
+  border-radius:var(--r2);background:var(--card);text-align:left;cursor:pointer;color:inherit;font:inherit}
+.me-msg:hover{border-color:var(--brand);background:var(--brand-l)}
+.me-msg-ic{width:26px;height:26px;flex:0 0 auto;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;background:var(--brand-l);color:var(--brand-d);font-size:12px;font-weight:700}
+.me-msg-ic.warn{background:var(--red-l);color:var(--red)}
+.me-mt{flex:1 1 auto;min-width:0}
+.me-mt b{display:block;font-size:13.5px;font-weight:600}
+.me-mt span{display:block;font-size:12px;color:var(--ink3);margin-top:2px}
+.me-msg-go{flex:0 0 auto;font-size:12px;color:var(--ink3)}
+.me-msg-empty{padding:18px;text-align:center;font-size:13px;color:var(--ink3)}
+.me-msg-sys{padding:8px 2px 2px;font-size:12px;color:var(--ink3);border-top:1px solid var(--line2);margin-top:2px}
+html[data-wide="0"] .view{max-width:1180px;margin-left:auto;margin-right:auto}
 </style>
 <script data-page-node-id="H5uiySyOLl9BfXDbu6EBe3" data-pnid-children="BV18BU5imiakvJS7X7Xuw3">
 /* 先把主题挂到 html 上再渲染，避免刷新时闪一下默认配色 */
@@ -14991,7 +15029,7 @@ function saveMeForm() {
     name: val('meName'), school: val('meSchool'), subject: val('meSubject'),
     years: val('meYears'), motto: val('meMotto')
   });
-  state.meEdit = false;
+  state.meOpen = '';
   renderMe();
   applyBrand();
   var g = qs('#greetText');
@@ -15020,25 +15058,142 @@ function clearLocalCache() {
   });
 }
 
+/* ================= 我的 · 列表式个人中心 ================= */
+var LS_WIDE = 'wb_mywork_wide';
+var ME_ROWS = [
+  { k: 'profile', n: '个人信息', d: '头像、姓名、学校、学科及职务', ic: 'user' },
+  { k: 'ws',      n: '工作台设置', d: '左上角名称、副标题和品牌图片', ic: 'sliders' },
+  { k: 'msg',     n: '消息中心', d: '待办、课程与通知提醒', ic: 'bell' },
+  { k: 'theme',   n: '主题外观', d: '调整工作台整体颜色主题', ic: 'sun' },
+  { k: 'wide',    n: '平铺整页', d: '控制页面内容是否铺满屏幕', ic: 'expand' },
+  { k: 'reset',   n: '重置首页布局', d: '恢复首页卡片的默认排列', ic: 'grid' },
+  { k: 'home',    n: '首页个人卡', d: '首页头像与昵称的展示方式', ic: 'idcard' },
+  { k: 'remind',  n: '上课提醒', d: '提醒时间、提前量与浏览器通知', ic: 'clock' },
+  { k: 'data',    n: '数据', d: '导出备份、同步状态与本机缓存', ic: 'database' }
+];
+var ME_ICON_PATH = {
+  user: '<circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>',
+  sliders: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+  bell: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  expand: '<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>',
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  idcard: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M14 10h4M14 14h4M5.5 16c.6-1.2 1.7-1.8 3-1.8s2.4.6 3 1.8"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  database: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'
+};
+function meIcon(k) {
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' +
+    (ME_ICON_PATH[k] || ME_ICON_PATH.grid) + '</svg>';
+}
+function meWideOn() { return !!lsGet(LS_WIDE, true); }
+function applyWide(on) {
+  var hd = document.documentElement;
+  if (on) hd.removeAttribute('data-wide');
+  else hd.setAttribute('data-wide', '0');
+}
+function meUnread() {
+  var tod = todayStr(), overdue = [], todayOpen = [], courses = [], tasks = [];
+  try {
+    overdue = state.tasks.filter(function (t) { return isOverdue(t); });
+    todayOpen = state.tasks.filter(function (t) { return taskOnDay(t, tod) && t.st !== '已完成'; });
+    tasks = sortTasks(overdue.concat(todayOpen)).slice(0, 12);
+  } catch (e) { tasks = overdue.concat(todayOpen).slice(0, 12); }
+  try { courses = todayCourses(); } catch (e) { courses = []; }
+  return { tasks: tasks, courses: courses, n: overdue.length + todayOpen.length + courses.length };
+}
+function meMsgHTML() {
+  var u = meUnread(), tod = todayStr(), i, h = '<div class="me-msgs">';
+  for (i = 0; i < u.tasks.length; i++) {
+    var t = u.tasks[i], ov = false;
+    try { ov = isOverdue(t); } catch (e) {}
+    var meta = [];
+    if (ov) meta.push('逾期 · ' + prettyDate(t.date));
+    else if (t.date && t.date !== tod) meta.push(prettyDate(t.date));
+    try { if (hasClock(t.start)) meta.push(clockOf(t.start)); } catch (e) {}
+    if (!meta.length) meta.push('今日待办');
+    if (t.cat) meta.push(t.cat);
+    h += '<button type="button" class="me-msg" data-mego="overview">' +
+      '<span class="me-msg-ic' + (ov ? ' warn' : '') + '">' + (ov ? '!' : '•') + '</span>' +
+      '<span class="me-mt"><b>' + esc(t.title || '未命名') + '</b><span>' + esc(meta.join(' · ')) + '</span></span>' +
+      '<span class="me-msg-go">查看 ›</span></button>';
+  }
+  for (i = 0; i < u.courses.length; i++) {
+    var c = u.courses[i];
+    h += '<button type="button" class="me-msg" data-mego="overview">' +
+      '<span class="me-msg-ic">课</span>' +
+      '<span class="me-mt"><b>' + esc(c['班级'] || '今日课程') + '</b><span>' +
+      esc((c['开始时间'] ? c['开始时间'] + ' · ' : '') + (c['节次'] || '今日上课')) + '</span></span>' +
+      '<span class="me-msg-go">查看 ›</span></button>';
+  }
+  if (!u.tasks.length && !u.courses.length) h += '<div class="me-msg-empty">今天没有待办和课程，暂无未读消息</div>';
+  h += '<div class="me-msg-sys">浏览器通知：' + (remindCfg.notify ? '已开启' : '未开启') +
+    '　·　云端同步：' + (state.online ? '已连接' : '当前离线') + '</div>';
+  return h + '</div>';
+}
+function meWideHTML() {
+  var on = meWideOn();
+  return '<div class="me-row"><div><b>页面内容铺满屏幕</b><span>开启保持现在的全宽；关闭则收窄到舒适宽度并居中。设置只保存在这台设备</span></div>' +
+    '<button type="button" class="btn primary sm" id="meWideToggle">' + (on ? '关闭平铺' : '开启平铺') + '</button></div>';
+}
+function meResetHTML() {
+  return '<div class="me-row"><div><b>恢复默认排列</b><span>把首页卡片的位置和宽度恢复成默认排布，不会删除任何数据</span></div>' +
+    '<button type="button" class="btn primary sm" id="meResetLayout">恢复默认布局</button></div>';
+}
+function mePaneHTML(k) {
+  if (k === 'profile') return '<div class="panel">' + meFormHTML() + '</div>';
+  if (k === 'ws') return wsSettingsHTML();
+  if (k === 'msg') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>消息中心</h2>' +
+    '<span class="hint" style="margin-right:auto">今天的待办、课程与通知状态</span></div>' + meMsgHTML() + '</div>';
+  if (k === 'theme') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>界面模板</h2>' +
+    '<span class="hint" style="margin-right:auto">轮着换也不影响数据，喜欢哪套点哪套</span></div>' + meThemeHTML() + '</div>';
+  if (k === 'wide') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>平铺整页</h2></div>' + meWideHTML() + '</div>';
+  if (k === 'reset') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>首页布局</h2></div>' + meResetHTML() + '</div>';
+  if (k === 'home') return wsHomeHTML();
+  if (k === 'remind') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>上课提醒</h2>' +
+    '<span class="hint" style="margin-right:auto">和首页那张今日课程卡是同一份设置</span></div>' + meRemindHTML() + '</div>';
+  if (k === 'data') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>数据</h2></div>' + meDataHTML() + '</div>';
+  return '';
+}
+function meRowState(k) {
+  if (k === 'msg') { var n = meUnread().n; return n ? n + ' 条未读' : '暂无未读'; }
+  if (k === 'theme') return themeOf(curTheme()).n;
+  if (k === 'wide') return meWideOn() ? '开' : '关';
+  return '';
+}
+function meToggle(k) {
+  if (state.meOpen === undefined) state.meOpen = '';
+  state.meOpen = (state.meOpen === k) ? '' : k;
+  renderMe();
+}
 function renderMe() {
   var el = qs('#meBody');
   if (!el) return;
-  var h = '';
-  h += '<div class="panel me-panel">' + meHeroHTML() + (state.meEdit ? meFormHTML() : '') + '</div>';
-  h += wsSettingsHTML();
-  h += wsHomeHTML();
-  h += '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>界面模板</h2>' +
-    '<span class="hint" style="margin-right:auto">轮着换也不影响数据，喜欢哪套点哪套</span></div>' +
-    meThemeHTML() + '</div>';
-  h += '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>上课提醒</h2>' +
-    '<span class="hint" style="margin-right:auto">和首页那张今日课程卡是同一份设置</span></div>' +
-    meRemindHTML() + '</div>';
-  h += '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>数据</h2></div>' + meDataHTML() + '</div>';
+  if (state.meOpen === undefined) state.meOpen = '';
+  state.meEdit = (state.meOpen === 'profile');
+  var h = '', i;
+  h += '<div class="me-head">' +
+    '<div class="me-eyebrow">PERSONAL CENTER</div>' +
+    '<h1>我的</h1>' +
+    '<p>管理个人资料、工作台配置与消息通知</p></div>';
+  h += '<div class="panel me-panel">' + meHeroHTML() + '</div>';
+  h += '<div class="panel me-list">';
+  for (i = 0; i < ME_ROWS.length; i++) {
+    var r = ME_ROWS[i], on = state.meOpen === r.k, st = meRowState(r.k);
+    h += '<button type="button" class="me-nav' + (on ? ' on' : '') + '" data-menav="' + r.k + '">' +
+      '<span class="me-ni">' + meIcon(r.ic) + '</span>' +
+      '<span class="me-nt"><b>' + esc(r.n) + '</b><span>' + esc(r.d) + '</span></span>' +
+      (st ? '<span class="me-ns">' + esc(st) + '</span>' : '') +
+      '<span class="me-na">›</span></button>';
+    if (on) h += '<div class="me-pane">' + mePaneHTML(r.k) + '</div>';
+  }
+  h += '</div>';
   h += '<div class="me-foot">' +
     '个人资料和工作台设置存在云端，换设备登录后自动读取；' +
     '任务、课表等业务数据同样在云端 · 用 WorkBuddy 资料库搭建</div>';
   el.innerHTML = h;
 }
+
 
 /* ---- 渲染：工作模块 ---- */
 function workTodoCount() {
@@ -19195,8 +19350,17 @@ function bindEvents() {
     if (closest(e.target, '#meAvDel')) {
       meSave({ avatar: '' }); renderMe(); renderHpGreeting(); applyBrand(); toast('已移除头像'); return;
     }
-    if (closest(e.target, '#meEditBtn')) { state.meEdit = !state.meEdit; renderMe(); return; }
-    if (closest(e.target, '#meCancelBtn')) { state.meEdit = false; renderMe(); return; }
+    var mnv = closest(e.target, '[data-menav]');
+    if (mnv) { meToggle(mnv.getAttribute('data-menav')); return; }
+    var mgo = closest(e.target, '[data-mego]');
+    if (mgo) { switchView(mgo.getAttribute('data-mego')); return; }
+    if (closest(e.target, '#meWideToggle')) {
+      var _won = !meWideOn(); lsSet(LS_WIDE, _won); applyWide(_won); renderMe();
+      toast(_won ? '已平铺整页' : '已恢复舒适宽度'); return;
+    }
+    if (closest(e.target, '#meResetLayout')) { ovResetLayout(); return; }
+    if (closest(e.target, '#meEditBtn')) { meToggle('profile'); return; }
+    if (closest(e.target, '#meCancelBtn')) { state.meOpen = ''; renderMe(); return; }
     if (closest(e.target, '#meSaveBtn')) { saveMeForm(); return; }
     if (closest(e.target, '#meNotify')) { askNotify(); setTimeout(renderMe, 400); return; }
     if (closest(e.target, '#meBackup')) { exportBackup(); return; }
@@ -19470,6 +19634,7 @@ function bindEvents() {
 
 function init() {
   applyTheme(curTheme());
+  applyWide(meWideOn());
   state.day = todayStr();
   state.month = curMonth();
   state.day0 = todayStr();
