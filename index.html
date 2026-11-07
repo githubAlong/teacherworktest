@@ -2823,10 +2823,10 @@ html[data-theme="night"] #hpRingGrad stop:last-of-type{stop-color:var(--brand-dd
   #view-overview .ov-toolbar{justify-content:flex-end}
 }
 
-/* ---------- 我的 · 工作台设置 / 首页展示 ---------- */
+/* ---------- 我的 · 工作台设置 ---------- */
 .ws-form{padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .ws-form label,.ws-form .ws-full{display:flex;flex-direction:column;gap:5px}
-.ws-form label>span,.ws-form .ws-lb{font-size:12.5px;font-weight:600;color:var(--ink2)}
+.ws-form label>span{font-size:12.5px;font-weight:600;color:var(--ink2)}
 .ws-form label.ws-full,.ws-form .ws-full{grid-column:1 / -1}
 .ws-form input[type=text],.ws-form input:not([type]),.ws-form input[type=number]{
   height:38px;border:0;border-radius:10px;padding:0 12px;background:var(--card);
@@ -2836,13 +2836,6 @@ html[data-theme="night"] #hpRingGrad stop:last-of-type{stop-color:var(--brand-dd
 .ws-icon-prev{border-radius:13px;font-size:11px;color:var(--ink3);font-weight:600}
 .ws-tip{font-style:normal;font-size:11.5px;color:var(--ink3);line-height:1.5;margin-top:2px}
 .ws-tip b{color:var(--brand-d);font-weight:700}
-.ws-seg{display:inline-flex;gap:4px;padding:3px;border-radius:12px;background:var(--line2);
-  box-shadow:inset 0 0 0 1px var(--line);width:fit-content}
-.ws-sg{border:0;background:transparent;border-radius:9px;padding:7px 14px;font-size:12.5px;
-  font-weight:700;color:var(--ink2);cursor:pointer;transition:.15s;white-space:nowrap}
-.ws-sg:hover{color:var(--ink)}
-.ws-sg.on{background:var(--card);color:var(--brand-d);box-shadow:0 1px 3px rgba(15,23,42,.12)}
-.ws-custom{display:flex;flex-direction:column;gap:5px}
 .ws-up{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);
   border-radius:14px;background:var(--line2)}
 .ws-up-av{width:52px;height:52px;border-radius:14px;flex:0 0 52px;display:flex;align-items:center;
@@ -2853,19 +2846,8 @@ html[data-theme="night"] #hpRingGrad stop:last-of-type{stop-color:var(--brand-dd
 .ws-up-t span{display:block;font-size:11.5px;color:var(--ink3);margin-top:3px;line-height:1.4}
 .ws-up-a{display:flex;gap:6px;flex-shrink:0}
 .ws-acts{padding:0 18px 18px;display:flex;justify-content:flex-end}
-.ws-prev{display:flex;align-items:center;gap:12px;margin:0 18px;padding:14px 16px;
-  border-radius:14px;background:var(--hero-grad);color:#fff;overflow:hidden}
-.ws-prev-av{width:46px;height:46px;border-radius:50%;flex:0 0 46px;display:flex;align-items:center;
-  justify-content:center;font-size:17px;font-weight:800;background:rgba(255,255,255,.22);
-  background-size:cover;background-position:center}
-.ws-prev-t{min-width:0}
-.ws-prev-t b{display:block;font-size:15px;font-weight:800;line-height:1.3}
-.ws-prev-t span{display:block;font-size:12px;opacity:.86;margin-top:3px;line-height:1.4;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-width:640px){
   .ws-form{grid-template-columns:1fr}
-  .ws-seg{width:100%}
-  .ws-sg{flex:1;padding:7px 8px}
 }
 
 /* ---------- 我的 · 头像裁剪对话框 ---------- */
@@ -7763,15 +7745,14 @@ function renderHpQuote() {
   var cn = qs('#hpQG'); if (cn) cn.textContent = q.cn || '';
 }
 
-/* 首页要显示的头像 / 昵称 / 欢迎语：自定义优先，否则跟随个人资料 */
+/* 首页个人卡：头像、昵称统一跟随个人资料；欢迎语来自「工作台设置」 */
 function homeIdentity() {
   var c = wsCfg();
   var m = meGet();
-  var av = (String(c.homeAvMode) === '自定义' && c.homeAv) ? c.homeAv : (m.avatar || '');
-  var nm = (String(c.homeNameMode) === '自定义' && c.homeName) ? c.homeName : (m.name || '');
+  var nm = String(m.name || '');
   var w = String(c.welcome || '').trim();
-  var greet = w ? w.replace(/\{(nickname|昵称)\}/g, nm || '') : '';
-  return { av: av, name: nm, greet: greet };
+  var greet = w ? w.replace(/\{(nickname|昵称)\}/g, nm) : '';
+  return { av: String(m.avatar || ''), name: nm, greet: greet };
 }
 
 function renderHpGreeting() {
@@ -14499,17 +14480,14 @@ var WS_KEY = 'wb_mywork_wscfg';    /* 配置的本机缓存（断网时先读它
 var WS_F = {
   name: '昵称', avatar: '头像', school: '学校', subject: '任教学科', years: '教龄',
   motto: '签名', wsName: '工作台名称', wsSub: '工作台副标题', wsIcon: '工作台图标',
-  welcome: '欢迎语',
-  homeAvMode: '首页头像模式', homeAv: '首页头像',
-  homeNameMode: '首页昵称模式', homeName: '首页昵称'
+  welcome: '欢迎语'
 };
 var wsRow = null;      /* 云端那一条（含 id） */
-var cropTarget = 'me'; /* 头像裁剪结果存到哪：me = 个人资料，home = 首页自定义头像 */
+var cropTarget = 'me'; /* 头像裁剪结果存到哪：me = 个人资料，icon = 工作台图标 */
 
 function wsNorm(r) {
   var o = { id: '', name: '', avatar: '', school: '', subject: '', years: '', motto: '',
-    wsName: '', wsSub: '', wsIcon: '', welcome: '',
-    homeAvMode: '', homeAv: '', homeNameMode: '', homeName: '' };
+    wsName: '', wsSub: '', wsIcon: '', welcome: '' };
   if (!r) return o;
   o.id = String(r.id || r._id || r.recordId || r.record_id || '');
   /* 两种来源：云端记录用中文列名，本机缓存用 JS 字段名；以前只认前者，
@@ -14518,9 +14496,7 @@ function wsNorm(r) {
     ['name', '昵称'], ['avatar', '头像'], ['school', '学校'], ['subject', '任教学科'],
     ['years', '教龄'], ['motto', '签名'],
     ['wsName', '工作台名称'], ['wsSub', '工作台副标题'], ['wsIcon', '工作台图标'],
-    ['welcome', '欢迎语'],
-    ['homeAvMode', '首页头像模式'], ['homeAv', '首页头像'],
-    ['homeNameMode', '首页昵称模式'], ['homeName', '首页昵称']
+    ['welcome', '欢迎语']
   ];
   for (var wi = 0; wi < wsPairs.length; wi++) {
     var wk = wsPairs[wi][0], wcn = wsPairs[wi][1];
@@ -14533,9 +14509,35 @@ function wsNorm(r) {
 function wsCfg() {
   if (!wsRow) {
     var c = lsGet(WS_KEY, null);
+    if (c && typeof c === 'object') {
+      /* 旧版「首页个人卡」留下的自定义头像/昵称字段：本机缓存一次性删掉 */
+      var oldKeys = ['homeAvMode', 'homeAv', 'homeNameMode', 'homeName'], dirty = false;
+      for (var oi = 0; oi < oldKeys.length; oi++) {
+        if (Object.prototype.hasOwnProperty.call(c, oldKeys[oi])) { delete c[oldKeys[oi]]; dirty = true; }
+      }
+      if (dirty) lsSet(WS_KEY, c);
+    }
     wsRow = wsNorm((c && typeof c === 'object') ? c : null);
   }
   return wsRow;
+}
+
+/* 云端配置表里那 4 个旧列也一次性清空；失败只记日志，下次打开会重试 */
+var WS_HOME_CLEAN = 'wb_wscfg_home_clean_v1';
+var WS_HOME_COLS = ['首页头像模式', '首页头像', '首页昵称模式', '首页昵称'];
+function wsCleanHomeCols(row) {
+  if (!row || lsGet(WS_HOME_CLEAN, false)) return;
+  var props = {}, need = false, i, rv;
+  for (i = 0; i < WS_HOME_COLS.length; i++) {
+    rv = row[WS_HOME_COLS[i]];
+    if (rv && typeof rv === 'object') rv = (rv.text != null ? rv.text : rv.value);
+    if (rv != null && String(rv) !== '') { props[WS_HOME_COLS[i]] = { text: '' }; need = true; }
+  }
+  if (!need) { lsSet(WS_HOME_CLEAN, true); return; }
+  if (!db || !wsRow || !wsRow.id) return;
+  db.updateRecord({ databaseId: WS_DB, recordId: wsRow.id, properties: props })
+    .then(function () { lsSet(WS_HOME_CLEAN, true); })
+    .catch(function (err) { console.warn('[配置] 旧首页字段清理失败:', err); });
 }
 
 /* 写配置：先落本机，再上云。空串也要真的写下去（否则"清空"在云上不生效） */
@@ -14580,14 +14582,13 @@ function wsLoad() {
     if (!rows.length) return false;
     wsRow = wsNorm(rows[0]);
     lsSet(WS_KEY, wsRow);
+    wsCleanHomeCols(rows[0]);
     var legacy = lsGet(ME_KEY, null);
     var patch = {}, kk;
     if (legacy && typeof legacy === 'object') {
       for (kk in WS_F) {
         if (!Object.prototype.hasOwnProperty.call(WS_F, kk)) continue;
-        if (kk === 'wsName' || kk === 'wsSub' || kk === 'welcome' ||
-            kk === 'homeAvMode' || kk === 'homeAv' ||
-            kk === 'homeNameMode' || kk === 'homeName') continue;
+        if (kk === 'wsName' || kk === 'wsSub' || kk === 'welcome') continue;
         if (!wsRow[kk] && legacy[kk]) patch[kk] = String(legacy[kk]);
       }
     }
@@ -14779,9 +14780,7 @@ function cropApply() {
     var url = cv.toDataURL('image/jpeg', 0.9);
     var _tgt = cropTarget;
     cropTarget = 'me';
-    if (_tgt === 'home') {
-      wsPush({ homeAv: url });
-    } else if (_tgt === 'icon') {
+    if (_tgt === 'icon') {
       wsPush({ wsIcon: url });
     } else {
       meSave({ avatar: url });
@@ -14789,7 +14788,7 @@ function cropApply() {
     renderMe();
     renderHpGreeting();
     applyBrand();
-    toast(_tgt === 'home' ? '首页头像已更新' : _tgt === 'icon' ? '工作台图标已更新' : '头像已更新');
+    toast(_tgt === 'icon' ? '工作台图标已更新' : '头像已更新');
   } catch (err) {
     console.error('[头像] 裁剪失败:', err);
     toast('这张图片处理失败，换一张试试');
@@ -14846,7 +14845,7 @@ function meFormHTML() {
       '<div class="me-av-prev" id="meAvPrev"' + (avUrl
         ? ' style="background-image:url(' + avUrl.replace(/"/g, '&quot;') + ')"'
         : '') + '>' + (avUrl ? '' : esc(avIni)) + '</div>' +
-      '<div class="me-av-txt"><b>头像照片</b><span>支持 JPG / PNG，上传后可拖动缩放取景；同时用作左上角图标，首页头像同步显示</span></div>' +
+      '<div class="me-av-txt"><b>头像照片</b><span>支持 JPG / PNG，上传后可拖动缩放取景；首页头像同步显示这张照片</span></div>' +
       '<div class="me-av-act">' +
         '<button type="button" class="btn primary sm" id="meAvPick">上传照片</button>' +
         (avUrl ? '<button type="button" class="btn ghost sm" id="meAvDel">移除</button>' : '') +
@@ -14863,16 +14862,6 @@ function meFormHTML() {
       '<button class="btn primary sm" id="meSaveBtn">保存资料</button>' +
     '</div>' +
   '</div>';
-}
-
-/* ---------- 我的 · 分段单选 ---------- */
-function wsSeg(id, cur, opts) {
-  var h = '<div class="ws-seg">';
-  for (var i = 0; i < opts.length; i++) {
-    h += '<button type="button" class="ws-sg' + (opts[i] === cur ? ' on' : '') + '"' +
-      ' data-wsseg="' + id + '" data-wsv="' + esc(opts[i]) + '">' + esc(opts[i]) + '</button>';
-  }
-  return h + '</div><input type="hidden" id="' + id + '" value="' + esc(cur) + '">';
 }
 
 function wsBg(url) {
@@ -14903,45 +14892,13 @@ function wsSettingsHTML() {
   return h + '</div>';
 }
 
-/* ---------- 我的 · 首页展示 ---------- */
-function wsHomeHTML() {
-  var c = wsCfg();
-  var avMode = String(c.homeAvMode) === '自定义' ? '自定义' : '跟随个人资料';
-  var nmMode = String(c.homeNameMode) === '自定义' ? '自定义' : '跟随个人资料';
-  var cur = homeIdentity();
-  var h = '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>首页个人卡</h2>' +
-    '<span class="hint" style="margin-right:auto">首页那张「头像＋昵称＋欢迎语」的卡；与左上角工作台品牌分开设置</span></div>';
-  h += '<div class="ws-prev">' +
-    '<div class="ws-prev-av"' + wsBg(cur.av) + '>' + (cur.av ? '' : esc(String(cur.name || '我').slice(0, 1))) + '</div>' +
-    '<div class="ws-prev-t"><b>' + esc(cur.name ? cur.name + '老师' : '老师') + '</b>' +
-    '<span>' + esc(cur.greet || (greetShort() + '，今天也要元气满满～')) + '</span></div>' +
-    '</div>';
-  h += '<div class="ws-form">';
-  h += '<div class="ws-full"><span class="ws-lb">首页头像</span>' + wsSeg('wsAvMode', avMode, ['跟随个人资料', '自定义']) + '</div>';
-  h += '<div class="ws-full ws-custom" data-for="wsAvMode"' + (avMode === '自定义' ? '' : ' style="display:none"') + '>' +
-    '<div class="ws-up"><div class="ws-up-av"' + wsBg(c.homeAv) + '>' + (c.homeAv ? '' : '未设置') + '</div>' +
-    '<div class="ws-up-t"><b>自定义首页头像</b><span>只影响首页个人卡；个人资料头像和左上角图标都不变</span></div>' +
-    '<div class="ws-up-a"><label class="btn primary sm ws-file-lb" for="wsHomeAvFile">上传</label>' +
-    (c.homeAv ? '<button type="button" class="btn ghost sm" id="wsHomeAvDel">移除</button>' : '') + '</div>' +
-    '<input type="file" accept="image/*" id="wsHomeAvFile" class="ws-file"></div></div>';
-  h += '<div class="ws-full"><span class="ws-lb">首页昵称</span>' + wsSeg('wsNmMode', nmMode, ['跟随个人资料', '自定义']) + '</div>';
-  h += '<label class="ws-full ws-custom" data-for="wsNmMode"' + (nmMode === '自定义' ? '' : ' style="display:none"') + '>' +
-    '<span>首页显示的昵称</span><input id="wsHomeName" maxlength="12" placeholder="留空则跟随个人资料" value="' + esc(c.homeName || '') + '"></label>';
-  h += '</div>';
-  h += '<div class="ws-acts"><button class="btn primary sm" id="wsSaveBtn2" type="button">保存展示配置</button></div>';
-  return h + '</div>';
-}
-
-/* 保存两张卡：只读当前 DOM 里还在的字段 */
+/* 保存工作台设置：只读当前 DOM 里还在的字段 */
 function wsSaveForm() {
   var val = function (id) { var el = qs('#' + id); return el ? String(el.value || '').trim() : null; };
   var patch = {}, v;
   v = val('wsName'); if (v !== null) patch.wsName = v;
   v = val('wsSub'); if (v !== null) patch.wsSub = v;
   v = val('wsWelcome'); if (v !== null) patch.welcome = v;
-  v = val('wsAvMode'); if (v !== null) patch.homeAvMode = v;
-  v = val('wsNmMode'); if (v !== null) patch.homeNameMode = v;
-  v = val('wsHomeName'); if (v !== null && patch.homeNameMode !== '跟随个人资料') patch.homeName = v;
   if (!Object.keys(patch).length) { toast('这里没有可保存的内容'); return; }
   wsPush(patch).then(function (synced) {
     applyBrand();
@@ -14959,18 +14916,6 @@ function wsIconPick(input) {
   if (f.size > 8 * 1024 * 1024) { toast('图标太大了，换一张 8MB 以内的'); input.value = ''; return; }
   var fr = new FileReader();
   fr.onload = function () { cropTarget = 'icon'; cropOpen(String(fr.result || '')); };
-  fr.onerror = function () { toast('读取图片失败'); };
-  fr.readAsDataURL(f);
-  input.value = '';
-}
-
-function wsHomeAvPick(input) {
-  var f = input && input.files && input.files[0];
-  if (!f) return;
-  if (!/^image\//.test(f.type || '')) { toast('请选择图片文件'); input.value = ''; return; }
-  if (f.size > 12 * 1024 * 1024) { toast('图片太大了，换一张 12MB 以内的'); input.value = ''; return; }
-  var fr = new FileReader();
-  fr.onload = function () { cropTarget = 'home'; cropOpen(String(fr.result || '')); };
   fr.onerror = function () { toast('读取图片失败'); };
   fr.readAsDataURL(f);
   input.value = '';
@@ -15072,7 +15017,6 @@ var ME_ROWS = [
   { k: 'theme',   n: '主题外观', d: '调整工作台整体颜色主题', ic: 'sun' },
   { k: 'wide',    n: '平铺整页', d: '控制页面内容是否铺满屏幕', ic: 'expand' },
   { k: 'reset',   n: '重置首页布局', d: '恢复首页卡片的默认排列', ic: 'grid' },
-  { k: 'home',    n: '首页个人卡', d: '首页头像与昵称的展示方式', ic: 'idcard' },
   { k: 'remind',  n: '上课提醒', d: '提醒时间、提前量与浏览器通知', ic: 'clock' },
   { k: 'data',    n: '数据', d: '导出备份、同步状态与本机缓存', ic: 'database' }
 ];
@@ -15083,7 +15027,6 @@ var ME_ICON_PATH = {
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   expand: '<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>',
   grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
-  idcard: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M14 10h4M14 14h4M5.5 16c.6-1.2 1.7-1.8 3-1.8s2.4.6 3 1.8"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   database: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'
 };
@@ -15154,7 +15097,6 @@ function mePaneHTML(k) {
     '<span class="hint" style="margin-right:auto">轮着换也不影响数据，喜欢哪套点哪套</span></div>' + meThemeHTML() + '</div>';
   if (k === 'wide') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>平铺整页</h2></div>' + meWideHTML() + '</div>';
   if (k === 'reset') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>首页布局</h2></div>' + meResetHTML() + '</div>';
-  if (k === 'home') return wsHomeHTML();
   if (k === 'remind') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>上课提醒</h2>' +
     '<span class="hint" style="margin-right:auto">和首页那张今日课程卡是同一份设置</span></div>' + meRemindHTML() + '</div>';
   if (k === 'data') return '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>数据</h2></div>' + meDataHTML() + '</div>';
@@ -19371,25 +19313,10 @@ function bindEvents() {
     if (closest(e.target, '#meBackup')) { exportBackup(); return; }
     if (closest(e.target, '#meReload')) { toast('正在同步…'); reload(); setTimeout(renderMe, 1200); return; }
     if (closest(e.target, '#meClearCache')) { clearLocalCache(); return; }
-    /* ---- 我的：工作台设置 / 首页展示 ---- */
-    var wsg = closest(e.target, '[data-wsseg]');
-    if (wsg) {
-      var gid = wsg.getAttribute('data-wsseg'), gv = wsg.getAttribute('data-wsv');
-      var hidEl = qs('#' + gid);
-      if (hidEl) hidEl.value = gv;
-      var sibs = qsa('[data-wsseg="' + gid + '"]');
-      for (var si = 0; si < sibs.length; si++) sibs[si].classList.toggle('on', sibs[si] === wsg);
-      var cw = qs('.ws-custom[data-for="' + gid + '"]');
-      if (cw) cw.style.display = (gv === '自定义') ? '' : 'none';
-      return;
-    }
-    if (closest(e.target, '#wsSaveBtn') || closest(e.target, '#wsSaveBtn2')) { wsSaveForm(); return; }
+    /* ---- 我的：工作台设置 ---- */
+    if (closest(e.target, '#wsSaveBtn')) { wsSaveForm(); return; }
     if (closest(e.target, '#wsIconDel')) {
       wsPush({ wsIcon: '' }).then(function () { applyBrand(); renderMe(); toast('工作台图标已移除，回到默认图标'); });
-      return;
-    }
-    if (closest(e.target, '#wsHomeAvDel')) {
-      wsPush({ homeAv: '' }).then(function () { renderMe(); toast('已移除自定义首页头像'); });
       return;
     }
 
@@ -19425,7 +19352,6 @@ function bindEvents() {
     var t = e.target;
     if (!t) return;
     if (t.id === 'meAvatarFile') { meAvatarPick(t); return; }
-    if (t.id === 'wsHomeAvFile') { wsHomeAvPick(t); return; }
     if (t.id === 'wsIconFile') { wsIconPick(t); return; }
     if (attChange(t)) return;
     if (t.id === 'workMonth') { state.month = t.value || curMonth(); renderWork(); }
