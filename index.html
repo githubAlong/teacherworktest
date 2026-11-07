@@ -14767,7 +14767,7 @@ function cropOpen(src) {
     qs('#cropZoom').value = 1;
     cropRender();
   };
-  img.onerror = function () { toast('这张图片读不出来，换一张试试'); cropClose(); };
+  img.onerror = function () { toast('浏览器打不开这个文件，换一个试试'); cropClose(); };
   img.src = src;
   if (img.complete && img.naturalWidth) img.onload();
 }
@@ -14824,7 +14824,7 @@ function cropApply() {
     toast(_tgt === 'icon' ? '工作台图标已更新' : '头像已更新');
   } catch (err) {
     console.error('[头像] 裁剪失败:', err);
-    toast('这张图片处理失败，换一张试试');
+    toast('这个文件处理失败，换一个试试');
   }
   cropClose();
 }
@@ -14835,30 +14835,45 @@ function cropClose() {
   cropSt = null;
 }
 
-/* 选图兼容：部分浏览器/内嵌 WebView 拿到的 f.type 是空的，按扩展名兜底；
-   HEIC 等浏览器解不了的格式直接挡掉，避免"选了图却弹不出裁剪框" */
-function imgFileOk(f) {
-  if (!f) return false;
-  var tp = String(f.type || '').toLowerCase();
-  var nm = String(f.name || '');
-  if (/^image\//.test(tp)) return !/\.(heic|heif)$/i.test(nm);
-  return /\.(png|jpe?g|gif|webp|bmp)$/i.test(nm);
+/* 图片格式不做限制：任何文件都交给浏览器自己尝试解码，能显示就进裁剪框；
+   浏览器解不了的会在 cropOpen 的 img.onerror 里给提示。
+   这里只保留体积上限（见下方各 pick 函数），避免大图写不进本机缓存。 */
+
+/* 兼容：当浏览器没给出正确的 f.type（相册导出、SVG、无扩展名文件等），
+   FileReader 生成的 data URL 会带错 MIME 或干脆没有，浏览器可能因此拒绝解码。
+   这里只按文件头"补"一个 MIME，不判断、不拦截任何格式；认不出来就原样交给浏览器。 */
+function imgMimeFix(src) {
+  var s = String(src || '');
+  if (!/^data:/i.test(s) || /^data:image\//i.test(s)) return s;
+  var i = s.indexOf(',');
+  if (i < 0) return s;
+  var head;
+  try { head = atob(s.slice(i + 1, i + 25)); } catch (e) { return s; }
+  var mime = '';
+  if (head.charCodeAt(0) === 0x89 && head.slice(1, 4) === 'PNG') mime = 'image/png';
+  else if (head.charCodeAt(0) === 0xFF && head.charCodeAt(1) === 0xD8) mime = 'image/jpeg';
+  else if (head.slice(0, 4) === 'GIF8') mime = 'image/gif';
+  else if (head.slice(0, 4) === 'RIFF' && head.indexOf('WEBP') >= 0) mime = 'image/webp';
+  else if (head.slice(0, 2) === 'BM') mime = 'image/bmp';
+  else if (/^\s*(<\?xml|<svg)/i.test(head) || /<svg[\s>]/i.test(head)) mime = 'image/svg+xml';
+  else if (head.slice(0, 2) === 'II' || head.slice(0, 2) === 'MM') mime = 'image/tiff';
+  else if (head.indexOf('ftyp') >= 0) mime = 'image/avif';
+  return mime ? 'data:' + mime + ';base64,' + s.slice(i + 1) : s;
 }
 
 function meAvatarPick(input) {
   var f = input && input.files && input.files[0];
   if (!f) return;
-  if (!imgFileOk(f)) { toast('请选择 JPG / PNG / WebP 等图片文件'); input.value = ''; return; }
-  if (f.size > 12 * 1024 * 1024) { toast('图片太大了，换一张 12MB 以内的'); input.value = ''; return; }
+  if (f.size > 12 * 1024 * 1024) { toast('这个文件超过 12MB，换一个小一点的'); input.value = ''; return; }
   var fr = new FileReader();
   fr.onload = function () {
-    var src = String(fr.result || '');
+    var src = imgMimeFix(String(fr.result || ''));
     input.value = '';
-    if (!src) { toast('图片读取为空，换一张试试'); return; }
+    if (!src) { toast('文件内容为空，换一个试试'); return; }
     cropTarget = 'me';
     cropOpen(src);
   };
-  fr.onerror = function () { input.value = ''; toast('这张图片读不出来，换一张 JPG 或 PNG'); };
+  fr.onerror = function () { input.value = ''; toast('这个文件读不出来，换一个试试'); };
   fr.readAsDataURL(f);
 }
 
@@ -14894,12 +14909,12 @@ function meFormHTML() {
       '<div class="me-av-prev" id="meAvPrev"' + (avUrl
         ? ' style="background-image:url(' + avUrl.replace(/"/g, '&quot;') + ')"'
         : '') + '>' + (avUrl ? '' : esc(avIni)) + '</div>' +
-      '<div class="me-av-txt"><b>头像照片</b><span>支持 JPG / PNG，上传后可拖动缩放取景；首页头像同步显示这张照片</span></div>' +
+      '<div class="me-av-txt"><b>头像照片</b><span>图片格式不限，上传后可拖动缩放取景；首页头像同步显示这张照片</span></div>' +
       '<div class="me-av-act">' +
         '<button type="button" class="btn primary sm" id="meAvPick">上传照片</button>' +
         (avUrl ? '<button type="button" class="btn ghost sm" id="meAvDel">移除</button>' : '') +
       '</div>' +
-      '<input type="file" accept="image/*" id="meAvatarFile" hidden>' +
+      '<input type="file" id="meAvatarFile" hidden>' +
     '</div>' +
     '<label><span>昵称</span><input id="meName" maxlength="12" placeholder="怎么称呼你" value="' + esc(m.name || '') + '"></label>' +
     '<label><span>学校</span><input id="meSchool" maxlength="20" placeholder="例如：实验中学" value="' + esc(m.school || '') + '"></label>' +
@@ -14931,7 +14946,7 @@ function wsSettingsHTML() {
     '<div class="ws-up-t"><b>工作台图标</b><span>左上角那个方块；不传就用系统默认图标，不会拿你的头像顶替</span></div>' +
     '<div class="ws-up-a"><button type="button" class="btn primary sm" id="wsIconPick">上传</button>' +
     (c.wsIcon ? '<button type="button" class="btn ghost sm" id="wsIconDel">移除</button>' : '') + '</div>' +
-    '<input type="file" accept="image/*" id="wsIconFile" class="ws-file"></div>';
+    '<input type="file" id="wsIconFile" class="ws-file"></div>';
   h += '<label><span>工作台名称</span><input id="wsName" maxlength="16" placeholder="我的工作台" value="' + esc(c.wsName || '') + '"></label>';
   h += '<label><span>副标题</span><input id="wsSub" maxlength="24" placeholder="Workbench" value="' + esc(c.wsSub || '') + '"></label>';
   h += '<label class="ws-full"><span>欢迎语</span>' +
@@ -14963,19 +14978,18 @@ function wsSaveForm() {
 function wsIconPick(input) {
   var f = input && input.files && input.files[0];
   if (!f) return;
-  if (!imgFileOk(f)) { toast('请选择 JPG / PNG / WebP 等图片文件'); input.value = ''; return; }
-  if (f.size > 12 * 1024 * 1024) { toast('图片太大了，换一张 12MB 以内的'); input.value = ''; return; }
+  if (f.size > 12 * 1024 * 1024) { toast('这个文件超过 12MB，换一个小一点的'); input.value = ''; return; }
   var fr = new FileReader();
   fr.onload = function () {
-    var src = String(fr.result || '');
+    var src = imgMimeFix(String(fr.result || ''));
     /* 必须等读完再清空：部分 WebView 提前清空 input 会让正在读的 File 失效，
        表现就是"能选图，但裁剪框不出现" */
     input.value = '';
-    if (!src) { toast('图片读取为空，换一张试试'); return; }
+    if (!src) { toast('文件内容为空，换一个试试'); return; }
     cropTarget = 'icon';
     cropOpen(src);
   };
-  fr.onerror = function () { input.value = ''; toast('这张图片读不出来，换一张 JPG 或 PNG'); };
+  fr.onerror = function () { input.value = ''; toast('这个文件读不出来，换一个试试'); };
   fr.readAsDataURL(f);
 }
 
