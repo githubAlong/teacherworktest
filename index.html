@@ -14477,7 +14477,8 @@ var WS_DB = 'aFX48BSaUZtJGjxVZofvG7'; /* 「工作台配置」表：一条记录
 var WS_KEY = 'wb_mywork_wscfg';    /* 配置的本机缓存（断网时先读它） */
 /* JS 字段 → 云表列名。新增配置项只改这张表 */
 var WS_F = {
-  name: '昵称', avatar: '头像', school: '学校', subject: '任教学科', years: '教龄',
+  name: '昵称', avatar: '头像', school: '学校', subject: '任教学科',
+  duty: '职务', gradeGroup: '所属年级组',
   motto: '签名', wsName: '工作台名称', wsSub: '工作台副标题', wsIcon: '工作台图标',
   welcome: '欢迎语'
 };
@@ -14485,7 +14486,8 @@ var wsRow = null;      /* 云端那一条（含 id） */
 var cropTarget = 'me'; /* 头像裁剪结果存到哪：me = 个人资料，icon = 工作台图标 */
 
 function wsNorm(r) {
-  var o = { id: '', name: '', avatar: '', school: '', subject: '', years: '', motto: '',
+  var o = { id: '', name: '', avatar: '', school: '', subject: '',
+    duty: '', gradeGroup: '', motto: '',
     wsName: '', wsSub: '', wsIcon: '', welcome: '' };
   if (!r) return o;
   o.id = String(r.id || r._id || r.recordId || r.record_id || '');
@@ -14493,7 +14495,7 @@ function wsNorm(r) {
      导致断网/仅本机时保存的配置刷新后读不出来（图标、名称等全变默认） */
   var wsPairs = [
     ['name', '昵称'], ['avatar', '头像'], ['school', '学校'], ['subject', '任教学科'],
-    ['years', '教龄'], ['motto', '签名'],
+    ['duty', '职务'], ['gradeGroup', '所属年级组'], ['motto', '签名'],
     ['wsName', '工作台名称'], ['wsSub', '工作台副标题'], ['wsIcon', '工作台图标'],
     ['welcome', '欢迎语']
   ];
@@ -14509,12 +14511,17 @@ function wsCfg() {
   if (!wsRow) {
     var c = lsGet(WS_KEY, null);
     if (c && typeof c === 'object') {
-      /* 旧版「首页个人卡」留下的自定义头像/昵称字段：本机缓存一次性删掉 */
-      var oldKeys = ['homeAvMode', 'homeAv', 'homeNameMode', 'homeName'], dirty = false;
+      /* 旧版留下的自定义头像/昵称、已下线的教龄字段：本机缓存一次性删掉 */
+      var oldKeys = ['homeAvMode', 'homeAv', 'homeNameMode', 'homeName', 'years'], dirty = false;
       for (var oi = 0; oi < oldKeys.length; oi++) {
         if (Object.prototype.hasOwnProperty.call(c, oldKeys[oi])) { delete c[oldKeys[oi]]; dirty = true; }
       }
       if (dirty) lsSet(WS_KEY, c);
+    }
+    /* 旧版本机资料键里也可能留着教龄，一并清掉 */
+    var legacyMe = lsGet(ME_KEY, null);
+    if (legacyMe && typeof legacyMe === 'object' && Object.prototype.hasOwnProperty.call(legacyMe, 'years')) {
+      delete legacyMe.years; lsSet(ME_KEY, legacyMe);
     }
     wsRow = wsNorm((c && typeof c === 'object') ? c : null);
   }
@@ -14539,6 +14546,20 @@ function wsCleanHomeCols(row) {
     .catch(function (err) { console.warn('[配置] 旧首页字段清理失败:', err); });
 }
 
+/* 教龄字段已下线：本机旧值在 wsCfg() 里删；云端「教龄」列联网时一次性置零（幂等）。
+   数字列用 number:0 避免类型不匹配；失败只记日志，下次打开继续重试 */
+var WS_YEARS_CLEAN = 'wb_wscfg_years_clean_v1';
+function wsCleanYears(cloudRow) {
+  if (lsGet(WS_YEARS_CLEAN, false)) return;
+  if (!db || !wsRow || !wsRow.id) return;
+  var rv = cloudRow && cloudRow['教龄'];
+  if (rv && typeof rv === 'object') rv = (rv.number != null ? rv.number : rv.text);
+  if (rv == null || String(rv) === '' || String(rv) === '0') { lsSet(WS_YEARS_CLEAN, true); return; }
+  db.updateRecord({ databaseId: WS_DB, recordId: wsRow.id, properties: { '教龄': { number: 0 } } })
+    .then(function () { lsSet(WS_YEARS_CLEAN, true); })
+    .catch(function (err) { console.warn('[配置] 教龄旧列清理失败:', err); });
+}
+
 /* 写配置：先同步落本机（界面立刻生效），再异步上云。
    云端慢或失败都不该让用户以为"没保存"；空串也要真的写下去 */
 function wsPush(fields) {
@@ -14548,7 +14569,7 @@ function wsPush(fields) {
     var col = WS_F[k];
     if (!col) continue;
     var v = fields[k];
-    props[col] = (col === '教龄') ? { number: Number(v) || 0 } : { text: String(v == null ? '' : v) };
+    props[col] = { text: String(v == null ? '' : v) };
   }
   props['更新时间'] = { date: todayStr() };
   for (k in fields) {
@@ -14594,6 +14615,7 @@ function wsLoad() {
     wsRow = remote;
     lsSet(WS_KEY, remote);
     wsCleanHomeCols(rows[0]);
+    wsCleanYears(rows[0]);
     var legacy = lsGet(ME_KEY, null);
     if (legacy && typeof legacy === 'object') {
       for (kk in WS_F) {
@@ -14622,7 +14644,8 @@ function meGet() {
     avatar: c.avatar || l.avatar || '',
     school: c.school || l.school || '',
     subject: c.subject || l.subject || '',
-    years: c.years || l.years || '',
+    duty: c.duty || l.duty || '',
+    gradeGroup: c.gradeGroup || l.gradeGroup || '',
     motto: c.motto || l.motto || ''
   };
 }
@@ -14846,7 +14869,8 @@ function meHeroHTML() {
   var sub = [];
   if (m.school) sub.push(m.school);
   if (m.subject) sub.push(m.subject);
-  if (m.years) sub.push(m.years + ' 年教龄');
+  if (m.duty) sub.push(m.duty);
+  if (m.gradeGroup) sub.push(m.gradeGroup);
   var avUrl = String(m.avatar || '').trim();
   return '<div class="me-hero">' +
     '<div class="me-av"' + (avUrl
@@ -14854,7 +14878,7 @@ function meHeroHTML() {
       : '') + '>' + (avUrl ? '' : esc(initial)) + '</div>' +
     '<div class="me-hi">' +
       '<b>' + (name ? esc(name) : '还没填名字') + '</b>' +
-      '<span>' + (sub.length ? esc(sub.join(' · ')) : '在下面填学校、学科，会显示在这里') + '</span>' +
+      '<span>' + (sub.length ? esc(sub.join(' · ')) : '在下面填学校、学科、职务或年级组，会显示在这里') + '</span>' +
     '</div>' +
     (m.motto ? '<div class="me-motto">' + esc(m.motto) + '</div>' : '') +
     '<button class="btn ghost sm me-edit" id="meEditBtn">' + (state.meEdit ? '收起' : '编辑资料') + '</button>' +
@@ -14880,7 +14904,8 @@ function meFormHTML() {
     '<label><span>昵称</span><input id="meName" maxlength="12" placeholder="怎么称呼你" value="' + esc(m.name || '') + '"></label>' +
     '<label><span>学校</span><input id="meSchool" maxlength="20" placeholder="例如：实验中学" value="' + esc(m.school || '') + '"></label>' +
     '<label><span>任教学科</span><input id="meSubject" maxlength="12" placeholder="例如：高二语文" value="' + esc(m.subject || '') + '"></label>' +
-    '<label><span>教龄</span><input id="meYears" type="number" min="0" max="60" placeholder="年" value="' + esc(m.years || '') + '"></label>' +
+    '<label><span>职务</span><input id="meDuty" maxlength="20" placeholder="例如：班主任 / 教研组长" value="' + esc(m.duty || '') + '"></label>' +
+    '<label class="me-full"><span>所属年级组</span><input id="meGradeGroup" maxlength="24" placeholder="例如：高一年级组" value="' + esc(m.gradeGroup || '') + '"></label>' +
     '<label class="me-full"><span>一句话签名</span><input id="meMotto" maxlength="40" placeholder="写给自己的一句话" value="' + esc(m.motto || '') + '"></label>' +
     '<div class="me-form-act">' +
       '<button class="btn ghost sm" id="meCancelBtn">取消</button>' +
@@ -15010,7 +15035,7 @@ function saveMeForm() {
   var val = function (id) { var el = qs('#' + id); return el ? String(el.value || '').trim() : ''; };
   meSave({
     name: val('meName'), school: val('meSchool'), subject: val('meSubject'),
-    years: val('meYears'), motto: val('meMotto')
+    duty: val('meDuty'), gradeGroup: val('meGradeGroup'), motto: val('meMotto')
   });
   state.meOpen = '';
   renderMe();
@@ -15044,7 +15069,7 @@ function clearLocalCache() {
 /* ================= 我的 · 列表式个人中心 ================= */
 var LS_WIDE = 'wb_mywork_wide';
 var ME_ROWS = [
-  { k: 'profile', n: '个人信息', d: '头像、姓名、学校、学科及职务', ic: 'user' },
+  { k: 'profile', n: '个人信息', d: '头像、姓名、学校、学科、职务及年级组', ic: 'user' },
   { k: 'ws',      n: '工作台设置', d: '左上角名称、副标题和品牌图片', ic: 'sliders' },
   { k: 'msg',     n: '消息中心', d: '待办、课程与通知提醒', ic: 'bell' },
   { k: 'theme',   n: '主题外观', d: '调整工作台整体颜色主题', ic: 'sun' },
