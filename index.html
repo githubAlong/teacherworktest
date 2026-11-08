@@ -1438,8 +1438,9 @@ table.tb td.td-no{text-align:center;padding:9px 8px}
 .ms-btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 16px rgba(var(--brand2-rgb),.26)}
 .ms-btn.primary:hover{color:#fff;filter:brightness(1.05)}
 /* 上课提醒卡片 */
+/* 三态：即将上课=浅橙 / 正在上课=深橙 / 今日无课=绿 */
 .ms-remind{display:flex;align-items:center;gap:20px;border-radius:16px;padding:20px 24px;margin-bottom:16px;color:#fff;
-  background:linear-gradient(135deg,#2563EB 0%,#7C3AED 100%);box-shadow:0 10px 28px rgba(37,99,235,.26)}
+  background:linear-gradient(135deg,#F59E0B 0%,#FBBF24 100%);box-shadow:0 10px 28px rgba(245,158,11,.26)}
 .ms-remind.is-class{background:linear-gradient(135deg,#D97706 0%,#F59E0B 100%);box-shadow:0 10px 28px rgba(217,119,6,.26)}
 .ms-remind.is-free{background:linear-gradient(135deg,#059669 0%,#10B981 100%);box-shadow:0 10px 28px rgba(5,150,105,.24)}
 .ms-remind .ms-date{border-right:1px solid rgba(255,255,255,.22);padding-right:22px;min-width:106px;flex:none}
@@ -1509,6 +1510,22 @@ table.tb td.td-no{text-align:center;padding:9px 8px}
 .ms-opt .ic{font-size:26px;line-height:1;margin-bottom:8px;display:block}
 .ms-opt .nm{font-size:13px;font-weight:600}
 /* 导入预览 */
+/* 学科选择 */
+.ms-subs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.ms-sub{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;border-radius:999px;
+  font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--card);color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--line);border:0}
+.ms-sub:hover{box-shadow:inset 0 0 0 1px var(--brand-l2);color:var(--brand-dd)}
+.ms-sub.on{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 4px 12px rgba(var(--brand2-rgb),.24)}
+.ms-sub i{font-style:normal;font-size:11px;opacity:.75}
+.ms-subinput{height:38px;width:100%;border:0;border-radius:10px;padding:0 12px;font-size:14px;font-family:inherit;
+  background:var(--card);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+.ms-subinput:focus{outline:0;box-shadow:inset 0 0 0 2px var(--brand)}
+/* 时间输入：左边手打，右边原生时间选择器 */
+.ms-timewrap{position:relative;display:block}
+.ms-timewrap .ms-tpick{position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  height:30px;width:34px;border:0;background:transparent;color:var(--ink3);cursor:pointer;font-family:inherit}
+.ms-timewrap .ms-tpick::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.7}
 .ms-prev{max-height:44vh;overflow:auto;border:1px solid var(--line);border-radius:10px;margin:12px 0}
 .ms-prev table{width:100%;border-collapse:collapse;font-size:13px}
 .ms-prev th,.ms-prev td{border:1px solid var(--line2);padding:7px 9px;text-align:left;white-space:nowrap}
@@ -4362,7 +4379,7 @@ try {
         <div class="fld-row">
           <label class="fld">
             <span>课程名称</span>
-            <input autocomplete="off" maxlength="30" name="ms-name" placeholder="如：语文课、数学课、信息课" type="text">
+            <input autocomplete="off" maxlength="30" name="ms-name" placeholder="如：语文课、数学课、英语课" type="text">
           </label>
           <label class="fld">
             <span>所属年级（可下拉选，也可手动输入）</span>
@@ -4391,18 +4408,24 @@ try {
           </label>
           <label class="fld">
             <span>节次（可下拉选，也可手动输入）</span>
-            <input autocomplete="off" list="msPdList" maxlength="16" name="ms-pd" placeholder="如：第一节、第二节、第三节" type="text">
+            <input autocomplete="off" list="msPdList" maxlength="16" name="ms-pd" placeholder="如：第一节、午休、晚自习第一节" type="text">
             <datalist id="msPdList"></datalist>
           </label>
         </div>
         <div class="fld-row">
           <label class="fld">
-            <span>开始时间（支持手动输入）</span>
-            <input autocomplete="off" maxlength="8" name="ms-st" placeholder="如：08:00" type="text">
+            <span>开始时间（可手打，也可点右侧图标选时间）</span>
+            <span class="ms-timewrap">
+              <input autocomplete="off" maxlength="8" name="ms-st" placeholder="如：08:00" type="text">
+              <input class="ms-tpick" tabindex="-1" type="time">
+            </span>
           </label>
           <label class="fld">
-            <span>结束时间（支持手动输入）</span>
-            <input autocomplete="off" maxlength="8" name="ms-et" placeholder="如：08:45" type="text">
+            <span>结束时间（可手打，也可点右侧图标选时间）</span>
+            <span class="ms-timewrap">
+              <input autocomplete="off" maxlength="8" name="ms-et" placeholder="如：08:45" type="text">
+              <input class="ms-tpick" tabindex="-1" type="time">
+            </span>
           </label>
         </div>
         <label class="fld">
@@ -4417,6 +4440,24 @@ try {
         <button class="btn primary" id="msSaveBtn" type="submit">保存课程</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- 我的课表：上传识别后先选学科 -->
+<div class="modal" id="msSubjectModal">
+  <div class="mask" data-msclose="1"></div>
+  <div class="mcard" style="width:min(560px,94vw)">
+    <div class="mhead">
+      <h3>选择你教的学科</h3>
+      <button class="act" data-msclose="1" title="关闭" type="button">
+        <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 24 24" width="18"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mbody" id="msSubjectBody"></div>
+    <div class="mfoot">
+      <button class="btn ghost" data-msclose="1" type="button">取消</button>
+      <button class="btn primary" id="msSubjectGo" type="button">下一步：看识别结果</button>
+    </div>
   </div>
 </div>
 
@@ -16637,6 +16678,7 @@ var MS_AXIS = {
     { d: '第六节', k: '第6节', s: '15:05', e: '15:50' },
     { d: '第七节', k: '第7节', s: '16:00', e: '16:45' },
     { d: '第八节', k: '第8节', s: '16:55', e: '17:40' },
+    { d: '第九节', k: '第9节', s: '17:50', e: '18:35' },
     { d: '晚自习第一节', k: '晚自习', s: '19:00', e: '19:45' }
   ],
   '冬令时课表': [
@@ -16649,8 +16691,13 @@ var MS_AXIS = {
     { d: '第六节', k: '第6节', s: '15:15', e: '16:00' },
     { d: '第七节', k: '第7节', s: '16:10', e: '16:55' },
     { d: '第八节', k: '第8节', s: '17:05', e: '17:50' },
+    { d: '第九节', k: '第9节', s: '18:00', e: '18:45' },
     { d: '晚自习第一节', k: '晚自习', s: '19:10', e: '19:55' }
   ]
+};
+/* 自定义节次（不在内置轴里的，如「午休」12:10-14:10）也能进网格、拖拽、导出 */
+var MS_CUSTOM_PD = {
+  '午休': { s: '12:10', e: '14:10' }
 };
 var MS_CN_NUM = { '一': '1', '二': '2', '三': '3', '四': '4', '五': '5', '六': '6', '七': '7', '八': '8', '九': '9', '十': '10' };
 var MS_CN_NUM_R = { '1': '一', '2': '二', '3': '三', '4': '四', '5': '五', '6': '六', '7': '七', '8': '八', '9': '九', '10': '十' };
@@ -16664,6 +16711,40 @@ function msAxisOf(k) {
   var axis = msAxis(), i;
   for (i = 0; i < axis.length; i++) if (axis[i].k === k) return axis[i];
   return null;
+}
+/* 网格的行 = 内置节次轴 + 课程里用到但轴里没有的自定义节次（如「午休」）。
+   统一按开始时间排，自定义节次落在时间对得上的位置。 */
+function msRows() {
+  var rows = [], i, j, list = msFiltered(), extra = {}, k, c, inAxis, t0, t1;
+  var axis = msAxis();
+  for (i = 0; i < axis.length; i++) rows.push({ d: axis[i].d, k: axis[i].k, s: axis[i].s, e: axis[i].e, custom: false });
+  for (i = 0; i < list.length; i++) {
+    c = list[i];
+    k = msPdKey(c['节次'] || '');
+    if (!k) continue;
+    inAxis = false;
+    for (j = 0; j < rows.length; j++) if (rows[j].k === k) { inAxis = true; break; }
+    if (inAxis) continue;
+    if (!extra[k]) {
+      extra[k] = {
+        d: msPdLabel(k) || k, k: k, custom: true,
+        s: c['开始时间'] || (MS_CUSTOM_PD[k] ? MS_CUSTOM_PD[k].s : ''),
+        e: c['结束时间'] || (MS_CUSTOM_PD[k] ? MS_CUSTOM_PD[k].e : '')
+      };
+    } else {
+      if (c['开始时间'] && (!extra[k].s || c['开始时间'] < extra[k].s)) extra[k].s = c['开始时间'];
+      if (c['结束时间'] && (!extra[k].e || c['结束时间'] > extra[k].e)) extra[k].e = c['结束时间'];
+    }
+  }
+  for (k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) rows.push(extra[k]);
+  rows.sort(function (a, b) {
+    t0 = hm2min(a.s); t1 = hm2min(b.s);
+    if (t0 === null && t1 === null) return 0;
+    if (t0 === null) return 1;
+    if (t1 === null) return -1;
+    return t0 - t1;
+  });
+  return rows;
 }
 /* 显示名 / 云表值 互转：「第一节」↔「第1节」，两种写法都认 */
 function msPdKey(name) {
@@ -16703,6 +16784,13 @@ function msFiltered() {
     if (g !== '全部' && gr && gr !== g) return false;
     return true;
   });
+}
+/* 分钟数说人话：45 → 45分钟；125 → 2小时5分钟 */
+function msMinsText(mins) {
+  mins = Math.max(0, Math.round(Number(mins) || 0));
+  if (mins < 60) return mins + '分钟';
+  var h = Math.floor(mins / 60), m = mins % 60;
+  return h + '小时' + (m ? m + '分钟' : '');
 }
 function msDateCN(d) {
   var p = String(d || '').split('-');
@@ -16747,7 +16835,7 @@ function msRemindHTML() {
     if (nmin >= st && nmin <= courseEndMin(c)) { live = c; break; }
     if (st > nmin && !next) next = c;
   }
-  var cls = '', title = '', desc = '', until = 0, label = '距离下节课';
+  var cls = '', title = '', desc = '', until = 0, label = '距离上课';
   if (live) {
     cls = ' is-class';
     label = '距离下课';
@@ -16757,15 +16845,15 @@ function msRemindHTML() {
             : ' ｜ 今天是最后一节课');
     until = msTodayMs(courseEndMin(live));
   } else if (next) {
-    title = '下一节课：' + msName(next) + (next['班级'] ? '（' + next['班级'] + '）' : '');
-    desc = (next['节次'] || '') + ' ' + (next['开始时间'] || '') + (next['结束时间'] ? '-' + next['结束时间'] : '') +
-      ' ｜ 距上课还有 ' + fmtDur(hm2min(next['开始时间'] || '') - nmin);
+    title = '距离' + msName(next) + (next['班级'] ? '（' + next['班级'] + '）' : '') + '课程还有' +
+      msMinsText(hm2min(next['开始时间'] || '') - nmin);
+    desc = (next['节次'] || '') + ' ' + (next['开始时间'] || '') + (next['结束时间'] ? '-' + next['结束时间'] : '') + ' 开始上课';
     until = msTodayMs(hm2min(next['开始时间'] || ''));
   } else {
     cls = ' is-free';
     label = '今日课程';
-    title = list.length ? '今天的课都上完了' : '今天没有课';
-    desc = list.length ? ('共 ' + list.length + ' 节，辛苦了') : '可以安心备课或处理事务';
+    title = '今日无课';
+    desc = list.length ? ('今天的课都上完了，共 ' + list.length + ' 节，辛苦了') : '可安心备课/处理事务';
   }
   var cd = until ? msFmtMs(until - Date.now()) : '--:--';
   return '<div class="ms-remind' + cls + '">' +
@@ -16798,7 +16886,7 @@ function msBlockHTML(c, isNow) {
 
 /* ---- 周课表网格（周一~周日 7 列） ---- */
 function msGridHTML() {
-  var axis = msAxis(), wd = weekdayCN(todayStr());
+  var axis = msRows(), wd = weekdayCN(todayStr());
   var list = msFiltered(), map = {}, i, j, k;
   for (i = 0; i < list.length; i++) {
     k = String(list[i]['星期'] || '') + '|' + msPdKey(list[i]['节次'] || '');
@@ -16814,13 +16902,17 @@ function msGridHTML() {
   for (i = 0; i < axis.length; i++) {
     var a = axis[i];
     h += '<div class="ms-tc"><b>' + esc(a.d) + '</b><span>' + esc(a.s + '-' + a.e) + '</span></div>';
-    var as = hm2min(a.s), ae = hm2min(a.e);
     for (j = 0; j < MS_WEEK.length; j++) {
       var arr = map[MS_WEEK[j] + '|' + a.k] || [];
       var isToday = MS_WEEK[j] === wd;
-      var live = isToday && as !== null && ae !== null && nmin !== null && nmin >= as && nmin <= ae;
       h += '<div class="ms-cell' + (isToday ? ' today' : '') + '" data-dw="' + esc(MS_WEEK[j]) + '" data-dp="' + esc(a.k) + '">';
-      for (var q = 0; q < arr.length; q++) h += msBlockHTML(arr[q], live && q === 0);
+      for (var q = 0; q < arr.length; q++) {
+        /* 「正在上课」按这节课自己的起止时间判断：同一行里可能有好几节课，
+           用行的时间会把整行都点亮，或者一节都不亮。 */
+        var cs = hm2min(arr[q]['开始时间'] || ''), ce = hm2min(arr[q]['结束时间'] || '');
+        var onNow = isToday && cs !== null && ce !== null && nmin !== null && nmin >= cs && nmin <= ce;
+        h += msBlockHTML(arr[q], onNow);
+      }
       h += '</div>';
     }
   }
@@ -16862,14 +16954,21 @@ function msOpenCourse(rec) {
   qs('[name="ms-name"]').value = rec ? (rec['课程名称'] || '') : '';
   qs('[name="ms-grade"]').value = rec ? (rec['年级'] || '') : '';
   qs('[name="ms-wd"]').value = rec ? (rec['星期'] || '') : weekdayCN(todayStr());
-  qs('[name="ms-pd"]').value = rec ? msPdLabel(msPdKey(rec['节次'] || '')) : '';
+  qs('[name="ms-pd"]').value = rec ? (rec['节次'] || msPdLabel(msPdKey(rec['节次'] || ''))) : '';
   qs('[name="ms-st"]').value = rec ? (rec['开始时间'] || '') : '08:00';
   qs('[name="ms-et"]').value = rec ? (rec['结束时间'] || '') : '08:45';
   qs('[name="ms-cls"]').value = rec ? (rec['班级'] || '') : '';
   qs('[name="ms-type"]').value = rec ? (msTypeOf(rec) || state.msType) : state.msType;
-  /* 节次候选跟着当前课表类型走 */
-  var dl = qs('#msPdList'), h = '';
-  for (i = 0; i < axis.length; i++) h += '<option value="' + esc(axis[i].d) + '"></option>';
+  /* 节次候选跟着当前课表类型走；再补上手输的「午休」等自定义节次 */
+  var dl = qs('#msPdList'), h = '', seenPd = {}, pdl;
+  for (i = 0; i < axis.length; i++) {
+    if (axis[i].d && !seenPd[axis[i].d]) { seenPd[axis[i].d] = 1; h += '<option value="' + esc(axis[i].d) + '"></option>'; }
+  }
+  pdl = ['第一节', '第二节', '第三节', '第四节', '第五节', '第六节', '第七节', '第八节', '第九节',
+    '早自习', '午休', '晚自习第一节', '晚自习'];
+  for (i = 0; i < pdl.length; i++) {
+    if (!seenPd[pdl[i]]) { seenPd[pdl[i]] = 1; h += '<option value="' + esc(pdl[i]) + '"></option>'; }
+  }
   dl.innerHTML = h;
   qs('#msDelBtn').style.display = rec ? '' : 'none';
   qs('#msSubBtn').style.display = rec ? '' : 'none';
@@ -16878,6 +16977,15 @@ function msOpenCourse(rec) {
 function msSelId(field, text) {
   var opts = (SCHEMA.course || {})[field] || [];
   return optIdIn(opts, text);
+}
+/* 课表表的「星期 / 节次」在云表里是文本列，不是下拉列。
+   原来只在拿到下拉 id 时才写字段，云端下拉选项为空 → 星期和节次直接丢了。
+   这里统一处理：能匹配到下拉就写 select，匹配不到就按文本写。 */
+function msPut(props, field, val) {
+  if (val === '' || val === null || val === undefined) return;
+  var opts = (SCHEMA.course || {})[field] || [];
+  var id = opts.length ? optIdIn(opts, String(val)) : '';
+  props[field] = id ? { select: id } : { text: String(val) };
 }
 function msSaveCourse(e) {
   e.preventDefault();
@@ -16894,10 +17002,8 @@ function msSaveCourse(e) {
   if (!wd) { toast('请填写星期'); return; }
   if (!pd) { toast('请填写节次'); return; }
   var props = {};
-  var wid = msSelId('星期', wd);
-  if (wid) props['星期'] = { select: wid };
-  var pid = msSelId('节次', msPdKey(pd));
-  if (pid) props['节次'] = { select: pid };
+  msPut(props, '星期', wd);
+  msPut(props, '节次', msPdKey(pd));
   props['班级'] = { text: cls };
   props['课程名称'] = { text: nm };
   props['年级'] = { text: gr };
@@ -16955,24 +17061,33 @@ function msDropTo(w, pdKey) {
   msDrag = null;
   msDropClear();
   if (!drag) return;
-  var rec = findRec('course', drag.id), a = msAxisOf(pdKey);
+  var rec = findRec('course', drag.id);
+  /* 行可能在内置轴之外（午休等自定义节次），所以按 msRows() 找行，不只看内置轴 */
+  var rows = msRows(), a = null, src = null, i;
+  for (i = 0; i < rows.length; i++) {
+    if (rows[i].k === pdKey) a = rows[i];
+    if (rows[i].k === msPdKey(drag.pd)) src = rows[i];
+  }
   if (!rec || !a) return;
   if (String(rec['星期'] || '') === w && msPdKey(rec['节次'] || '') === pdKey) { toast('这节课已经在这里了'); return; }
-  var other = null, list = msAllCourses(), i;
+  var other = null, list = msAllCourses();
   for (i = 0; i < list.length; i++) {
     if (list[i].id === rec.id) continue;
     if (String(list[i]['星期'] || '') === w && msPdKey(list[i]['节次'] || '') === pdKey) { other = list[i]; break; }
   }
-  var src = msAxisOf(msPdKey(drag.pd));
-  var jobs = [doUpdate('course', rec.id, {
-    '星期': { select: msSelId('星期', w) || w }, '节次': { select: msSelId('节次', pdKey) || pdKey },
-    '开始时间': { text: a.s }, '结束时间': { text: a.e }
-  })];
+  var p1 = {};
+  msPut(p1, '星期', w);
+  msPut(p1, '节次', pdKey);
+  p1['开始时间'] = { text: a.s };
+  p1['结束时间'] = { text: a.e };
+  var jobs = [doUpdate('course', rec.id, p1)];
   if (other && src) {
-    jobs.push(doUpdate('course', other.id, {
-      '星期': { select: msSelId('星期', drag.w) || drag.w }, '节次': { select: msSelId('节次', src.k) || src.k },
-      '开始时间': { text: src.s }, '结束时间': { text: src.e }
-    }));
+    var p2 = {};
+    msPut(p2, '星期', drag.w);
+    msPut(p2, '节次', src.k);
+    p2['开始时间'] = { text: src.s };
+    p2['结束时间'] = { text: src.e };
+    jobs.push(doUpdate('course', other.id, p2));
   }
   var msg = other
     ? ('已对调：' + msName(rec) + ' ⇄ ' + msName(other))
@@ -16989,7 +17104,7 @@ function msDropTo(w, pdKey) {
 
 /* ---- 导出：Excel / PDF / PNG ---- */
 function msExportSpec() {
-  var axis = msAxis(), list = msFiltered(), map = {}, i, j, q;
+  var axis = msRows(), list = msFiltered(), map = {}, i, j, q;
   for (i = 0; i < list.length; i++) {
     var k = String(list[i]['星期'] || '') + '|' + msPdKey(list[i]['节次'] || '');
     if (!map[k]) map[k] = [];
@@ -17003,7 +17118,9 @@ function msExportSpec() {
     for (j = 0; j < MS_WEEK.length; j++) {
       var arr = map[MS_WEEK[j] + '|' + a.k] || [], t = [];
       for (q = 0; q < arr.length; q++) {
-        t.push(msName(arr[q]) + (arr[q]['班级'] ? '\n' + arr[q]['班级'] : ''));
+        var gr2 = msGradeOf(arr[q]);
+        t.push(msName(arr[q]) + (arr[q]['班级'] ? '\n' + arr[q]['班级'] : '') +
+          ((state.msGrade === '全部' && gr2) ? '\n' + gr2 : ''));
       }
       line.push(t.join('\n'));
     }
@@ -17141,6 +17258,27 @@ function msParseText(txt) {
   }
   return out;
 }
+/* 休息 / 大课间这类时段不算「学科」，选学科时要把它们排除 */
+var MS_NOT_SUBJECT = ['午休', '早自习', '晚自习', '晚自习第一节', '晚自习第二节', '早餐', '午餐', '晚餐',
+  '课间', '大课间', '午间', '休息', '自习', '早读', '午读', '升旗', '眼保健操', '广播', '下课', '上课'];
+function msIsRestSubject(s) {
+  s = String(s || '').trim();
+  if (!s) return true;
+  for (var i = 0; i < MS_NOT_SUBJECT.length; i++) {
+    if (s === MS_NOT_SUBJECT[i] || MS_NOT_SUBJECT[i].indexOf(s) >= 0 || s.indexOf(MS_NOT_SUBJECT[i]) >= 0) return true;
+  }
+  return false;
+}
+/* 从课程名里猜学科：去掉「课 / 必修 / 选修」等尾巴，取前几个字 */
+function msSubjectOf(name) {
+  var n = String(name || '').trim();
+  if (!n) return '';
+  n = n.replace(/[（(][^）)]*[）)]/g, '').replace(/[·、,，:：]/g, ' ').trim();
+  n = n.replace(/(必修|选修|课程|课表)$/g, '').trim();
+  n = n.replace(/课$/, '').trim();
+  if (!n) return String(name || '').trim();
+  return n.length > 4 ? n.slice(0, 4) : n;
+}
 function msShowPreview(list) {
   state.msImport = list;
   var h = '<div class="ms-prev"><table><thead><tr><th>星期</th><th>节次</th><th>课程名称</th><th>授课班级</th><th>年级</th><th>时间</th></tr></thead><tbody>';
@@ -17153,6 +17291,57 @@ function msShowPreview(list) {
   qs('#msPreviewBody').innerHTML = h;
   qs('#msImportCount').textContent = '认出 ' + list.length + ' 节课，确认后存进云端课表（' + state.msType + '）。';
   qs('#msPreviewModal').classList.add('on');
+}
+/* 上传识别完先问「你教什么学科」：只保留自己教的课，生成个人周课表 */
+function msPickSubject(list) {
+  var subs = {}, order = [], i, c, s, defIdx = -1;
+  for (i = 0; i < list.length; i++) {
+    c = list[i];
+    s = msSubjectOf(c.name || c.cls || '');
+    if (!s) continue;
+    if (msIsRestSubject(s)) continue;          /* 午休 / 早自习 这类不算学科 */
+    if (!subs[s]) { subs[s] = 0; order.push(s); }
+    subs[s]++;
+  }
+  state.msImportAll = list;
+  state.msImportSub = '';
+  /* 默认选中第一个真正的正课；一个都没有就默认「全都要」 */
+  defIdx = order.length ? 0 : -1;
+  var h = '<p class="fld-tip">识别到 ' + list.length + ' 节课，下面是识别出的学科。' +
+    '选你教的那门，系统只保留这些课，生成你的个人周课表。</p>';
+  h += '<div class="ms-subs">';
+  if (!order.length) h += '<p class="fld-tip">没识别出学科名（只有午休、早自习这类时段），可以直接点下一步全部导入。</p>';
+  for (i = 0; i < order.length; i++) {
+    h += '<button class="ms-sub' + (i === defIdx ? ' on' : '') + '" type="button" data-mssub="' + esc(order[i]) + '">' +
+      esc(order[i]) + '<i>' + subs[order[i]] + '</i></button>';
+  }
+  h += '<button class="ms-sub all' + (defIdx < 0 ? ' on' : '') + '" type="button" data-mssub="__all">全都要</button>';
+  h += '</div>';
+  h += '<p class="fld-tip">也可以自己输入学科名：</p>' +
+    '<input class="ms-subinput" id="msSubInput" placeholder="如：语文 / 数学 / 英语" type="text">';
+  qs('#msSubjectBody').innerHTML = h;
+  if (defIdx >= 0) state.msImportSub = order[defIdx];
+  var si = qs('#msSubInput');
+  if (si) si.value = '';
+  qs('#msSubjectModal').classList.add('on');
+}
+function msSubjectGo() {
+  var list = state.msImportAll || [];
+  var sub = (qs('#msSubInput') && qs('#msSubInput').value || '').trim() || state.msImportSub || '';
+  var picked = [];
+  if (sub && sub !== '__all') {
+    for (var i = 0; i < list.length; i++) {
+      var s = msSubjectOf(list[i].name || list[i].cls || '');
+      if (!s || msIsRestSubject(s)) continue;   /* 休息时段不跟着学科一起进来 */
+      if (s === sub || s.indexOf(sub) >= 0 || sub.indexOf(s) >= 0) picked.push(list[i]);
+    }
+  }
+  var out = picked.length ? picked : list;
+  if (picked.length && picked.length < list.length) {
+    toast('已按「' + sub + '」筛选，保留 ' + picked.length + ' / ' + list.length + ' 节');
+  }
+  qs('#msSubjectModal').classList.remove('on');
+  msShowPreview(out);
 }
 function msSeq(list, fn) {
   var i = 0, out = [];
@@ -17169,10 +17358,8 @@ function msDoImport() {
   btn.disabled = true; btn.textContent = '导入中…';
   msSeq(list, function (c) {
     var props = {};
-    var wid = msSelId('星期', c.wd);
-    if (wid) props['星期'] = { select: wid };
-    var pid = msSelId('节次', msPdKey(c.pd));
-    if (pid) props['节次'] = { select: pid };
+    msPut(props, '星期', c.wd);
+    msPut(props, '节次', msPdKey(c.pd));
     props['班级'] = { text: c.cls || '' };
     props['课程名称'] = { text: c.name || '' };
     props['年级'] = { text: c.grade || '' };
@@ -17276,7 +17463,7 @@ function msFileIn(e) {
   run.then(function (list) {
     qs('#msImportTip').textContent = '';
     if (!list || !list.length) { toast('没认出课程内容，检查一下文件是不是课表'); return; }
-    msShowPreview(list);
+    msPickSubject(list);
   }).catch(function (err) {
     console.error('[课表] 导入失败:', err);
     qs('#msImportTip').textContent = '';
@@ -20932,6 +21119,24 @@ function bindEvents() {
     if (f) f.click();
   });
   qs('#msFile').addEventListener('change', msFileIn);
+  /* 原生时间选择器 -> 回填左侧文本框 */
+  qsa('.ms-tpick').forEach(function (tp) {
+    tp.addEventListener('change', function () {
+      var box = tp.parentNode;
+      var txt = box && box.querySelector('input[type="text"]');
+      if (txt && tp.value) txt.value = tp.value;
+    });
+  });
+  qs('#msSubjectGo').addEventListener('click', msSubjectGo);
+  qs('#msSubjectBody').addEventListener('click', function (e) {
+    var b = closest(e.target, '[data-mssub]');
+    if (!b) return;
+    var v = b.getAttribute('data-mssub');
+    qsa('[data-mssub]').forEach(function (x) { x.classList.toggle('on', x === b); });
+    state.msImportSub = v;
+    var si = qs('#msSubInput');
+    if (si && v !== '__all') si.value = '';
+  });
   qs('#msImportGo').addEventListener('click', msDoImport);
   qs('#msExportGo').addEventListener('click', function () {
     msExport(state.msExpFmt || 'xlsx');
