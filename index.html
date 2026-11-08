@@ -1589,6 +1589,14 @@ table.tb td.td-no{text-align:center;padding:9px 8px}
 .me2-form input,.me2-form select{height:38px;border:0;border-radius:var(--r2);padding:0 12px;font-size:13.5px;
   background:var(--bg);color:var(--ink);font-family:inherit;box-shadow:inset 0 0 0 1px var(--line);width:100%}
 .me2-form input:focus,.me2-form select:focus{outline:0;box-shadow:inset 0 0 0 2px var(--brand)}
+/* 下拉会被全局组件升级成自定义选择器（原生 select 被隐藏），这里补上同样的外观 */
+.me2-form .fsel{height:38px}
+.me2-form .fsel-inp{height:38px;border:0;border-radius:var(--r2);padding-left:12px;font-size:13.5px;
+  background:var(--bg);color:var(--ink);font-family:inherit;box-shadow:inset 0 0 0 1px var(--line);width:100%}
+.me2-form .fsel-inp:focus{outline:0;box-shadow:inset 0 0 0 2px var(--brand)}
+.me2-form .fsel-btn{right:4px;top:50%;transform:translateY(-50%)}
+.me2-form .fsel-pop{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);
+  box-shadow:var(--sh);padding:4px;max-height:260px;overflow:auto}
 .me2-form input.dirty{box-shadow:inset 0 0 0 2px var(--amber)}
 .me2-avbar{display:flex;align-items:center;gap:13px;padding:12px;border-radius:var(--r2);background:var(--bg)}
 .me2-av-prev{width:52px;height:52px;border-radius:16px;flex:0 0 52px;background-size:cover;background-position:center;
@@ -21603,6 +21611,13 @@ function selTextOf(sel) {
   return '';
 }
 
+/* 按「显示文本」找选项：下拉面板里存的是 option 的文字，
+   选中后要回写 option 真正的 value，不能把文字当值写进去 */
+function findOptByText(sel, t) {
+  var i, o = sel.options;
+  for (i = 0; i < o.length; i++) if ((o[i].text || o[i].value) === t) return o[i];
+  return null;
+}
 function ensureFreeOpt(sel, v) {
   var i, o = sel.options;
   for (i = 0; i < o.length; i++) if (o[i].value === v) return o[i];
@@ -21706,7 +21721,9 @@ function freeSelect(sel) {
 
   function commit(v) {
     inp.value = v;
-    if (v) desc.set.call(sel, ensureFreeOpt(sel, v).value);
+    var hit = v ? findOptByText(sel, v) : null;
+    if (hit) desc.set.call(sel, hit.value);
+    else if (v) desc.set.call(sel, ensureFreeOpt(sel, v).value);
     else desc.set.call(sel, '');
   }
 
@@ -21723,8 +21740,10 @@ function freeSelect(sel) {
     fireChange();
   });
   inp.addEventListener('blur', function () {
-    var t = inp.value;
-    if (t && selTextOf(sel) !== t) desc.set.call(sel, ensureFreeOpt(sel, t).value);
+    var t = inp.value, hit = t ? findOptByText(sel, t) : null;
+    if (t && selTextOf(sel) !== t) {
+      desc.set.call(sel, hit ? hit.value : ensureFreeOpt(sel, t).value);
+    }
     try { sel.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
     setTimeout(closePop, 120);
   });
