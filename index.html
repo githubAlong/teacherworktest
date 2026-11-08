@@ -6853,10 +6853,12 @@ function addQuickNote() {
 function renderCatTable() {
   var cat = state.catView;
   qs('#catTitle').textContent = cat;
-  /* 课外：直接承载「课堂管理」后台，不显示通用任务表 */
+  /* 课外：直接承载「课堂管理」后台，不显示通用任务表，也不显示「学习」看板 */
   if (cat === '课外') {
     qs('#catPanel').style.display = 'none';
     qs('#catNotice').style.display = 'none';
+    var sn2 = qs('#studyNav'); if (sn2) sn2.style.display = 'none';
+    var lw2 = qs('#learnWrap'); if (lw2) lw2.style.display = 'none';
     var ktm = qs('#ktAdminMount'); if (ktm) ktm.style.display = '';
     renderKetangAdmin();
     return;
