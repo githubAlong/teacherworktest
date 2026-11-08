@@ -1532,6 +1532,110 @@ table.tb td.td-no{text-align:center;padding:9px 8px}
 .ms-prev th{background:var(--line2);font-weight:700;font-size:12.5px;position:sticky;top:0;z-index:1}
 .ms-prev td.nm{font-weight:600}
 
+
+/* ================= 我的 · 卡片式个人中心（重做） ================= */
+.me2-wrap{display:flex;flex-direction:column;gap:14px}
+.me2-id{display:flex;align-items:center;gap:18px;padding:22px 24px;border-radius:var(--r);
+  background:var(--hero-grad);color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 12px 32px rgba(var(--brand-d-rgb),.22)}
+.me2-id::after{content:"";position:absolute;right:-70px;top:-80px;width:250px;height:250px;border-radius:50%;
+  background:rgba(255,255,255,.10)}
+.me2-id::before{content:"";position:absolute;right:70px;bottom:-100px;width:190px;height:190px;border-radius:50%;
+  background:rgba(255,255,255,.07)}
+.me2-av{width:84px;height:84px;border-radius:26px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  font-size:32px;font-weight:800;color:#fff;background:rgba(255,255,255,.20);cursor:pointer;position:relative;z-index:1;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.38);overflow:hidden;transition:transform .18s}
+.me2-av:hover{transform:scale(1.04)}
+.me2-id-txt{flex:1;min-width:0;position:relative;z-index:1}
+.me2-id-txt b{display:block;font-size:23px;font-weight:800;letter-spacing:.4px;
+  text-shadow:0 1px 2px rgba(0,0,0,.12)}
+.me2-id-txt .sub{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.me2-id-txt .sub i{font-style:normal;background:rgba(255,255,255,.20);padding:3px 10px;border-radius:999px;font-size:12px}
+.me2-id-txt .motto{margin-top:9px;font-size:13px;opacity:.9;font-style:italic}
+.me2-id-act{display:flex;flex-direction:column;align-items:flex-end;gap:9px;position:relative;z-index:1;flex:0 0 auto}
+.me2-id-act .btn.ghost{background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.34)}
+.me2-id-act .btn.ghost:hover{background:rgba(255,255,255,.28)}
+.me2-id-badge{font-size:11.5px;background:rgba(255,255,255,.18);padding:4px 11px;border-radius:999px;max-width:190px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me2-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.me2-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);
+  padding:16px 18px;display:flex;flex-direction:column;gap:13px;min-width:0}
+.me2-card.full{grid-column:1/-1}
+.me2-ch{display:flex;align-items:center;gap:9px;min-width:0}
+.me2-ch .ic{width:28px;height:28px;border-radius:9px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  background:var(--brand-l);color:var(--brand-d)}
+.me2-ch .ic svg{width:16px;height:16px;display:block}
+.me2-ch h2{margin:0;font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap}
+.me2-ch .hint{margin-left:auto;font-size:11.5px;color:var(--ink3);text-align:right;line-height:1.4}
+.me2-sw{display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--line2);
+  border-radius:var(--r2);background:var(--bg)}
+.me2-tx{flex:1 1 auto;min-width:0}
+.me2-tx b{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}
+.me2-tx span{display:block;font-size:11.5px;color:var(--ink3);margin-top:3px;line-height:1.5}
+.me2-swbtn{flex:0 0 auto;width:44px;height:25px;border-radius:999px;border:0;cursor:pointer;position:relative;
+  background:var(--line);transition:background .18s;padding:0}
+.me2-swbtn::after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;
+  background:#fff;transition:transform .18s;box-shadow:0 1px 3px rgba(15,23,42,.28)}
+.me2-swbtn.on{background:linear-gradient(135deg,var(--brand),var(--brand2))}
+.me2-swbtn.on::after{transform:translateX(19px)}
+.me2-swbtn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.me2-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line2)}
+.me2-row:last-child{border-bottom:0;padding-bottom:0}
+.me2-row:first-child{padding-top:0}
+.me2-form{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.me2-form label{display:flex;flex-direction:column;gap:5px;min-width:0}
+.me2-form label.full{grid-column:1/-1}
+.me2-form label>span{font-size:12.5px;color:var(--ink2);font-weight:600}
+.me2-form input,.me2-form select{height:38px;border:0;border-radius:var(--r2);padding:0 12px;font-size:13.5px;
+  background:var(--bg);color:var(--ink);font-family:inherit;box-shadow:inset 0 0 0 1px var(--line);width:100%}
+.me2-form input:focus,.me2-form select:focus{outline:0;box-shadow:inset 0 0 0 2px var(--brand)}
+.me2-form input.dirty{box-shadow:inset 0 0 0 2px var(--amber)}
+.me2-avbar{display:flex;align-items:center;gap:13px;padding:12px;border-radius:var(--r2);background:var(--bg)}
+.me2-av-prev{width:52px;height:52px;border-radius:16px;flex:0 0 52px;background-size:cover;background-position:center;
+  display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--ink3);
+  box-shadow:inset 0 0 0 1px var(--line);cursor:pointer}
+.me2-avbar .me2-tx{flex:1 1 auto;min-width:0}
+.me2-avbar .me2-tx b{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}
+.me2-avbar .me2-tx span{display:block;font-size:11.5px;color:var(--ink3);margin-top:3px;line-height:1.5}
+.me2-act{display:flex;justify-content:flex-end;gap:8px;align-items:center}
+.me2-act .tip{margin-right:auto;font-size:11.5px;color:var(--ink3)}
+.me2-msg{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:1px solid var(--line2);
+  border-radius:var(--r2);background:var(--bg);text-align:left;cursor:pointer;font-family:inherit}
+.me2-msg:hover{border-color:var(--brand);background:var(--brand-l)}
+.me2-msg .dot{width:24px;height:24px;flex:0 0 auto;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  background:var(--brand-l);color:var(--brand-d);font-size:12px;font-weight:700}
+.me2-msg .dot.warn{background:var(--amber-l);color:var(--amber)}
+.me2-msg .me2-tx{flex:1 1 auto;min-width:0}
+.me2-msg .me2-tx b{display:block;font-size:13.5px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me2-msg .me2-tx span{display:block;font-size:11.5px;color:var(--ink3);margin-top:3px}
+.me2-msg .go{flex:0 0 auto;font-size:12px;color:var(--ink3)}
+.me2-empty{padding:20px 10px;text-align:center;font-size:12.5px;color:var(--ink3);line-height:1.6}
+.me2-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ink3);margin-right:6px;vertical-align:middle}
+.me2-dot.ok{background:var(--brand);box-shadow:0 0 0 3px var(--brand-l)}
+.me2-dot.off{background:var(--ink3)}
+.me2-flash{animation:me2Flash 1.6s ease}
+@keyframes me2Flash{0%,100%{box-shadow:var(--sh)}18%,55%{box-shadow:0 0 0 3px var(--brand-l),0 0 0 6px var(--brand-l2)}}
+.me2-tip{font-size:11.5px;color:var(--ink3);margin:0;line-height:1.6}
+.me2-stat{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.me2-stat .st{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);
+  padding:13px 15px;min-width:0}
+.me2-stat .st b{display:block;font-size:22px;font-weight:800;color:var(--ink);line-height:1.15}
+.me2-stat .st span{display:block;font-size:12px;color:var(--ink3);margin-top:4px}
+.me2-stat .st.hl b{color:var(--brand-d)}
+@media (max-width:720px){.me2-stat{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.me2-card.full .theme-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+.me2-card.full .me2-swrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.me2-card.full .me2-swrow{grid-template-columns:1fr}}
+.me2-tip b{color:var(--ink2)}
+@media (max-width:980px){.me2-grid{grid-template-columns:1fr}}
+@media (max-width:640px){
+  .me2-form{grid-template-columns:1fr}
+  .me2-id{flex-wrap:wrap;padding:18px}
+  .me2-id-txt b{font-size:20px}
+  .me2-id-act{flex-direction:row;align-items:center;width:100%}
+}
+
 /* ---------- 教案模块 ---------- */
 .lz{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .lz-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:14px}
@@ -15873,16 +15977,17 @@ function meDataHTML() {
 
 function saveMeForm() {
   var val = function (id) { var el = qs('#' + id); return el ? String(el.value || '').trim() : ''; };
-  meSave({
+  var m = meSave({
     name: val('meName'), school: val('meSchool'), subject: val('meSubject'),
     duty: val('meDuty'), gradeGroup: val('meGradeGroup'), motto: val('meMotto')
   });
   state.meOpen = '';
   renderMe();
   applyBrand();
+  try { renderHpGreeting(); } catch (e) { }
   var g = qs('#greetText');
   if (g) g.textContent = greet();
-  toast('资料已保存');
+  toast('资料已保存' + (m && m.name ? '：' + m.name : ''));
 }
 
 function clearLocalCache() {
@@ -16015,32 +16120,240 @@ function renderMe() {
   var el = qs('#meBody');
   if (!el) return;
   if (state.meOpen === undefined) state.meOpen = '';
-  state.meEdit = (state.meOpen === 'profile');
-  var h = '', i;
-  h += '<div class="me-head">' +
-    '<div class="me-eyebrow">PERSONAL CENTER</div>' +
-    '<h1>我的</h1>' +
-    '<p>管理个人资料、工作台配置与消息通知</p></div>';
-  h += '<div class="panel me-panel">' + meHeroHTML() + '</div>';
-  h += '<div class="panel me-list">';
-  for (i = 0; i < ME_ROWS.length; i++) {
-    var r = ME_ROWS[i], on = state.meOpen === r.k, st = meRowState(r.k);
-    h += '<button type="button" class="me-nav' + (on ? ' on' : '') + '" data-menav="' + r.k + '">' +
-      '<span class="me-ni">' + meIcon(r.ic) + '</span>' +
-      '<span class="me-nt"><b>' + esc(r.n) + '</b><span>' + esc(r.d) + '</span></span>' +
-      (st ? '<span class="me-ns">' + esc(st) + '</span>' : '') +
-      '<span class="me-na">›</span></button>';
-    if (on) h += '<div class="me-pane">' + mePaneHTML(r.k) + '</div>';
-  }
-  h += '<button type="button" class="me-nav me-logout" data-logout="1"><span class="me-ni"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span><span class="me-nt"><b>退出登录</b><span>退出当前账号并返回登录页</span></span><span class="me-na">›</span></button>';
+  var h = '<div class="me2-wrap">';
+  h += me2IdCardHTML();
+  h += me2StatHTML();
+  h += '<div class="me2-grid">';
+  h += me2InfoCardHTML();
+  h += me2WsCardHTML();
+  h += me2RemindCardHTML();
+  h += me2MsgCardHTML();
+  h += me2LookCardHTML();
+  h += me2DataCardHTML();
+  h += me2AccountCardHTML();
   h += '</div>';
-  var who = (CUR_USER && (CUR_USER.nickName || CUR_USER.id)) || (CUR_UID === UID_LOCAL ? '本机试用（未登录）' : CUR_UID);
-  h += '<div class="me-foot">当前账号：<span class="me-uid">' + esc(who) + '</span><br>' +
-    '账号、密码与全部数据都保存在本机浏览器中，按账号互相隔离；' +
-    '换浏览器或清除缓存后，用同一账号重新登录即可读取。</div>';
+  h += '</div>';
   el.innerHTML = h;
+  /* 从首页头像旁的「外观」按钮跳过来时，高亮并滚动到外观卡片 */
+  if (state.meOpen === 'theme') {
+    state.meOpen = '';
+    setTimeout(function () {
+      var lc = qs('#me2LookCard');
+      if (!lc) return;
+      lc.classList.add('me2-flash');
+      try { lc.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { }
+      setTimeout(function () { lc.classList.remove('me2-flash'); }, 1800);
+    }, 80);
+  }
 }
 
+
+
+/* ================= 我的 · 卡片式个人中心 ================= */
+function me2Who() {
+  try {
+    if (CUR_USER && (CUR_USER.nickName || CUR_USER.id)) return String(CUR_USER.nickName || CUR_USER.id);
+    if (CUR_UID && CUR_UID !== UID_LOCAL) return String(CUR_UID);
+  } catch (e) { /* ignore */ }
+  return '本机试用（未登录）';
+}
+function me2StatHTML() {
+  var tod = todayStr(), todo = 0, cls = 0, cse = 0, notes = 0, i;
+  try {
+    todo = (state.tasks || []).filter(function (t) { return t.date === tod && t.st !== '已完成'; }).length;
+  } catch (e) { todo = 0; }
+  try { cls = (todayCourses() || []).length; } catch (e) { cls = 0; }
+  try {
+    var all = (state.data && state.data.course) ? state.data.course : [];
+    for (i = 0; i < all.length; i++) if (!all[i]['回收状态'] || all[i]['回收状态'] !== '已删除') cse++;
+  } catch (e) { cse = 0; }
+  try {
+    var lm = (state.data && state.data.learnmat) ? state.data.learnmat : [];
+    for (i = 0; i < lm.length; i++) if (String(lm[i]['分类'] || '') === NOTE_CAT) notes++;
+  } catch (e) { notes = 0; }
+  var cells = [
+    { n: todo, t: '今日待办', hl: todo > 0 },
+    { n: cls, t: '今日课程', hl: cls > 0 },
+    { n: cse, t: '课表课程', hl: false },
+    { n: notes, t: '学习笔记', hl: false }
+  ];
+  var h = '<div class="me2-stat">';
+  for (i = 0; i < cells.length; i++) {
+    h += '<div class="st' + (cells[i].hl ? ' hl' : '') + '"><b>' + cells[i].n + '</b><span>' + cells[i].t + '</span></div>';
+  }
+  return h + '</div>';
+}
+function me2IdCardHTML() {
+  var m = meGet();
+  var name = String(m.name || '').trim();
+  var ini = name ? name.slice(0, 1) : '我';
+  var av = String(m.avatar || '').trim();
+  var tags = [];
+  if (m.school) tags.push(m.school);
+  if (m.subject) tags.push(m.subject);
+  if (m.duty) tags.push(m.duty);
+  if (m.gradeGroup) tags.push(m.gradeGroup);
+  var tagHTML = '';
+  for (var i = 0; i < tags.length; i++) tagHTML += '<i>' + esc(tags[i]) + '</i>';
+  if (!tagHTML) tagHTML = '<i>在下面填写学校、学科、职务或年级组</i>';
+  return '<div class="me2-id">' +
+    '<div class="me2-av" id="me2Av" title="点击更换头像"' + (av
+      ? ' style="background-image:url(' + av.replace(/"/g, '&quot;') + ');background-size:cover;background-position:center"'
+      : '') + '>' + (av ? '' : esc(ini)) + '</div>' +
+    '<div class="me2-id-txt">' +
+      '<b>' + (name ? esc(name) : '还没填名字') + '</b>' +
+      '<div class="sub">' + tagHTML + '</div>' +
+      (m.motto ? '<div class="motto">「' + esc(m.motto) + '」</div>' : '') +
+    '</div>' +
+    '<div class="me2-id-act">' +
+      '<span class="me2-id-badge" title="当前登录账号">' + esc(me2Who()) + '</span>' +
+      '<button type="button" class="btn ghost sm" id="me2AvPick">更换头像</button>' +
+    '</div>' +
+  '</div>';
+}
+function me2InfoCardHTML() {
+  var m = meGet();
+  var av = String(m.avatar || '').trim();
+  var ini = String(m.name || '').trim().slice(0, 1) || '我';
+  return '<div class="me2-card" id="me2InfoCard">' +
+    '<div class="me2-ch"><span class="ic">' + meIcon('user') + '</span><h2>个人信息</h2>' +
+      '<span class="hint">头像、昵称、学校、学科、职务、年级组、签名</span></div>' +
+    '<div class="me2-avbar">' +
+      '<div class="me2-av-prev" id="meAvPrev"' + (av
+        ? ' style="background-image:url(' + av.replace(/"/g, '&quot;') + ')"' : '') + '>' + (av ? '' : esc(ini)) + '</div>' +
+      '<div class="me2-tx"><b>头像照片</b><span>上传后可拖动缩放取景；首页头像同步显示这张照片</span></div>' +
+      '<button type="button" class="btn primary sm" id="meAvPick">上传</button>' +
+      (av ? '<button type="button" class="btn ghost sm" id="meAvDel">移除</button>' : '') +
+    '</div>' +
+    '<div class="me2-form">' +
+      '<label><span>昵称</span><input id="meName" maxlength="12" placeholder="怎么称呼你" value="' + esc(m.name || '') + '"></label>' +
+      '<label><span>学校</span><input id="meSchool" maxlength="20" placeholder="例如：实验中学" value="' + esc(m.school || '') + '"></label>' +
+      '<label><span>任教学科</span><input id="meSubject" maxlength="12" placeholder="例如：高二语文" value="' + esc(m.subject || '') + '"></label>' +
+      '<label><span>职务</span><input id="meDuty" maxlength="20" placeholder="例如：班主任 / 教研组长" value="' + esc(m.duty || '') + '"></label>' +
+      '<label class="full"><span>所属年级组</span><input id="meGradeGroup" maxlength="24" placeholder="例如：高一年级组" value="' + esc(m.gradeGroup || '') + '"></label>' +
+      '<label class="full"><span>一句话签名</span><input id="meMotto" maxlength="40" placeholder="写给自己的一句话" value="' + esc(m.motto || '') + '"></label>' +
+    '</div>' +
+    '<input type="file" id="meAvatarFile" hidden>' +
+    '<div class="me2-act"><span class="tip" id="meSaveTip">改动后记得点保存</span>' +
+      '<button type="button" class="btn ghost sm" id="meCancelBtn">还原</button>' +
+      '<button type="button" class="btn primary sm" id="meSaveBtn">保存资料</button></div>' +
+  '</div>';
+}
+function me2WsCardHTML() {
+  var c = wsCfg();
+  return '<div class="me2-card" id="me2WsCard">' +
+    '<div class="me2-ch"><span class="ic">' + meIcon('sliders') + '</span><h2>工作台设置</h2>' +
+      '<span class="hint">只决定左上角名称与图标</span></div>' +
+    '<div class="me2-avbar">' +
+      '<div class="me-av-prev" id="wsIconPrev"' + wsBg(c.wsIcon) + '>' + (c.wsIcon ? '' : '图标') + '</div>' +
+      '<div class="me2-tx"><b>工作台图标</b><span>左上角那个方块；不传就用系统默认图标，不会拿你的头像顶替</span></div>' +
+      '<button type="button" class="btn primary sm" id="wsIconPick">上传</button>' +
+      (c.wsIcon ? '<button type="button" class="btn ghost sm" id="wsIconDel">移除</button>' : '') +
+    '</div>' +
+    '<input type="file" id="wsIconFile" class="ws-file">' +
+    '<div class="me2-form">' +
+      '<label><span>工作台名称</span><input id="wsName" maxlength="16" placeholder="我的工作台" value="' + esc(c.wsName || '') + '"></label>' +
+      '<label><span>副标题</span><input id="wsSub" maxlength="24" placeholder="Workbench" value="' + esc(c.wsSub || '') + '"></label>' +
+      '<label class="full"><span>欢迎语</span><input id="wsWelcome" maxlength="60" placeholder="留空就按时间自动问候" value="' + esc(c.welcome || '') + '">' +
+        '<span class="me2-tip">写 <b>{nickname}</b> 会替换成当前昵称，例如：{nickname}老师，今天先上哪节课？</span></label>' +
+    '</div>' +
+    '<div class="me2-act"><button type="button" class="btn primary sm" id="wsSaveBtn">保存设置</button></div>' +
+  '</div>';
+}
+function me2LookCardHTML() {
+  var on = meWideOn();
+  return '<div class="me2-card full" id="me2LookCard">' +
+    '<div class="me2-ch"><span class="ic">' + meIcon('sun') + '</span><h2>外观</h2>' +
+      '<span class="hint">主题 / 页面宽度 / 首页布局</span></div>' +
+    meThemeHTML() +
+    '<div class="me2-swrow">' +
+      '<div class="me2-sw"><div class="me2-tx"><b>页面内容铺满屏幕</b><span>开启保持现在的全宽；关闭则收窄到舒适宽度并居中</span></div>' +
+        '<button type="button" class="me2-swbtn' + (on ? ' on' : '') + '" id="meWideToggle" role="switch" aria-checked="' + (on ? 'true' : 'false') + '" aria-label="页面内容铺满屏幕"></button></div>' +
+      '<div class="me2-sw"><div class="me2-tx"><b>首页卡片布局</b><span>把首页卡片恢复成默认排列，不会删除任何数据</span></div>' +
+        '<button type="button" class="btn ghost sm" id="meResetLayout">恢复默认</button></div>' +
+    '</div>' +
+  '</div>';
+}
+function me2RemindCardHTML() {
+  var from = remindCfg.from || '00:00', lead = remindCfg.lead || 10, i;
+  var opts = '';
+  for (i = 0; i < LEAD_OPTS.length; i++) {
+    var v = LEAD_OPTS[i];
+    opts += '<option value="' + v + '"' + (v === lead ? ' selected' : '') + '>' +
+      (v === 0 ? '不提醒' : leadText(v)) + '</option>';
+  }
+  return '<div class="me2-card" id="me2RemindCard">' +
+    '<div class="me2-ch"><span class="ic">' + meIcon('clock') + '</span><h2>上课提醒</h2>' +
+      '<span class="hint">和首页那张课程卡是同一份设置，改完即生效</span></div>' +
+    '<div class="me2-form">' +
+      '<label><span>每天几点之后开始提醒</span><input type="time" id="meFrom" value="' + esc(from) + '"></label>' +
+      '<label><span>课前多久提醒</span><select id="meLead">' + opts + '</select></label>' +
+    '</div>' +
+    '<div class="me2-sw"><div class="me2-tx"><b>浏览器通知</b><span>到点后在桌面弹一条提醒（需先允许通知权限）</span></div>' +
+      '<button type="button" class="me2-swbtn' + (remindCfg.notify ? ' on' : '') + '" id="meNotify" role="switch" aria-checked="' + (remindCfg.notify ? 'true' : 'false') + '" aria-label="浏览器通知"></button></div>' +
+  '</div>';
+}
+function me2MsgHTML() {
+  var u = meUnread(), tod = todayStr(), i, h = '<div class="me2-msgs" style="display:flex;flex-direction:column;gap:8px">';
+  for (i = 0; i < u.tasks.length; i++) {
+    var t = u.tasks[i], ov = false;
+    try { ov = isOverdue(t); } catch (e) {}
+    var meta = [];
+    if (ov) meta.push('逾期 · ' + prettyDate(t.date));
+    else if (t.date && t.date !== tod) meta.push(prettyDate(t.date));
+    try { if (hasClock(t.start)) meta.push(clockOf(t.start)); } catch (e) {}
+    if (!meta.length) meta.push('今日待办');
+    if (t.cat) meta.push(t.cat);
+    h += '<button type="button" class="me2-msg" data-mego="overview">' +
+      '<span class="dot' + (ov ? ' warn' : '') + '">' + (ov ? '!' : '•') + '</span>' +
+      '<span class="me2-tx"><b>' + esc(t.title || '未命名') + '</b><span>' + esc(meta.join(' · ')) + '</span></span>' +
+      '<span class="go">查看 ›</span></button>';
+  }
+  for (i = 0; i < u.courses.length; i++) {
+    var c = u.courses[i];
+    h += '<button type="button" class="me2-msg" data-mego="overview">' +
+      '<span class="dot">课</span>' +
+      '<span class="me2-tx"><b>' + esc(c['班级'] || '今日课程') + '</b><span>' +
+      esc((c['开始时间'] ? c['开始时间'] + ' · ' : '') + (c['节次'] || '今日上课')) + '</span></span>' +
+      '<span class="go">查看 ›</span></button>';
+  }
+  if (!u.tasks.length && !u.courses.length) {
+    h += '<div class="me2-empty">今天没有待办和课程，暂无未读消息<br>添加任务或安排课程后会在这里提醒你' +
+      '<div style="margin-top:12px;display:flex;gap:8px;justify-content:center">' +
+      '<button type="button" class="btn ghost sm" data-mego="overview">去首页看看</button>' +
+      '<button type="button" class="btn primary sm" data-mego="course">去课表安排</button></div></div>';
+  }
+  return h + '</div>';
+}
+function me2MsgCardHTML() {
+  var u = meUnread();
+  return '<div class="me2-card" id="me2MsgCard">' +
+    '<div class="me2-ch"><span class="ic">' + meIcon('bell') + '</span><h2>消息中心</h2>' +
+      '<span class="hint">' + (u.n ? (u.n + ' 条未读') : '暂无未读') + '</span></div>' +
+    me2MsgHTML() +
+  '</div>';
+}
+function me2DataCardHTML() {
+  return '<div class="me2-card" id="me2DataCard">' +
+    '<div class="me2-ch"><span class="ic">' + meIcon('database') + '</span><h2>数据与同步</h2>' +
+      '<span class="hint"><span class="me2-dot ' + (state.online ? 'ok' : 'off') + '"></span>' +
+      (state.online ? '云端已连接' : '当前离线') + '</span></div>' +
+    '<div class="me2-row"><div class="me2-tx"><b>导出备份</b><span>把任务、课表和各模块数据存成一个 JSON 文件</span></div>' +
+      '<button type="button" class="btn ghost sm" id="meBackup">导出</button></div>' +
+    '<div class="me2-row"><div class="me2-tx"><b>立即同步</b><span>马上把本机改动推到云端</span></div>' +
+      '<button type="button" class="btn ghost sm" id="meReload">同步</button></div>' +
+    '<div class="me2-row"><div class="me2-tx"><b>本机缓存</b><span>清掉后需要用云端数据重新加载，不会删除任何记录</span></div>' +
+      '<button type="button" class="btn ghost sm" id="meClearCache">清缓存</button></div>' +
+  '</div>';
+}
+function me2AccountCardHTML() {
+  return '<div class="me2-card" id="me2AccountCard">' +
+    '<div class="me2-ch"><span class="ic">' + meIcon('user') + '</span><h2>账号</h2>' +
+      '<span class="hint">数据按账号隔离，多端同步</span></div>' +
+    '<div class="me2-row"><div class="me2-tx"><b>当前账号</b><span>' + esc(me2Who()) + '　·　账号、密码与全部数据保存在本机浏览器，按账号互相隔离</span></div>' +
+      '<button type="button" class="btn danger ghost sm" data-logout="1">退出登录</button></div>' +
+  '</div>';
+}
 
 /* ---- 渲染：工作模块 ---- */
 function workTodoCount() {
@@ -20886,7 +21199,8 @@ function bindEvents() {
     /* ---- 我的：模板切换 / 资料编辑 ---- */
     var th = closest(e.target, '[data-theme-pick]');
     if (th) { setTheme(th.getAttribute('data-theme-pick')); return; }
-    if (closest(e.target, '#meAvPick') || closest(e.target, '#meAvPrev')) {
+    if (closest(e.target, '#meAvPick') || closest(e.target, '#meAvPrev') ||
+        closest(e.target, '#me2AvPick') || closest(e.target, '#me2Av')) {
       var _avf = qs('#meAvatarFile'); if (_avf) _avf.click(); return;
     }
     if (closest(e.target, '#meAvDel')) {
@@ -20896,7 +21210,12 @@ function bindEvents() {
     var mnv = closest(e.target, '[data-menav]');
     if (mnv) { meToggle(mnv.getAttribute('data-menav')); return; }
     var mgo = closest(e.target, '[data-mego]');
-    if (mgo) { switchView(mgo.getAttribute('data-mego')); return; }
+    if (mgo) {
+      var _mv = mgo.getAttribute('data-mego');
+      if (_mv === 'course') { state.workSub = 'course'; switchView('工作'); toast('已切到工作 · 课表'); }
+      else switchView(_mv);
+      return;
+    }
     if (closest(e.target, '#meWideToggle')) {
       var _won = !meWideOn(); lsSet(LS_WIDE, _won); applyWide(_won); renderMe();
       toast(_won ? '已平铺整页' : '已恢复舒适宽度'); return;
@@ -20945,6 +21264,16 @@ function bindEvents() {
     }
     var tab = closest(e.target, '.tab[data-view]');
     if (tab) { switchView(tab.getAttribute('data-view')); closeNav(); }
+  });
+
+  /* 个人信息：改动后高亮「保存资料」，避免以为没生效 */
+  document.addEventListener('input', function (e) {
+    var t = e.target;
+    if (!t || !t.id) return;
+    if (['meName', 'meSchool', 'meSubject', 'meDuty', 'meGradeGroup', 'meMotto'].indexOf(t.id) < 0) return;
+    t.classList.add('dirty');
+    var tip = qs('#meSaveTip');
+    if (tip) tip.textContent = '有改动还没保存，点「保存资料」生效';
   });
 
   document.addEventListener('change', function (e) {
