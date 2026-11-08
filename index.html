@@ -1427,6 +1427,94 @@ table.tt td.tt-cell.tt-over-occ{background:rgba(99,102,241,.14);box-shadow:inset
 table.tb th.th-no{width:62px;text-align:center;color:var(--ink3);font-weight:600}
 table.tb td.td-no{text-align:center;padding:9px 8px}
 
+/* ---------- 我的课表（按 PRD 原型改版） ---------- */
+.ms-top{display:flex;align-items:center;gap:12px;margin:0 0 16px}
+.ms-top h1{font-size:20px;font-weight:800;letter-spacing:.5px}
+.ms-top .ms-acts{margin-left:auto;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.ms-btn{height:38px;padding:0 16px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;
+  background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);font-family:inherit;
+  display:inline-flex;align-items:center;gap:6px}
+.ms-btn:hover{box-shadow:inset 0 0 0 1px var(--brand-l2);color:var(--brand-dd)}
+.ms-btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 16px rgba(var(--brand2-rgb),.26)}
+.ms-btn.primary:hover{color:#fff;filter:brightness(1.05)}
+/* 上课提醒卡片 */
+.ms-remind{display:flex;align-items:center;gap:20px;border-radius:16px;padding:20px 24px;margin-bottom:16px;color:#fff;
+  background:linear-gradient(135deg,#2563EB 0%,#7C3AED 100%);box-shadow:0 10px 28px rgba(37,99,235,.26)}
+.ms-remind.is-class{background:linear-gradient(135deg,#D97706 0%,#F59E0B 100%);box-shadow:0 10px 28px rgba(217,119,6,.26)}
+.ms-remind.is-free{background:linear-gradient(135deg,#059669 0%,#10B981 100%);box-shadow:0 10px 28px rgba(5,150,105,.24)}
+.ms-remind .ms-date{border-right:1px solid rgba(255,255,255,.22);padding-right:22px;min-width:106px;flex:none}
+.ms-remind .ms-wd{font-size:22px;font-weight:800;line-height:1.2}
+.ms-remind .ms-dt{font-size:13px;opacity:.92;margin-top:3px}
+.ms-remind .ms-st{flex:1;min-width:0}
+.ms-remind .ms-tt{font-size:16px;font-weight:700;line-height:1.5}
+.ms-remind .ms-ds{font-size:13px;opacity:.92;margin-top:3px;line-height:1.5}
+.ms-remind .ms-cd{text-align:right;min-width:98px;flex:none}
+.ms-remind .ms-cdn{font-size:32px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.ms-remind .ms-cdl{font-size:12px;opacity:.9;margin-top:5px}
+@media(max-width:640px){
+  .ms-remind{flex-wrap:wrap;gap:12px;padding:16px}
+  .ms-remind .ms-date{border-right:0;border-bottom:1px solid rgba(255,255,255,.22);padding:0 0 10px;width:100%}
+  .ms-remind .ms-cd{text-align:left;min-width:0}
+}
+/* 课表查询栏 */
+.ms-query{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:var(--sh)}
+.ms-qi{display:flex;flex-direction:column;gap:6px}
+.ms-qi label{font-size:13px;color:var(--ink2)}
+.ms-qi select{height:38px;min-width:168px;border:0;border-radius:10px;padding:0 12px;font-size:14px;
+  background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font-family:inherit;color:var(--ink)}
+.ms-qi select:focus{outline:0;box-shadow:inset 0 0 0 2px var(--brand)}
+.ms-tag{font-size:13px;color:var(--ink3);margin:0 0 12px}
+.ms-tag b{color:var(--ink)}
+/* 周课表网格 */
+.ms-panel{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:auto;box-shadow:var(--sh)}
+.ms-grid{display:grid;grid-template-columns:100px repeat(7,minmax(0,1fr));min-width:1200px}
+.ms-h{background:var(--line2);border-bottom:1px solid var(--line);padding:12px;text-align:center;
+  font-weight:700;color:var(--ink2);font-size:13.5px;position:sticky;top:0;z-index:2}
+.ms-h.today{background:var(--brand);color:#fff}
+.ms-tc{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 6px;text-align:center;
+  color:var(--ink2);font-size:13px;background:var(--line2);line-height:1.5}
+.ms-tc b{display:block;font-size:13.5px;color:var(--ink);font-weight:700}
+.ms-tc span{display:block;font-size:11.5px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.ms-cell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px;min-height:90px;position:relative}
+.ms-cell.today{background:rgba(var(--brand-rgb),.04)}
+.ms-cell.over{background:rgba(var(--brand-rgb),.10);box-shadow:inset 0 0 0 2px var(--brand)}
+/* 课程块 */
+.mcb{border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:grab;position:relative;text-align:left;
+  background:rgba(var(--brand-rgb),.12);border-left:3px solid var(--brand)}
+.mcb:last-child{margin-bottom:0}
+.mcb:hover .mcb-acts{display:flex}
+.mcb.ms-drag{opacity:.42}
+.mcb-acts{display:none;position:absolute;top:4px;right:4px;gap:4px;z-index:3}
+.mcb-act{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.94);display:flex;align-items:center;
+  justify-content:center;font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.14);cursor:pointer;border:0;line-height:1;padding:0}
+.mcb-act:hover{background:var(--brand);color:#fff}
+.mcb .mcb-tag{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:999px;background:var(--brand);
+  color:#fff;margin-bottom:5px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mcb .mcb-tag.g2{background:#7C3AED}
+.mcb .mcb-tag.g3{background:#DC2626}
+.mcb .mcb-tag.g0{background:#6B7280}
+.mcb .mcb-nm{font-weight:700;font-size:13.5px;line-height:1.35;color:var(--ink);word-break:break-word}
+.mcb .mcb-cl{font-size:11.5px;color:var(--ink2);margin-top:3px;line-height:1.4;word-break:break-word}
+.mcb.lunch{background:rgba(217,119,6,.10);border-left-color:#D97706}
+.mcb.special{background:rgba(124,58,237,.12);border-left-color:#7C3AED}
+.mcb.senior{background:rgba(220,38,38,.12);border-left-color:#DC2626}
+.mcb.now{box-shadow:0 0 0 2px #D97706}
+/* 导入 / 导出 选项 */
+.ms-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.ms-opt{border:1px dashed var(--line);border-radius:12px;padding:20px 10px;text-align:center;cursor:pointer;
+  background:transparent;display:block;width:100%}
+.ms-opt:hover{border-color:var(--brand);color:var(--brand-dd)}
+.ms-opt.on{border-style:solid;border-color:var(--brand);background:var(--brand-l)}
+.ms-opt .ic{font-size:26px;line-height:1;margin-bottom:8px;display:block}
+.ms-opt .nm{font-size:13px;font-weight:600}
+/* 导入预览 */
+.ms-prev{max-height:44vh;overflow:auto;border:1px solid var(--line);border-radius:10px;margin:12px 0}
+.ms-prev table{width:100%;border-collapse:collapse;font-size:13px}
+.ms-prev th,.ms-prev td{border:1px solid var(--line2);padding:7px 9px;text-align:left;white-space:nowrap}
+.ms-prev th{background:var(--line2);font-weight:700;font-size:12.5px;position:sticky;top:0;z-index:1}
+.ms-prev td.nm{font-weight:600}
+
 /* ---------- 教案模块 ---------- */
 .lz{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .lz-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:14px}
@@ -4187,6 +4275,151 @@ try {
   </div>
 </div>
 
+<!--pnid:msModalsPnid--><!-- ============ 我的课表：导入 / 导出 / 预览 / 课程 模态 ============ -->
+<div class="modal" id="msImportModal">
+  <div class="mask" data-msclose="1"></div>
+  <div class="mcard" style="width:min(560px,94vw)">
+    <div class="mhead">
+      <h3 id="msImportTitle">导入课表</h3>
+      <button class="act" data-msclose="1" title="关闭" type="button">
+        <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 24 24" width="18"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mbody">
+      <p class="fld-tip">支持以下格式上传，系统自动识别课表内容，识别完先给你看一遍，确认后存进云端课表。</p>
+      <div class="ms-opts">
+        <button class="ms-opt" type="button" data-msimp="pdf"><span class="ic">📄</span><span class="nm">PDF文件</span></button>
+        <button class="ms-opt" type="button" data-msimp="excel"><span class="ic">📊</span><span class="nm">Excel表格</span></button>
+        <button class="ms-opt" type="button" data-msimp="image"><span class="ic">🖼️</span><span class="nm">图片(PNG/JPG)</span></button>
+      </div>
+      <p class="fld-tip" id="msImportTip"></p>
+      <input id="msFile" type="file" accept=".pdf,.xlsx,.csv,image/*" style="display:none">
+    </div>
+    <div class="mfoot">
+      <button class="btn ghost" data-msclose="1" type="button">取消</button>
+      <button class="btn primary" id="msUploadBtn" type="button">选择文件上传</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="msExportModal">
+  <div class="mask" data-msclose="1"></div>
+  <div class="mcard" style="width:min(560px,94vw)">
+    <div class="mhead">
+      <h3>导出课表</h3>
+      <button class="act" data-msclose="1" title="关闭" type="button">
+        <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 24 24" width="18"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mbody">
+      <p class="fld-tip">导出格式和当前页面课表完全一致，可直接发给他人查看。</p>
+      <div class="ms-opts">
+        <button class="ms-opt" type="button" data-msexp="xlsx"><span class="ic">📊</span><span class="nm">Excel表格</span></button>
+        <button class="ms-opt" type="button" data-msexp="pdf"><span class="ic">📄</span><span class="nm">PDF文件</span></button>
+        <button class="ms-opt" type="button" data-msexp="png"><span class="ic">🖼️</span><span class="nm">PNG图片</span></button>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn ghost" data-msclose="1" type="button">取消</button>
+      <button class="btn primary" id="msExportGo" type="button">确认导出</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="msPreviewModal">
+  <div class="mask" data-msclose="1"></div>
+  <div class="mcard" style="width:min(760px,94vw)">
+    <div class="mhead">
+      <h3>识别结果</h3>
+      <button class="act" data-msclose="1" title="关闭" type="button">
+        <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 24 24" width="18"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mbody">
+      <p class="fld-tip" id="msImportCount"></p>
+      <div id="msPreviewBody"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn ghost" data-msclose="1" type="button">取消</button>
+      <button class="btn primary" id="msImportGo" type="button">确认导入</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="msCourseModal">
+  <div class="mask" data-msclose="1"></div>
+  <div class="mcard" style="width:min(640px,94vw)">
+    <div class="mhead">
+      <h3 id="msCourseTitle">新增课程</h3>
+      <button class="act" data-msclose="1" title="关闭" type="button">
+        <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 24 24" width="18"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="msCourseForm">
+      <div class="mbody">
+        <input name="ms-rid" type="hidden" value>
+        <input name="ms-type" type="hidden" value>
+        <div class="fld-row">
+          <label class="fld">
+            <span>课程名称</span>
+            <input autocomplete="off" maxlength="30" name="ms-name" placeholder="如：语文课、数学课、信息课" type="text">
+          </label>
+          <label class="fld">
+            <span>所属年级（可下拉选，也可手动输入）</span>
+            <input autocomplete="off" list="msGradeList" maxlength="12" name="ms-grade" placeholder="如：高一/高二/高三" type="text">
+            <datalist id="msGradeList">
+              <option value="高一"></option>
+              <option value="高二"></option>
+              <option value="高三"></option>
+              <option value="全体"></option>
+            </datalist>
+          </label>
+        </div>
+        <div class="fld-row">
+          <label class="fld">
+            <span>星期（可下拉选，也可手动输入）</span>
+            <input autocomplete="off" list="msWeekList" maxlength="8" name="ms-wd" placeholder="如：周一/周六/周日" type="text">
+            <datalist id="msWeekList">
+              <option value="周一"></option>
+              <option value="周二"></option>
+              <option value="周三"></option>
+              <option value="周四"></option>
+              <option value="周五"></option>
+              <option value="周六"></option>
+              <option value="周日"></option>
+            </datalist>
+          </label>
+          <label class="fld">
+            <span>节次（可下拉选，也可手动输入）</span>
+            <input autocomplete="off" list="msPdList" maxlength="16" name="ms-pd" placeholder="如：第一节、第二节、第三节" type="text">
+            <datalist id="msPdList"></datalist>
+          </label>
+        </div>
+        <div class="fld-row">
+          <label class="fld">
+            <span>开始时间（支持手动输入）</span>
+            <input autocomplete="off" maxlength="8" name="ms-st" placeholder="如：08:00" type="text">
+          </label>
+          <label class="fld">
+            <span>结束时间（支持手动输入）</span>
+            <input autocomplete="off" maxlength="8" name="ms-et" placeholder="如：08:45" type="text">
+          </label>
+        </div>
+        <label class="fld">
+          <span>授课班级（手动输入）</span>
+          <input autocomplete="off" maxlength="24" name="ms-cls" placeholder="如：高一1班/高二全年级/高三7班" type="text">
+        </label>
+      </div>
+      <div class="mfoot">
+        <button class="btn ghost" id="msSubBtn" type="button">找人代课</button>
+        <button class="btn danger ghost" id="msDelBtn" style="display:none" type="button">删除这节课</button>
+        <button class="btn ghost" data-msclose="1" type="button">取消</button>
+        <button class="btn primary" id="msSaveBtn" type="submit">保存课程</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!--pnid:29LLaqx5weB3xqIHRHQgvp--><!-- ============ 作息设置 模态 ============ -->
 <div data-page-node-id="8nZLrZTNdFMlze73Bz60Ut" class="modal" id="schedModal">
   <div data-page-node-id="FVRX7qmuwVgxl7K6AoOd4t" class="mask" data-sclose="1"></div>
@@ -4812,6 +5045,12 @@ function applyDefaultSchema() {
   }
   SCHEMA.tasks = m;
   SCHEMA_OPTIONS = m;
+  /* 离线兜底：其它表的下拉选项（课表的星期 / 节次…）也用内置选项补上。
+     不补的话本机试用时「课表」连星期都选不出来，记录根本存不进去。 */
+  for (k in SEL_OPTS) {
+    if (!Object.prototype.hasOwnProperty.call(SEL_OPTS, k)) continue;
+    SCHEMA[k] = fillSelOpts(k, SCHEMA[k] || {});
+  }
 }
 
 /* 本工作台挂载 16 张数据表：任务 + 课表 + 6 张教学业务表 + 学习记录 + 学习资料 + 考勤（记录 / 名单 / 表定义 / 照片） */
@@ -6186,7 +6425,7 @@ function renderMsg() {
       var c = courses[i];
       h += '<div class="rm-item">' +
         '<div class="rm-ic">课</div>' +
-        '<div class="rm-body"><div class="rm-t">' + esc(c['班级'] || '课程') + '</div>' +
+        '<div class="rm-body"><div class="rm-t">' + esc(msName(c)) + '</div>' +
         '<div class="rm-s">' + (c['开始时间'] ? esc(c['开始时间']) + ' · ' : '') + esc(c['节次'] || '') + '</div></div></div>';
     }
   }
@@ -8544,7 +8783,7 @@ function renderHpCourses() {
     rows += '<tr>' +
       '<td class="c-time">' + esc(c['开始时间'] || '') + '–' + esc(c['结束时间'] || '') + '</td>' +
       '<td>' + esc(c['节次'] || '—') + '</td>' +
-      '<td class="c-cls"><b>' + esc(c['班级'] || c['课程'] || '课程') + '</b>' +
+      '<td class="c-cls"><b>' + esc(msName(c)) + '</b>' +
       (c['地点'] ? '<em>' + esc(c['地点']) + '</em>' : '') + '</td>' +
       '<td><button class="hpc-st ' + clsStCls(t) + (st.man ? ' man' : '') + '" type="button" data-hpst="' + i +
       '" title="点一下改状态">' + t + '</button></td>' +
@@ -8636,7 +8875,7 @@ function hpIndex() {
   var cs = state.data.course || [];
   for (i = 0; i < cs.length; i++) {
     var c = cs[i];
-    out.push({ kind: '课程', id: '', title: (c['班级'] || c['课程'] || '课程'),
+    out.push({ kind: '课程', id: '', title: msName(c),
       sub: (c['星期'] || '') + ' ' + (c['节次'] || '') + (c['地点'] ? ' · ' + c['地点'] : ''),
       hay: [c['班级'], c['课程'], c['节次'], c['地点'], c['星期']].join(' ') });
   }
@@ -9664,7 +9903,7 @@ function renderToday() {
       var st = courseStatus(c, now, lead);
       h += '<span class="tc-pill ' + st.k + '">' +
         '<b>' + esc(c['节次'] || '—') + '</b>' +
-        esc(c['班级'] || '未填班级') +
+        esc(msName(c)) +
         (c['开始时间'] ? '<em>' + esc(c['开始时间']) + '</em>' : '') +
         '<i>' + esc(st.t) + '</i>' +
       '</span>';
@@ -9901,7 +10140,10 @@ var LESSON_BASE = "https://workbuddy-space-static.codebuddy.work/page/pwinI4ZBmL
 
 var COURSE_FIELDS = [
   { n: '星期', t: 'sel' }, { n: '节次', t: 'sel' }, { n: '班级', t: 'text' },
-  { n: '开始时间', t: 'text' }, { n: '结束时间', t: 'text' }, { n: '备注', t: 'text' }
+  { n: '开始时间', t: 'text' }, { n: '结束时间', t: 'text' }, { n: '备注', t: 'text' },
+  /* 我的课表（PRD 版）新增：课程名 / 年级 / 课表类型 / 回收站标记 */
+  { n: '课程名称', t: 'text' }, { n: '年级', t: 'text' }, { n: '课表类型', t: 'text' },
+  { n: '回收状态', t: 'text' }, { n: '删除时间', t: 'text' }
 ];
 
 var MODS = {
@@ -14754,33 +14996,58 @@ function renderTrashBadge() {
 
 function trashHTML() {
   var list = trashSort();
+  var clist = msTrashList();
   var h = '<div class="panel">';
   h += '<div class="panel-h"><h2><i class="bar"></i>回收站</h2>' +
-    '<span class="hint" style="margin-right:auto">删掉的任务先放这里，可以恢复；彻底删除后找不回来</span>' +
-    (list.length ? '<button class="btn danger ghost sm" id="trashClear">清空回收站</button>' : '') +
+    '<span class="hint" style="margin-right:auto">删掉的任务和课表先放这里，可以恢复；彻底删除后找不回来</span>' +
+    ((list.length || clist.length) ? '<button class="btn danger ghost sm" id="trashClear">清空回收站</button>' : '') +
     '</div>';
-  if (!list.length) return h + trashEmptyHTML('回收站是空的 · 删掉的任务会先来这里') + '</div>';
+  if (!list.length && !clist.length) return h + trashEmptyHTML('回收站是空的 · 删掉的任务和课表会先来这里') + '</div>';
 
-  h += '<div class="tr-list">';
-  for (var i = 0; i < list.length; i++) {
-    var t = list[i];
-    var meta = [];
-    if (t.cat) meta.push(t.cat);
-    if (t.date) meta.push(String(t.date).slice(5).replace('-', '/'));
-    if (t.st) meta.push(t.st);
-    h += '<div class="tr-row">' +
-      '<div class="tr-main">' +
-        '<div class="tr-tit">' + esc(t.title || '（无标题）') + '</div>' +
-        '<div class="tr-meta">' +
-          (meta.length ? '<span>' + esc(meta.join(' · ')) + '</span>' : '') +
-          '<span class="tr-del">删除于 ' + esc(t.delAt || '—') + '</span>' +
+  if (list.length) {
+    h += '<div class="tr-list">';
+    for (var i = 0; i < list.length; i++) {
+      var t = list[i];
+      var meta = [];
+      if (t.cat) meta.push(t.cat);
+      if (t.date) meta.push(String(t.date).slice(5).replace('-', '/'));
+      if (t.st) meta.push(t.st);
+      h += '<div class="tr-row">' +
+        '<div class="tr-main">' +
+          '<div class="tr-tit">' + esc(t.title || '（无标题）') + '</div>' +
+          '<div class="tr-meta">' +
+            (meta.length ? '<span>' + esc(meta.join(' · ')) + '</span>' : '') +
+            '<span class="tr-del">删除于 ' + esc(t.delAt || '—') + '</span>' +
+          '</div>' +
         '</div>' +
-      '</div>' +
-      '<div class="tr-acts">' +
-        '<button class="btn ghost sm" data-trrestore="' + esc(t.id) + '">恢复</button>' +
-        '<button class="btn danger ghost sm" data-trpurge="' + esc(t.id) + '">彻底删除</button>' +
-      '</div>' +
-    '</div>';
+        '<div class="tr-acts">' +
+          '<button class="btn ghost sm" data-trrestore="' + esc(t.id) + '">恢复</button>' +
+          '<button class="btn danger ghost sm" data-trpurge="' + esc(t.id) + '">彻底删除</button>' +
+        '</div>' +
+      '</div>';
+    }
+    h += '</div>';
+  }
+  if (clist.length) {
+    h += '<div class="tr-list" style="margin-top:14px">';
+    for (var ci = 0; ci < clist.length; ci++) {
+      var cc = clist[ci];
+      var cmeta = [cc['星期'], msPdLabel(msPdKey(cc['节次'] || '')), msGradeOf(cc)].filter(Boolean).join(' · ');
+      h += '<div class="tr-row">' +
+        '<div class="tr-main">' +
+          '<div class="tr-tit">' + esc(msName(cc)) + (cc['班级'] ? '（' + esc(cc['班级']) + '）' : '') + '</div>' +
+          '<div class="tr-meta">' +
+            (cmeta ? '<span>' + esc(cmeta) + '</span>' : '') +
+            '<span class="tr-del">删除于 ' + esc(cc['删除时间'] || '—') + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tr-acts">' +
+          '<button class="btn ghost sm" data-msrestore="' + esc(cc.id) + '">恢复</button>' +
+          '<button class="btn danger ghost sm" data-mspurge="' + esc(cc.id) + '">彻底删除</button>' +
+        '</div>' +
+      '</div>';
+    }
+    h += '</div>';
   }
   return h + '</div></div>';
 }
@@ -14843,16 +15110,19 @@ function trashClearAll() {
     if (!yes) return;
     closeModal();
     var ids = trashSort().map(function (t) { return t.id; });
+    var cids = msTrashList().map(function (c) { return c.id; });
+    var all = ids.map(function (x) { return { k: 'tasks', id: x }; })
+      .concat(cids.map(function (x) { return { k: 'course', id: x }; }));
     var i = 0, bad = 0;
     function step() {
-      if (i >= ids.length) {
-        toast(bad ? '清空了 ' + (ids.length - bad) + ' 条，' + bad + ' 条没删掉' : '回收站已清空');
+      if (i >= all.length) {
+        toast(bad ? '清空了 ' + (all.length - bad) + ' 条，' + bad + ' 条没删掉' : '回收站已清空');
         renderTrashBadge();
         reload();
         return;
       }
-      var id = ids[i++];
-      doDelete('tasks', id).then(step).catch(function () { bad++; step(); });
+      var one = all[i++];
+      doDelete(one.k, one.id).then(step).catch(function () { bad++; step(); });
     }
     step();
   });
@@ -16340,98 +16610,6 @@ function subOfCourse(c) {
   return (hit['代课人'] || '—') + (hit['日期'] ? '（' + String(hit['日期']).slice(5) + '）' : '');
 }
 
-function courseBlockHTML(c) {
-  var today = todayStr();
-  var wd = weekdayCN(today);
-  var now = nowHM();
-  var cls = 'cc';
-  var nmin0 = hm2min(now), st0 = hm2min(c['开始时间'] || ''), et0 = hm2min(c['结束时间'] || '');
-  if (c['星期'] === wd && st0 !== null && et0 !== null && nmin0 >= st0 && nmin0 <= et0) cls += ' now';
-  var who = subOfCourse(c);
-  if (who) cls += ' sub';
-  var h = '<button class="' + cls + '" data-course="' + esc(c.id) + '" draggable="true"' +
-    ' title="按住拖到别的节次 / 星期">';
-  h += esc(c['班级'] || '未填班级');
-  h += '<span class="t">' + esc((c['开始时间'] || '') + (c['结束时间'] ? '–' + c['结束时间'] : '')) + '</span>';
-  if (who) h += '<span class="t">代课：' + esc(who) + '</span>';
-  h += '</button>';
-  return h;
-}
-
-/* 周课表左轴：时间取「作息设置」，作息里没有的节次才退回课程数据 / 默认作息 */
-function periodTimeLabel(period) {
-  var list = schedGet();
-  for (var i = 0; i < list.length; i++) {
-    if (list[i].pd === period || list[i].name === period) return schedTimeText(list[i]);
-  }
-  var all = state.data.course || [];
-  for (var j = 0; j < all.length; j++) {
-    if (String(all[j]['节次'] || '') === period && all[j]['开始时间']) {
-      return all[j]['开始时间'] + (all[j]['结束时间'] ? '–' + all[j]['结束时间'] : '');
-    }
-  }
-  var t = (typeof ATT_PTIME !== 'undefined' && ATT_PTIME[period]) ? ATT_PTIME[period] : '';
-  return t ? t.replace('-', '–') : '—';
-}
-
-function ttHTML() {
-  var wd = weekdayCN(todayStr());
-  var list = state.data.course || [];
-  var slots = schedGet();
-  var map = {}, i, w, w2, p;
-  for (i = 0; i < list.length; i++) {
-    map[(list[i]['星期'] || '') + '|' + (list[i]['节次'] || '')] = list[i];
-  }
-  /* 作息里删掉的节次不能把课藏起来：补到最后，时间用课程自己的 */
-  var known = {}, extra = [], seen = {};
-  for (i = 0; i < slots.length; i++) {
-    known[slots[i].pd || slots[i].name] = 1;
-    known[slots[i].name] = 1;
-  }
-  for (i = 0; i < list.length; i++) {
-    var pdn = list[i]['节次'] || '';
-    if (!pdn || known[pdn] || seen[pdn]) continue;
-    seen[pdn] = 1;
-    extra.push({ id: 'x-' + pdn, name: pdn, s: list[i]['开始时间'] || '', e: list[i]['结束时间'] || '', k: 'class', pd: pdn });
-  }
-  if (extra.length) slots = slots.concat(schedSort(extra));
-
-  var h = '<div class="tt-wrap"><table class="tt"><thead><tr><th class="tt-th-time" style="width:112px">时间</th><th style="width:66px">节次</th>';
-  for (w = 0; w < WEEKDAYS.length; w++) {
-    h += '<th class="' + (WEEKDAYS[w] === wd ? 'today' : '') + '">' + esc(WEEKDAYS[w]) + '</th>';
-  }
-  h += '</tr></thead><tbody>';
-  var span = 2 + WEEKDAYS.length;
-  for (p = 0; p < slots.length; p++) {
-    var sl = slots[p];
-    var tl = (sl.s && sl.e) ? schedTimeText(sl) : '—';
-    if (sl.k === 'break') {
-      h += '<tr class="tt-brk"><td colspan="' + span + '"><span class="trk"><b>' + esc(sl.name) + '</b>' +
-        '<span class="trk-t">' + esc(tl) + '</span></span></td></tr>';
-      continue;
-    }
-    h += '<tr><td class="tt-time">' + esc(tl) + '</td><td class="pd">' + esc(sl.name) + '</td>';
-    for (w2 = 0; w2 < WEEKDAYS.length; w2++) {
-      var c = map[WEEKDAYS[w2] + '|' + (sl.pd || sl.name)];
-      h += '<td class="tt-cell" data-dw="' + esc(WEEKDAYS[w2]) + '" data-dp="' + esc(sl.id) + '">';
-      h += c ? courseBlockHTML(c) :
-        ('<button class="td-add" data-addc="1" data-w="' + esc(WEEKDAYS[w2]) + '" data-p="' + esc(sl.id) +
-          '" title="加课">+</button>');
-      h += '</td>';
-    }
-    h += '</tr>';
-  }
-  h += '</tbody></table></div>';
-  return h;
-}
-
-function fmtDur(m) {
-  if (m === null || m === undefined || isNaN(m) || m < 0) return '';
-  if (m < 1) return '不到 1 分钟';
-  if (m < 60) return m + ' 分钟';
-  var hh = Math.floor(m / 60), mm = m % 60;
-  return hh + ' 小时' + (mm ? ' ' + mm + ' 分' : '');
-}
 /* 每节课的真实结束分钟数；没填结束时间就按 45 分钟算，别让倒计时变成负数 */
 function courseEndMin(c) {
   var st = hm2min(c['开始时间'] || ''), et = hm2min(c['结束时间'] || '');
@@ -16440,96 +16618,676 @@ function courseEndMin(c) {
   return et;
 }
 
-function todayBarHTML() {
-  var today = todayStr();
-  var wd = weekdayCN(today);
-  var now = nowHM();
-  var nmin = hm2min(now);
-  var all = (state.data.course || []).filter(function (c) { return c['星期'] === wd; });
-  all.sort(cmpCourseTime);
-  var chips = '', i;
-  for (i = 0; i < all.length; i++) {
-    chips += '<span class="cchip">' + esc(all[i]['节次'] || '') + ' · ' + esc(all[i]['班级'] || '') +
-      (all[i]['开始时间'] ? ' ' + esc(all[i]['开始时间']) : '') + '</span>';
-  }
-  if (!all.length) {
-    return '<div class="nowbar"><span class="nb-t">今天没有课</span><span class="nb-s">' +
-      esc(wd + ' · ' + today) + '，可以安心备课或处理事务</span></div>';
-  }
-  var live = null, next = null, c, st, et;
-  for (i = 0; i < all.length; i++) {
-    c = all[i];
-    st = hm2min(c['开始时间'] || '');
-    et = courseEndMin(c);
-    if (st === null || nmin === null) continue;
-    if (nmin >= st && nmin <= et) { live = c; break; }
-    if (st > nmin && !next) next = c;
-  }
-  var brk = schedBreakAt(nmin);
-  var cls = '', t = '', s = '';
-  if (live) {
-    cls = ' live';
-    var left = courseEndMin(live) - nmin;
-    t = '正在上课 · ' + (live['班级'] || '') + '（' + (live['节次'] || '') + '）';
-    s = (live['开始时间'] || '') + (live['结束时间'] ? '–' + live['结束时间'] : '') +
-      (left >= 0 ? ' · 还有 ' + fmtDur(left) + '下课' : '');
-  } else if (next) {
-    var gap = hm2min(next['开始时间'] || '') - nmin;
-    var head = '下一节 ' + (next['开始时间'] || '') + (next['结束时间'] ? '–' + next['结束时间'] : '') +
-      ' · ' + (next['班级'] || '') + '（' + (next['节次'] || '') + '）';
-    if (brk && gap > 0) {
-      t = brk.name + '中 · ' + brk.s + '–' + brk.e;
-      s = '还有 ' + fmtDur(hm2min(brk.e) - nmin) + ' · ' + head + ' · 距上课 ' + fmtDur(gap);
-    } else if (gap >= 0 && gap <= 15) {
-      cls = ' soon';
-      t = '马上要上课 · ' + (next['班级'] || '') + '（' + (next['节次'] || '') + '）';
-      s = (next['开始时间'] || '') + (next['结束时间'] ? '–' + next['结束时间'] : '') +
-        ' · ' + fmtDur(gap) + '后开始';
-    } else {
-      t = head;
-      s = '距上课还有 ' + fmtDur(gap);
-    }
-  } else if (brk) {
-    t = brk.name + '中 · ' + brk.s + '–' + brk.e;
-    s = '今天没有更晚的课了 · 还有 ' + fmtDur(hm2min(brk.e) - nmin) + '结束';
-  } else {
-    t = '今天的课已全部上完';
-    s = '共 ' + all.length + ' 节，辛苦了';
-  }
-  return '<div class="nowbar' + cls + '"><span class="nb-t">' + esc(t) + '</span><span class="nb-s">' + esc(s) +
-    '</span><span style="flex:1"></span>' + chips + '</div>';
+/* ================= 我的课表（按 PRD 原型改版） =================
+   页面结构：标题栏（导出/导入/新增） → 上课提醒卡片 → 课表查询栏 → 周课表网格（周一~周日 7 列）
+   数据仍存在「课表」云表（course）：星期 / 节次 / 班级 / 开始时间 / 结束时间 是原有列，
+   新增 课程名称 / 年级 / 课表类型 / 回收状态 / 删除时间 几列。 */
+var MS_TYPES = ['夏令时课表', '冬令时课表'];
+var MS_GRADES = ['全部', '高一', '高二', '高三'];
+var MS_WEEK = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+/* 节次轴：显示名 d / 云表节次值 k / 上下课时间。每种课表类型一套。 */
+var MS_AXIS = {
+  '夏令时课表': [
+    { d: '早自习', k: '早自习', s: '07:00', e: '07:50' },
+    { d: '第一节', k: '第1节', s: '08:00', e: '08:45' },
+    { d: '第二节', k: '第2节', s: '08:55', e: '09:40' },
+    { d: '第三节', k: '第3节', s: '09:50', e: '10:35' },
+    { d: '第四节', k: '第4节', s: '10:55', e: '11:40' },
+    { d: '第五节', k: '第5节', s: '14:10', e: '14:55' },
+    { d: '第六节', k: '第6节', s: '15:05', e: '15:50' },
+    { d: '第七节', k: '第7节', s: '16:00', e: '16:45' },
+    { d: '第八节', k: '第8节', s: '16:55', e: '17:40' },
+    { d: '晚自习第一节', k: '晚自习', s: '19:00', e: '19:45' }
+  ],
+  '冬令时课表': [
+    { d: '早自习', k: '早自习', s: '07:20', e: '08:00' },
+    { d: '第一节', k: '第1节', s: '08:10', e: '08:55' },
+    { d: '第二节', k: '第2节', s: '09:05', e: '09:50' },
+    { d: '第三节', k: '第3节', s: '10:00', e: '10:45' },
+    { d: '第四节', k: '第4节', s: '11:05', e: '11:50' },
+    { d: '第五节', k: '第5节', s: '14:20', e: '15:05' },
+    { d: '第六节', k: '第6节', s: '15:15', e: '16:00' },
+    { d: '第七节', k: '第7节', s: '16:10', e: '16:55' },
+    { d: '第八节', k: '第8节', s: '17:05', e: '17:50' },
+    { d: '晚自习第一节', k: '晚自习', s: '19:10', e: '19:55' }
+  ]
+};
+var MS_CN_NUM = { '一': '1', '二': '2', '三': '3', '四': '4', '五': '5', '六': '6', '七': '7', '八': '8', '九': '9', '十': '10' };
+var MS_CN_NUM_R = { '1': '一', '2': '二', '3': '三', '4': '四', '5': '五', '6': '六', '7': '七', '8': '八', '9': '九', '10': '十' };
+
+function msInit() {
+  if (!state.msType || MS_TYPES.indexOf(state.msType) < 0) state.msType = MS_TYPES[0];
+  if (!state.msGrade || MS_GRADES.indexOf(state.msGrade) < 0) state.msGrade = '全部';
+}
+function msAxis() { return MS_AXIS[state.msType] || MS_AXIS[MS_TYPES[0]]; }
+function msAxisOf(k) {
+  var axis = msAxis(), i;
+  for (i = 0; i < axis.length; i++) if (axis[i].k === k) return axis[i];
+  return null;
+}
+/* 显示名 / 云表值 互转：「第一节」↔「第1节」，两种写法都认 */
+function msPdKey(name) {
+  var n = String(name || '').trim(), axis = msAxis(), i;
+  if (!n) return '';
+  for (i = 0; i < axis.length; i++) { if (axis[i].d === n || axis[i].k === n) return axis[i].k; }
+  for (i = 0; i < axis.length; i++) { if (axis[i].d.indexOf(n) >= 0 || axis[i].k.indexOf(n) >= 0) return axis[i].k; }
+  var m = /^第\s*([0-9一二三四五六七八九十]+)\s*节$/.exec(n);
+  if (m) return '第' + (MS_CN_NUM[m[1]] || m[1]) + '节';
+  if (/早自习/.test(n)) return '早自习';
+  if (/午休/.test(n)) return '午休';
+  if (/晚自习/.test(n)) return '晚自习';
+  return n;
+}
+function msPdLabel(key) {
+  var axis = msAxis(), i;
+  for (i = 0; i < axis.length; i++) if (axis[i].k === key) return axis[i].d;
+  var m = /^第(\d+)节$/.exec(String(key || ''));
+  if (m && MS_CN_NUM_R[m[1]]) return '第' + MS_CN_NUM_R[m[1]] + '节';
+  return String(key || '');
+}
+/* 课程名：优先「课程名称」，没有就退回「班级」 */
+function msName(c) {
+  return String((c && c['课程名称']) || '').trim() || String((c && c['班级']) || '').trim() || '课程';
+}
+function msGradeOf(c) { return String((c && c['年级']) || '').trim(); }
+function msTypeOf(c) { return String((c && c['课表类型']) || '').trim(); }
+function msAlive(c) { return String((c && c['回收状态']) || '') !== '已删除'; }
+function msAllCourses() { return (state.data.course || []).filter(msAlive); }
+/* 当前视图（课表类型 + 年级）里要显示的课 */
+function msFiltered() {
+  var g = state.msGrade || '全部';
+  return msAllCourses().filter(function (c) {
+    var t = msTypeOf(c);
+    if (t && t !== state.msType) return false;
+    var gr = msGradeOf(c);
+    if (g !== '全部' && gr && gr !== g) return false;
+    return true;
+  });
+}
+function msDateCN(d) {
+  var p = String(d || '').split('-');
+  if (p.length < 3) return String(d || '');
+  return p[0] + '年' + Number(p[1]) + '月' + Number(p[2]) + '日';
+}
+function msTodayMs(min) {
+  if (min === null || min === undefined || isNaN(min)) return 0;
+  var d = new Date(); d.setHours(0, 0, 0, 0);
+  return d.getTime() + Number(min) * 60000;
+}
+function msFmtMs(ms) {
+  if (ms < 0) ms = 0;
+  var s = Math.floor(ms / 1000), mm = Math.floor(s / 60), ss = s % 60;
+  if (mm > 99) mm = 99;
+  return (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
+}
+/* 秒级倒计时：只改数字，不整页重画 */
+var _msTimer = null;
+function msStartTick() {
+  if (_msTimer) { clearInterval(_msTimer); _msTimer = null; }
+  _msTimer = setInterval(function () {
+    var el = qs('#msCountdown');
+    if (!el || !el.isConnected) { if (_msTimer) { clearInterval(_msTimer); _msTimer = null; } return; }
+    var until = Number(el.getAttribute('data-until') || 0);
+    if (!until) return;
+    el.textContent = msFmtMs(until - Date.now());
+  }, 1000);
 }
 
+/* ---- 上课提醒卡片 ---- */
+function msRemindHTML() {
+  var wd = weekdayCN(todayStr());
+  var nmin = hm2min(nowHM());
+  var list = msFiltered().filter(function (c) { return String(c['星期'] || '') === wd; });
+  list.sort(cmpCourseTime);
+  var live = null, next = null, i, c, st;
+  for (i = 0; i < list.length; i++) {
+    c = list[i];
+    st = hm2min(c['开始时间'] || '');
+    if (st === null || nmin === null) continue;
+    if (nmin >= st && nmin <= courseEndMin(c)) { live = c; break; }
+    if (st > nmin && !next) next = c;
+  }
+  var cls = '', title = '', desc = '', until = 0, label = '距离下节课';
+  if (live) {
+    cls = ' is-class';
+    label = '距离下课';
+    title = '当前正在上课：' + msName(live) + (live['班级'] ? '（' + live['班级'] + '）' : '');
+    desc = (live['节次'] || '') + ' ' + (live['开始时间'] || '') + (live['结束时间'] ? '-' + live['结束时间'] : '') +
+      (next ? ' ｜ 下一节课：' + msName(next) + (next['班级'] ? '（' + next['班级'] + '）' : '') + ' ' + (next['开始时间'] || '') + '开始'
+            : ' ｜ 今天是最后一节课');
+    until = msTodayMs(courseEndMin(live));
+  } else if (next) {
+    title = '下一节课：' + msName(next) + (next['班级'] ? '（' + next['班级'] + '）' : '');
+    desc = (next['节次'] || '') + ' ' + (next['开始时间'] || '') + (next['结束时间'] ? '-' + next['结束时间'] : '') +
+      ' ｜ 距上课还有 ' + fmtDur(hm2min(next['开始时间'] || '') - nmin);
+    until = msTodayMs(hm2min(next['开始时间'] || ''));
+  } else {
+    cls = ' is-free';
+    label = '今日课程';
+    title = list.length ? '今天的课都上完了' : '今天没有课';
+    desc = list.length ? ('共 ' + list.length + ' 节，辛苦了') : '可以安心备课或处理事务';
+  }
+  var cd = until ? msFmtMs(until - Date.now()) : '--:--';
+  return '<div class="ms-remind' + cls + '">' +
+    '<div class="ms-date"><div class="ms-wd">' + esc(wd) + '</div><div class="ms-dt">' + esc(msDateCN(todayStr())) + '</div></div>' +
+    '<div class="ms-st"><div class="ms-tt">' + esc(title) + '</div><div class="ms-ds">' + esc(desc) + '</div></div>' +
+    '<div class="ms-cd"><div class="ms-cdn num" id="msCountdown" data-until="' + (until || 0) + '">' + cd + '</div>' +
+    '<div class="ms-cdl">' + esc(label) + '</div></div></div>';
+}
+
+/* ---- 课程块 ---- */
+function msBlockHTML(c, isNow) {
+  var nm = msName(c), cl = String(c['班级'] || '').trim(), gr = msGradeOf(c);
+  var cls = 'mcb';
+  if (/午休|休息|早自习/.test(nm)) cls += ' lunch';
+  else if (gr === '高二') cls += ' special';
+  else if (gr === '高三') cls += ' senior';
+  if (isNow) cls += ' now';
+  var tagCls = gr === '高二' ? ' g2' : (gr === '高三' ? ' g3' : (gr ? '' : ' g0'));
+  var h = '<div class="' + cls + '" draggable="true" data-course="' + esc(c.id) + '" title="按住拖到别的节次 / 星期；点右上角图标编辑或删除">' +
+    '<span class="mcb-acts">' +
+    '<button class="mcb-act" type="button" data-msedit="' + esc(c.id) + '" title="编辑">✎</button>' +
+    '<button class="mcb-act" type="button" data-msdel="' + esc(c.id) + '" title="删除">🗑</button>' +
+    '</span>' +
+    '<span class="mcb-tag' + tagCls + '">' + esc(gr || '未分年级') + '</span>' +
+    '<div class="mcb-nm">' + esc(nm) + '</div>';
+  if (cl) h += '<div class="mcb-cl">' + esc(cl) + '</div>';
+  h += '</div>';
+  return h;
+}
+
+/* ---- 周课表网格（周一~周日 7 列） ---- */
+function msGridHTML() {
+  var axis = msAxis(), wd = weekdayCN(todayStr());
+  var list = msFiltered(), map = {}, i, j, k;
+  for (i = 0; i < list.length; i++) {
+    k = String(list[i]['星期'] || '') + '|' + msPdKey(list[i]['节次'] || '');
+    if (!map[k]) map[k] = [];
+    map[k].push(list[i]);
+  }
+  var nmin = hm2min(nowHM());
+  var h = '<div class="ms-panel"><div class="ms-grid">';
+  h += '<div class="ms-h"></div>';
+  for (j = 0; j < MS_WEEK.length; j++) {
+    h += '<div class="ms-h' + (MS_WEEK[j] === wd ? ' today' : '') + '">' + esc(MS_WEEK[j]) + '</div>';
+  }
+  for (i = 0; i < axis.length; i++) {
+    var a = axis[i];
+    h += '<div class="ms-tc"><b>' + esc(a.d) + '</b><span>' + esc(a.s + '-' + a.e) + '</span></div>';
+    var as = hm2min(a.s), ae = hm2min(a.e);
+    for (j = 0; j < MS_WEEK.length; j++) {
+      var arr = map[MS_WEEK[j] + '|' + a.k] || [];
+      var isToday = MS_WEEK[j] === wd;
+      var live = isToday && as !== null && ae !== null && nmin !== null && nmin >= as && nmin <= ae;
+      h += '<div class="ms-cell' + (isToday ? ' today' : '') + '" data-dw="' + esc(MS_WEEK[j]) + '" data-dp="' + esc(a.k) + '">';
+      for (var q = 0; q < arr.length; q++) h += msBlockHTML(arr[q], live && q === 0);
+      h += '</div>';
+    }
+  }
+  h += '</div></div>';
+  return h;
+}
+
+/* ---- 整页 ---- */
+function msPageHTML() {
+  msInit();
+  var g = state.msGrade;
+  var h = '<div class="ms-top"><h1>我的课表</h1><div class="ms-acts">' +
+    '<button class="ms-btn" type="button" data-ms="export">导出课表</button>' +
+    '<button class="ms-btn" type="button" data-ms="import">导入课表</button>' +
+    '<button class="ms-btn primary" type="button" data-ms="add">新增课程</button>' +
+    '</div></div>';
+  h += msRemindHTML();
+  h += '<div class="ms-query">' +
+    '<div class="ms-qi"><label>课表类型</label><select data-msq="type">' +
+      MS_TYPES.map(function (t) {
+        return '<option value="' + esc(t) + '"' + (t === state.msType ? ' selected' : '') + '>' + esc(t) + '</option>';
+      }).join('') + '</select></div>' +
+    '<div class="ms-qi"><label>所属年级</label><select data-msq="grade">' +
+      MS_GRADES.map(function (t) {
+        return '<option value="' + esc(t) + '"' + (t === g ? ' selected' : '') + '>' + esc(t === '全部' ? '全部（跨年级总课表）' : t) + '</option>';
+      }).join('') + '</select></div>' +
+    '<button class="ms-btn primary" type="button" data-ms="confirm">确认查看课表</button>' +
+    '</div>';
+  h += '<div class="ms-tag">当前查看：<b>' + esc(state.msType + ' - ' + (g === '全部' ? '全部年级总课表' : g)) + '</b></div>';
+  h += msGridHTML();
+  return h;
+}
+
+/* ---- 新增 / 编辑课程（PRD 表单字段） ---- */
+function msOpenCourse(rec) {
+  var axis = msAxis(), i;
+  qs('#msCourseTitle').textContent = rec ? '编辑课程' : '新增课程';
+  qs('[name="ms-rid"]').value = rec ? rec.id : '';
+  qs('[name="ms-name"]').value = rec ? (rec['课程名称'] || '') : '';
+  qs('[name="ms-grade"]').value = rec ? (rec['年级'] || '') : '';
+  qs('[name="ms-wd"]').value = rec ? (rec['星期'] || '') : weekdayCN(todayStr());
+  qs('[name="ms-pd"]').value = rec ? msPdLabel(msPdKey(rec['节次'] || '')) : '';
+  qs('[name="ms-st"]').value = rec ? (rec['开始时间'] || '') : '08:00';
+  qs('[name="ms-et"]').value = rec ? (rec['结束时间'] || '') : '08:45';
+  qs('[name="ms-cls"]').value = rec ? (rec['班级'] || '') : '';
+  qs('[name="ms-type"]').value = rec ? (msTypeOf(rec) || state.msType) : state.msType;
+  /* 节次候选跟着当前课表类型走 */
+  var dl = qs('#msPdList'), h = '';
+  for (i = 0; i < axis.length; i++) h += '<option value="' + esc(axis[i].d) + '"></option>';
+  dl.innerHTML = h;
+  qs('#msDelBtn').style.display = rec ? '' : 'none';
+  qs('#msSubBtn').style.display = rec ? '' : 'none';
+  qs('#msCourseModal').classList.add('on');
+}
+function msSelId(field, text) {
+  var opts = (SCHEMA.course || {})[field] || [];
+  return optIdIn(opts, text);
+}
+function msSaveCourse(e) {
+  e.preventDefault();
+  var rid = qs('[name="ms-rid"]').value;
+  var nm = (qs('[name="ms-name"]').value || '').trim();
+  var gr = (qs('[name="ms-grade"]').value || '').trim();
+  var wd = (qs('[name="ms-wd"]').value || '').trim();
+  var pd = (qs('[name="ms-pd"]').value || '').trim();
+  var st = hmNorm((qs('[name="ms-st"]').value || '').trim());
+  var et = hmNorm((qs('[name="ms-et"]').value || '').trim());
+  var cls = (qs('[name="ms-cls"]').value || '').trim();
+  var type = qs('[name="ms-type"]').value || state.msType;
+  if (!nm && !cls) { toast('请填写课程名称'); return; }
+  if (!wd) { toast('请填写星期'); return; }
+  if (!pd) { toast('请填写节次'); return; }
+  var props = {};
+  var wid = msSelId('星期', wd);
+  if (wid) props['星期'] = { select: wid };
+  var pid = msSelId('节次', msPdKey(pd));
+  if (pid) props['节次'] = { select: pid };
+  props['班级'] = { text: cls };
+  props['课程名称'] = { text: nm };
+  props['年级'] = { text: gr };
+  props['课表类型'] = { text: type };
+  props['开始时间'] = { text: st };
+  props['结束时间'] = { text: et };
+  props['回收状态'] = { text: '正常' };
+  var btn = qs('#msSaveBtn');
+  btn.disabled = true; btn.textContent = '保存中…';
+  function reset() { btn.disabled = false; btn.textContent = '保存课程'; }
+  var job = rid ? doUpdate('course', rid, props) : doAdd('course', props);
+  job.then(function (synced) {
+    qs('#msCourseModal').classList.remove('on');
+    toast(rid ? '已修改' : '已添加');
+    reset();
+    if (synced) { return reload(); }
+    refreshAll();
+  }).catch(function (err) {
+    console.error('[课表] 保存失败:', err);
+    toast('保存失败，请稍后重试');
+    reset();
+  });
+}
+/* 删除：软删除，进回收站 */
+function msDeleteCourse(id) {
+  var c = findRec('course', id);
+  if (!c) return;
+  askConfirm({
+    title: '删除这节课',
+    html: '确定把「<b>' + esc(msName(c)) + (c['班级'] ? '（' + esc(c['班级']) + '）' : '') + '</b>」移到回收站吗？<br>之后可以在「回收站」里恢复。',
+    ok: '移到回收站'
+  }).then(function (yes) {
+    if (!yes) return;
+    qs('#msCourseModal').classList.remove('on');
+    doUpdate('course', id, { '回收状态': { text: '已删除' }, '删除时间': { text: nowStampStr() } }).then(function (synced) {
+      toast('已移到回收站');
+      renderTrashBadge();
+      if (synced) { return reload(); }
+      refreshAll();
+    }).catch(function (err) {
+      console.error('[课表] 删除失败:', err);
+      toast('删除失败' + errBrief(err) + '，请稍后重试');
+    });
+  });
+}
+
+/* ---- 拖拽换课：落点空的就挪过去，落点有课就两节对调 ---- */
+var msDrag = null;
+function msDropClear() {
+  qsa('.ms-cell.ms-over').forEach(function (el) { el.classList.remove('ms-over'); });
+  qsa('.mcb.ms-drag').forEach(function (el) { el.classList.remove('ms-drag'); });
+}
+function msDropTo(w, pdKey) {
+  var drag = msDrag;
+  msDrag = null;
+  msDropClear();
+  if (!drag) return;
+  var rec = findRec('course', drag.id), a = msAxisOf(pdKey);
+  if (!rec || !a) return;
+  if (String(rec['星期'] || '') === w && msPdKey(rec['节次'] || '') === pdKey) { toast('这节课已经在这里了'); return; }
+  var other = null, list = msAllCourses(), i;
+  for (i = 0; i < list.length; i++) {
+    if (list[i].id === rec.id) continue;
+    if (String(list[i]['星期'] || '') === w && msPdKey(list[i]['节次'] || '') === pdKey) { other = list[i]; break; }
+  }
+  var src = msAxisOf(msPdKey(drag.pd));
+  var jobs = [doUpdate('course', rec.id, {
+    '星期': { select: msSelId('星期', w) || w }, '节次': { select: msSelId('节次', pdKey) || pdKey },
+    '开始时间': { text: a.s }, '结束时间': { text: a.e }
+  })];
+  if (other && src) {
+    jobs.push(doUpdate('course', other.id, {
+      '星期': { select: msSelId('星期', drag.w) || drag.w }, '节次': { select: msSelId('节次', src.k) || src.k },
+      '开始时间': { text: src.s }, '结束时间': { text: src.e }
+    }));
+  }
+  var msg = other
+    ? ('已对调：' + msName(rec) + ' ⇄ ' + msName(other))
+    : ('已把 ' + msName(rec) + ' 移到 ' + w + ' ' + msPdLabel(pdKey));
+  Promise.all(jobs).then(function (res) {
+    toast(msg);
+    if (res && res[0]) { return reload(); }
+    refreshAll();
+  }).catch(function (err) {
+    console.error('[课表] 拖拽保存失败:', err);
+    toast('移动失败，请稍后重试');
+  });
+}
+
+/* ---- 导出：Excel / PDF / PNG ---- */
+function msExportSpec() {
+  var axis = msAxis(), list = msFiltered(), map = {}, i, j, q;
+  for (i = 0; i < list.length; i++) {
+    var k = String(list[i]['星期'] || '') + '|' + msPdKey(list[i]['节次'] || '');
+    if (!map[k]) map[k] = [];
+    map[k].push(list[i]);
+  }
+  var head = ['节次 / 时间'];
+  for (j = 0; j < MS_WEEK.length; j++) head.push(MS_WEEK[j]);
+  var rows = [];
+  for (i = 0; i < axis.length; i++) {
+    var a = axis[i], line = [a.d + '\n' + a.s + '-' + a.e];
+    for (j = 0; j < MS_WEEK.length; j++) {
+      var arr = map[MS_WEEK[j] + '|' + a.k] || [], t = [];
+      for (q = 0; q < arr.length; q++) {
+        t.push(msName(arr[q]) + (arr[q]['班级'] ? '\n' + arr[q]['班级'] : ''));
+      }
+      line.push(t.join('\n'));
+    }
+    rows.push(line);
+  }
+  var g = state.msGrade || '全部';
+  return {
+    title: '我的课表',
+    meta: [state.msType, g === '全部' ? '全部年级' : g, msDateCN(todayStr())],
+    head: head,
+    rows: rows,
+    colW: [16, 12, 12, 12, 12, 12, 12, 12],
+    foot: ['共 ' + list.length + ' 节课'],
+    name: '我的课表-' + state.msType + (g === '全部' ? '' : '-' + g)
+  };
+}
+function msExport(fmt) {
+  fmt = fmt || 'xlsx';
+  var sp = msExportSpec();
+  if (!sp.rows.length) { toast('当前课表还没有课'); return; }
+  var blob = null, i;
+  try {
+    if (fmt === 'xlsx') {
+      blob = attSpecXlsx(sp);
+    } else if (fmt === 'png') {
+      var cv = attCanvasSheet(sp, { W: 1680 });
+      blob = attCvBlob(cv[0], 'image/png');
+    } else {
+      var pages = attCanvasSheet(sp, { W: 1754, pageH: 1240, big: true });
+      var imgs = [];
+      for (i = 0; i < pages.length; i++) imgs.push({ data: attCvJpeg(pages[i]), w: pages[i].width, h: pages[i].height });
+      blob = attPdfBlob(imgs, 842, 595);
+    }
+  } catch (err) {
+    console.error('[课表] 导出失败:', err);
+    toast('导出失败：' + (err && err.message ? err.message : '生成文件出错'));
+    return;
+  }
+  if (!blob) { toast('导出失败：没有生成文件'); return; }
+  var ext = fmt === 'xlsx' ? 'xlsx' : fmt;
+  attDownload(blob, sp.name + '.' + ext);
+  toast('已导出 ' + sp.name + '.' + ext);
+  var em = qs('#msExportModal');
+  if (em) em.classList.remove('on');
+}
+
+/* ---- 导入：Excel / 图片(OCR) / PDF ---- */
+function msWeekOf(t) {
+  t = String(t || '').replace(/\s/g, '');
+  var m = /^(?:周|星期)([一二三四五六日天1-7])$/.exec(t);
+  if (!m) return '';
+  var ch = m[1];
+  if (ch === '天') ch = '日';
+  if (/^[1-7]$/.test(ch)) ch = '日一二三四五六'.charAt(Number(ch));
+  return '周' + ch;
+}
+function msSplitCourse(t) {
+  t = String(t || '').replace(/\d{1,2}:\d{2}\s*[-–—~至]\s*\d{1,2}:\d{2}/g, ' ').replace(/\s+/g, ' ').trim();
+  var name = '', cls = '';
+  var seg = t.split(/\s{2,}|\n/).filter(function (x) { return !!x.trim(); });
+  if (seg.length >= 2) { name = seg[0].trim(); cls = seg.slice(1).join(' ').trim(); }
+  else {
+    var tk = t.split(/\s+/).filter(Boolean);
+    if (tk.length >= 2) { name = tk[0]; cls = tk.slice(1).join(' '); }
+    else {
+      var m = /^(.+?)[（(]([^）)]+)[）)]$/.exec(t);
+      if (m) { name = m[1].trim(); cls = m[2].trim(); } else name = t;
+    }
+  }
+  var grade = '';
+  var g = /^(高一|高二|高三|全体)/.exec(cls);
+  if (g) grade = g[1];
+  else {
+    var g2 = /^(高一|高二|高三|全体)/.exec(name);
+    if (g2) grade = g2[1];
+  }
+  return { name: name, cls: cls, grade: grade };
+}
+/* 二维表（Excel / CSV）→ 课程列表：找星期表头，再按行按列读 */
+function msParseGrid(rows) {
+  var out = [], hi = -1, hmap = {}, best = 0, i, j;
+  for (i = 0; i < Math.min(rows.length, 40); i++) {
+    var cnt = 0, map = {};
+    for (j = 0; j < (rows[i] || []).length; j++) {
+      var w = msWeekOf(rows[i][j]);
+      if (w && !map[w]) { map[w] = j; cnt++; }
+    }
+    if (cnt > best) { best = cnt; hi = i; hmap = map; }
+  }
+  if (hi < 0 || best < 2) return msParseText(rows.map(function (r) { return (r || []).join(' '); }).join('\n'));
+  for (i = hi + 1; i < rows.length; i++) {
+    var row = rows[i] || [];
+    if (!row.length) continue;
+    var head = String(row[0] || '');
+    var pd = msPdKey(head.replace(/\d{1,2}:\d{2}\s*[-–—~至]\s*\d{1,2}:\d{2}/g, '').trim());
+    var tm = /(\d{1,2}:\d{2})\s*[-–—~至]\s*(\d{1,2}:\d{2})/.exec(head);
+    if (!pd) continue;
+    for (j = 0; j < MS_WEEK.length; j++) {
+      var col = hmap[MS_WEEK[j]];
+      if (col === undefined) continue;
+      var txt = String(row[col] || '').trim();
+      if (!txt) continue;
+      var ci = msSplitCourse(txt);
+      if (!ci.name && !ci.cls) continue;
+      out.push({
+        wd: MS_WEEK[j], pd: pd, name: ci.name, cls: ci.cls, grade: ci.grade,
+        s: tm ? hmNorm(tm[1]) : '', e: tm ? hmNorm(tm[2]) : ''
+      });
+    }
+  }
+  return out;
+}
+/* 纯文本（PDF / OCR）→ 课程列表：一行里按「星期 + 节次」切段 */
+function msParseText(txt) {
+  var out = [], lines = String(txt || '').split(/\r?\n/), i, q;
+  for (i = 0; i < lines.length; i++) {
+    var line = String(lines[i] || '').trim();
+    if (!line) continue;
+    var wm = /(周[一二三四五六日天])/.exec(line);
+    if (!wm) continue;
+    var wd = msWeekOf(wm[1]);
+    if (!wd) continue;
+    var re = /第[0-9一二三四五六七八九十]+节|早自习|午休|晚自习(?:\s*第[0-9一二三四五六七八九十]+节)?/g;
+    var idx = [], m;
+    while ((m = re.exec(line))) idx.push({ s: m.index, e: re.lastIndex, t: m[0] });
+    if (!idx.length) continue;
+    for (q = 0; q < idx.length; q++) {
+      var body = line.slice(idx[q].e, q + 1 < idx.length ? idx[q + 1].s : line.length);
+      body = body.replace(/^[\s:：\-—·|]+/, '').trim();
+      if (!body) continue;
+      var ci = msSplitCourse(body);
+      if (!ci.name && !ci.cls) continue;
+      out.push({ wd: wd, pd: msPdKey(idx[q].t), name: ci.name, cls: ci.cls, grade: ci.grade, s: '', e: '' });
+    }
+  }
+  return out;
+}
+function msShowPreview(list) {
+  state.msImport = list;
+  var h = '<div class="ms-prev"><table><thead><tr><th>星期</th><th>节次</th><th>课程名称</th><th>授课班级</th><th>年级</th><th>时间</th></tr></thead><tbody>';
+  for (var i = 0; i < list.length; i++) {
+    var c = list[i];
+    h += '<tr><td>' + esc(c.wd || '') + '</td><td>' + esc(c.pd || '') + '</td><td class="nm">' + esc(c.name || '') + '</td>' +
+      '<td>' + esc(c.cls || '') + '</td><td>' + esc(c.grade || '') + '</td><td>' + esc((c.s || '') + (c.e ? '-' + c.e : '')) + '</td></tr>';
+  }
+  h += '</tbody></table></div>';
+  qs('#msPreviewBody').innerHTML = h;
+  qs('#msImportCount').textContent = '认出 ' + list.length + ' 节课，确认后存进云端课表（' + state.msType + '）。';
+  qs('#msPreviewModal').classList.add('on');
+}
+function msSeq(list, fn) {
+  var i = 0, out = [];
+  function next() {
+    if (i >= list.length) return Promise.resolve(out);
+    return fn(list[i++]).then(function (r) { out.push(r); return next(); });
+  }
+  return next();
+}
+function msDoImport() {
+  var list = state.msImport || [];
+  if (!list.length) { toast('没有可导入的课'); return; }
+  var btn = qs('#msImportGo');
+  btn.disabled = true; btn.textContent = '导入中…';
+  msSeq(list, function (c) {
+    var props = {};
+    var wid = msSelId('星期', c.wd);
+    if (wid) props['星期'] = { select: wid };
+    var pid = msSelId('节次', msPdKey(c.pd));
+    if (pid) props['节次'] = { select: pid };
+    props['班级'] = { text: c.cls || '' };
+    props['课程名称'] = { text: c.name || '' };
+    props['年级'] = { text: c.grade || '' };
+    props['课表类型'] = { text: state.msType };
+    props['开始时间'] = { text: c.s || '' };
+    props['结束时间'] = { text: c.e || '' };
+    props['回收状态'] = { text: '正常' };
+    return doAdd('course', props);
+  }).then(function (res) {
+    btn.disabled = false; btn.textContent = '确认导入';
+    qs('#msPreviewModal').classList.remove('on');
+    var im = qs('#msImportModal');
+    if (im) im.classList.remove('on');
+    toast('已导入 ' + list.length + ' 节课');
+    var synced = res.some(function (x) { return x; });
+    if (synced) { return reload(); }
+    refreshAll();
+  }).catch(function (err) {
+    console.error('[课表] 导入失败:', err);
+    btn.disabled = false; btn.textContent = '确认导入';
+    toast('导入失败：' + (err && err.message ? err.message : '写不进去'));
+  });
+}
+/* PDF 文字提取（pdf.js，CDN 多源兜底） */
+var MS_PDF_SRC = [
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+  'https://fastly.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+  'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
+];
+function msLoadPdfJs() {
+  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  var i = 0;
+  function attempt() {
+    if (i >= MS_PDF_SRC.length) return Promise.reject(new Error('PDF 识别引擎没下载下来（网络受限）'));
+    var src = MS_PDF_SRC[i++];
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script');
+      s.src = src; s.async = true;
+      s.onload = function () {
+        if (!window.pdfjsLib) { rej(new Error('引擎没起来')); return; }
+        var base = src.replace(/[^/]*$/, '');
+        try { window.pdfjsLib.GlobalWorkerOptions.workerSrc = base + 'pdf.worker.min.js'; } catch (e) {}
+        res(window.pdfjsLib);
+      };
+      s.onerror = function () { rej(new Error('引擎下载失败')); };
+      document.head.appendChild(s);
+    }).catch(function () { return attempt(); });
+  }
+  return attempt();
+}
+function msPdfText(buf) {
+  return msLoadPdfJs().then(function (lib) {
+    return lib.getDocument({ data: buf }).promise.then(function (doc) {
+      var pages = [];
+      function readPage(i) {
+        if (i >= doc.numPages) return Promise.resolve(pages.join('\n'));
+        return doc.getPage(i + 1).then(function (pg) {
+          return pg.getTextContent().then(function (tc) {
+            var items = tc.items || [], line = '', lastY = null, out = [], k;
+            for (k = 0; k < items.length; k++) {
+              var it = items[k];
+              var y = it.transform ? Math.round(it.transform[5]) : null;
+              if (lastY !== null && y !== null && Math.abs(y - lastY) > 3) { out.push(line); line = ''; }
+              line += (it.str || '');
+              if (it.hasEOL) { out.push(line); line = ''; }
+              lastY = y;
+            }
+            if (line) out.push(line);
+            pages.push(out.join('\n'));
+            return readPage(i + 1);
+          });
+        });
+      }
+      return readPage(0);
+    });
+  });
+}
+function msFileIn(e) {
+  var input = e.target, f = input.files && input.files[0];
+  input.value = '';
+  if (!f) return;
+  var name = f.name || '文件';
+  var run;
+  if (/\.(csv|txt)$/i.test(name)) {
+    run = f.text().then(function (txt) { return msParseText(txt); });
+  } else if (/\.xlsx$/i.test(name)) {
+    run = f.arrayBuffer().then(function (buf) { return attReadXlsx(buf).then(msParseGrid); });
+  } else if (/\.xls$/i.test(name)) {
+    toast('老版 .xls 读不了，请用 Excel 另存为 .xlsx 或 .csv');
+    return;
+  } else if (/\.pdf$/i.test(name)) {
+    run = f.arrayBuffer().then(function (buf) { return msPdfText(buf).then(msParseText); });
+  } else if (/^image\//.test(f.type || '') || /\.(png|jpe?g|webp|gif|bmp)$/i.test(name)) {
+    toast('正在识别图片里的课表，第一次要下识别包，慢一点…');
+    run = attOcrImage(f).then(msParseText);
+  } else {
+    toast('这个格式认不出来，请用 PDF / Excel / 图片');
+    return;
+  }
+  qs('#msImportTip').textContent = '正在识别「' + name + '」…';
+  run.then(function (list) {
+    qs('#msImportTip').textContent = '';
+    if (!list || !list.length) { toast('没认出课程内容，检查一下文件是不是课表'); return; }
+    msShowPreview(list);
+  }).catch(function (err) {
+    console.error('[课表] 导入失败:', err);
+    qs('#msImportTip').textContent = '';
+    toast('识别失败：' + (err && err.message ? err.message : '文件读不出来'));
+  });
+}
+
+/* 旧的入口：工作模块的「课表」子页 = 新的「我的课表」 */
 function courseHTML() {
-  var mk = state.month || curMonth();
-  var planned = plannedMonth(mk);
-  var subs = (state.data.sub || []).filter(function (r) { return inMonth(r['日期'], mk); }).length;
-  var logged = (state.data.classlog || []).filter(function (r) { return inMonth(r['日期'], mk); }).length;
-  var todayN = (state.data.course || []).filter(function (c) { return c['星期'] === weekdayCN(todayStr()); }).length;
-  var h = '<div class="wbar"><span class="mtxt">统计月份</span>' + monthInputHTML() +
-    '<span class="hint">点统计卡可直接跳到对应的记录里</span></div>';
-  h += '<div class="stat-grid mini">';
-  h += statCard('course', planned, '本月排课节数', '');
-  h += '<button type="button" class="stat tiny pick ' + (subs ? 's-amber' : '') + '" data-jump="sub">' +
-    bindOpen('course', 'n') + esc(String(subs)) + '</div><div class="l">本月请人代课</div></button>';
-  h += statCard('course', Math.max(planned - subs, 0), '本月实际授课', '');
-  h += '</div>';
-  h += '<div class="stat-grid mini">';
-  h += '<button type="button" class="stat tiny pick" data-jump="classlog">' +
-    bindOpen('classlog', 'n') + esc(String(logged)) + '</div><div class="l">本月已登记上课记录</div></button>';
-  h += statCard('course', (state.data.course || []).length, '周课表总节数', '');
-  h += '<button type="button" class="stat tiny pick ' + (todayN ? 's-amber' : '') + '" data-jump="today">' +
-    bindOpen('course', 'n') + esc(String(todayN)) + '</div><div class="l">今天要上的课</div></button>';
-  h += '</div>';
-  h += todayBarHTML();
-  h += '<div class="panel"><div class="panel-h"><h2><i class="bar"></i>周课表</h2><div class="filters">' +
-    '<button class="btn ghost sm" data-sched="1" title="改节次名、上下课时间、午休时段">作息设置</button>' +
-    '<button class="btn primary sm" data-addc="1">+ 新增课程</button></div></div>';
-  h += '<p class="sect-title" style="font-weight:400;color:var(--ink3)">点空格直接加课；课程块可以按住拖到别的节次或星期（落点有课就对调），点一下能改班级/时间/删除；右侧「作息设置」能改节次名、上下课时间和午休时段</p>';
-  h += ttHTML();
-  h += '<div class="tb-foot" style="border-radius:10px;margin-top:10px"><span>正在上的课会闪红色「上课中」</span>' +
-    '<span>与「信息课教师工作台」的课表是同一份数据</span></div>';
-  h += '</div>';
+  var h = msPageHTML();
+  msStartTick();
   return h;
 }
 
@@ -18484,6 +19242,10 @@ function fillTimesFromSlot(id, force) {
 }
 
 function openCourse(rec, presetW, presetP) {
+  /* 旧的入口保留，内部改走「我的课表」的新弹窗 */
+  return msOpenCourse(rec);
+}
+function openCourseOld(rec, presetW, presetP) {
   var optsW = (SCHEMA.course && SCHEMA.course['星期']) || [];
   var slots = schedClassSlots();
   if (!optsW.length || !slots.length) { toast('课表配置还在加载，请稍后再试'); return; }
@@ -19312,7 +20074,7 @@ function trashSort() {
   });
 }
 
-function trashCount() { return state.trash.length; }
+function trashCount() { return state.trash.length + msTrashList().length; }
 
 function closeNav() {
   document.body.classList.remove('nav-open');
@@ -19753,8 +20515,48 @@ function bindEvents() {
     if (addR) { openRec(addR.getAttribute('data-add'), null, null); return; }
     var addTask = closest(e.target, '[data-addtask]');
     if (addTask) { openModal(null, addTask.getAttribute('data-addtask') || CAT_DAILY); return; }
+    /* ---- 我的课表（PRD 版） ----
+       课程块上的「编辑 / 删除」按钮要先判：按钮在课程块里面，
+       不先判的话会被下面 [data-course] 抢走，点删除变成点编辑。 */
+    var msEdit = closest(e.target, '[data-msedit]');
+    if (msEdit) { msOpenCourse(findRec('course', msEdit.getAttribute('data-msedit'))); return; }
+    var msDel = closest(e.target, '[data-msdel]');
+    if (msDel) { msDeleteCourse(msDel.getAttribute('data-msdel')); return; }
     var cblk = closest(e.target, '[data-course]');
-    if (cblk) { openCourse(findRec('course', cblk.getAttribute('data-course')), null, null); return; }
+    if (cblk) { msOpenCourse(findRec('course', cblk.getAttribute('data-course'))); return; }
+    var msBtn = closest(e.target, '[data-ms]');
+    if (msBtn) {
+      var msk = msBtn.getAttribute('data-ms');
+      if (msk === 'add') { msOpenCourse(null); return; }
+      if (msk === 'import') { qs('#msImportModal').classList.add('on'); return; }
+      if (msk === 'export') { qs('#msExportModal').classList.add('on'); return; }
+      if (msk === 'confirm') {
+        var mts = qs('[data-msq="type"]'), mgs = qs('[data-msq="grade"]');
+        if (mts) state.msType = mts.value;
+        if (mgs) state.msGrade = mgs.value;
+        msInit();
+        renderWork();
+        toast('已切换到 ' + state.msType + ' · ' + (state.msGrade === '全部' ? '全部年级总课表' : state.msGrade));
+        return;
+      }
+      return;
+    }
+    var msClose = closest(e.target, '[data-msclose]');
+    if (msClose) {
+      var msc = closest(msClose, '.modal');
+      if (msc) msc.classList.remove('on');
+      return;
+    }
+    var msExp = closest(e.target, '[data-msexp]');
+    if (msExp) {
+      state.msExpFmt = msExp.getAttribute('data-msexp');
+      qsa('[data-msexp]').forEach(function (b) { b.classList.toggle('on', b === msExp); });
+      return;
+    }
+    var msRestore = closest(e.target, '[data-msrestore]');
+    if (msRestore) { msRestoreCourse(msRestore.getAttribute('data-msrestore')); return; }
+    var msPurge = closest(e.target, '[data-mspurge]');
+    if (msPurge) { msPurgeCourse(msPurge.getAttribute('data-mspurge')); return; }
     var rAct = closest(e.target, '[data-ract]');
     if (rAct) {
       var rk = rAct.getAttribute('data-key');
@@ -20109,6 +20911,32 @@ function bindEvents() {
     removeCourse(qs('[name="c-rid"]').value);
   });
 
+  /* ---- 我的课表（PRD 版）的弹窗与文件 ---- */
+  qs('#msCourseForm').addEventListener('submit', msSaveCourse);
+  qs('#msDelBtn').addEventListener('click', function () {
+    msDeleteCourse(qs('[name="ms-rid"]').value);
+  });
+  qs('#msSubBtn').addEventListener('click', function () {
+    var rid = qs('[name="ms-rid"]').value;
+    var rec = rid ? findRec('course', rid) : null;
+    var preset = { '日期': todayStr(), '登记时间': todayStr() + ' ' + nowHM() };
+    if (rec) {
+      preset['节次'] = rec['节次'];
+      preset['原班级'] = rec['班级'];
+    }
+    qs('#msCourseModal').classList.remove('on');
+    openRec('sub', null, preset);
+  });
+  qs('#msUploadBtn').addEventListener('click', function () {
+    var f = qs('#msFile');
+    if (f) f.click();
+  });
+  qs('#msFile').addEventListener('change', msFileIn);
+  qs('#msImportGo').addEventListener('click', msDoImport);
+  qs('#msExportGo').addEventListener('click', function () {
+    msExport(state.msExpFmt || 'xlsx');
+  });
+
   qs('#courseSubBtn').addEventListener('click', function () {
     var rid = qs('[name="c-rid"]').value;
     var rec = rid ? findRec('course', rid) : null;
@@ -20140,6 +20968,7 @@ function bindEvents() {
   /* 四象限 / 看板的拖拽 */
   bindDragEvents();
   /* 周课表拖拽换课 */
+  bindMsDrag();
   bindSchedDrag();
   (function () {
     var k = qs('#fKey');
@@ -21616,6 +22445,93 @@ attChange = function (t) {
   }
   return _attChangeV11(t);
 };
+
+/* ---- 回收站里的课表（软删除的课程） ---- */
+function msTrashList() {
+  return (state.data.course || []).filter(function (c) {
+    return String(c['回收状态'] || '') === '已删除';
+  });
+}
+function msRestoreCourse(id) {
+  var c = findRec('course', id);
+  if (!c) return;
+  doUpdate('course', id, { '回收状态': { text: '正常' }, '删除时间': { text: '' } }).then(function (synced) {
+    toast('已恢复这节课');
+    renderTrashBadge();
+    if (synced) { return reload(); }
+    refreshAll();
+  }).catch(function (err) {
+    console.error('[课表] 恢复失败:', err);
+    toast('恢复失败' + errBrief(err));
+  });
+}
+function msPurgeCourse(id) {
+  var c = findRec('course', id);
+  if (!c) return;
+  askConfirm({
+    title: '彻底删除这节课',
+    html: '把「<b>' + esc(msName(c)) + '</b>」彻底删掉吗？删了就找不回来了。',
+    ok: '彻底删除',
+    danger: true
+  }).then(function (yes) {
+    if (!yes) return;
+    doDelete('course', id).then(function (synced) {
+      toast('已彻底删除');
+      renderTrashBadge();
+      if (synced) { return reload(); }
+      refreshAll();
+    }).catch(function (err) {
+      console.error('[课表] 彻底删除失败:', err);
+      toast('删除失败' + errBrief(err));
+    });
+  });
+}
+
+/* ---- 我的课表：课程块拖到别的格子 ---- */
+function bindMsDrag() {
+  document.addEventListener('dragstart', function (e) {
+    if (e.target && e.target.closest && e.target.closest('.mcb-act')) return;   /* 点图标不触发拖拽 */
+    var card = closest(e.target, '.mcb[data-course]');
+    if (!card) return;
+    var cell = closest(e.target, '.ms-cell[data-dw]');
+    if (!cell) return;
+    msDrag = {
+      id: card.getAttribute('data-course'),
+      w: cell.getAttribute('data-dw'),
+      pd: cell.getAttribute('data-dp')
+    };
+    card.classList.add('ms-drag');
+    if (e.dataTransfer) {
+      try {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', 'mcb:' + msDrag.id);
+      } catch (er) { /* 部分环境不支持，忽略 */ }
+    }
+  });
+  document.addEventListener('dragend', function () {
+    msDrag = null;
+    msDropClear();
+  });
+  document.addEventListener('dragover', function (e) {
+    if (!msDrag) return;
+    var cell = closest(e.target, '.ms-cell[data-dw]');
+    if (!cell) return;
+    e.preventDefault();
+    if (e.dataTransfer) { try { e.dataTransfer.dropEffect = 'move'; } catch (er) { /* 忽略 */ } }
+  });
+  document.addEventListener('dragleave', function (e) {
+    var cell = closest(e.target, '.ms-cell[data-dw]');
+    if (!cell) return;
+    cell.classList.remove('ms-over');
+  });
+  document.addEventListener('drop', function (e) {
+    if (!msDrag) return;
+    var cell = closest(e.target, '.ms-cell[data-dw]');
+    if (!cell) return;
+    e.preventDefault();
+    msDropTo(cell.getAttribute('data-dw'), cell.getAttribute('data-dp'));
+  });
+}
 
 })();
 
