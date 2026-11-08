@@ -3856,6 +3856,10 @@ try {
       <svg data-page-node-id="wbExtracurIco" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24" width="16"><path data-page-node-id="wbExtracurPath" d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17.9 6.7 19.6l1-5.8-4.2-4.1 5.9-.9z"/></svg><!--pnid:wbExtracurPnid-->
       课外
     </button>
+    <button data-page-node-id="wbKadminTab" class="tab" data-view="kadmin">
+      <svg data-page-node-id="wbKadminIco" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24" width="16"><path data-page-node-id="wbKadminPath" d="M4 7h11M19 7h1M4 17h1M9 17h11"/><circle data-page-node-id="wbKadminC1" cx="16" cy="7" r="2.2"/><circle data-page-node-id="wbKadminC2" cx="6" cy="17" r="2.2"/></svg><!--pnid:wbKadminPnid-->
+      课堂管理
+    </button>
     <button data-page-node-id="wbKetangTab" class="tab" data-view="ketang">
       <svg data-page-node-id="wbKetangIco" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24" width="16"><path data-page-node-id="wbKetangPath" d="M3 9l9-4 9 4-9 4-9-4z"/><path data-page-node-id="wbKetangPath2" d="M7 11v4c0 1.1 2.2 2 5 2s5-.9 5-2v-4"/></svg><!--pnid:wbKetangPnid-->
       课堂小助手
@@ -3883,6 +3887,8 @@ try {
       学习</button>
   <button data-page-node-id="wbExtracurTabM" class="tab" data-view="课外" type="button"><svg data-page-node-id="wbExtracurIcoM" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24" width="16"><path data-page-node-id="wbExtracurPathM" d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17.9 6.7 19.6l1-5.8-4.2-4.1 5.9-.9z"/></svg><!--pnid:wbExtracurPnidM-->
       课外</button>
+  <button data-page-node-id="wbKadminTabM" class="tab" data-view="kadmin" type="button"><svg data-page-node-id="wbKadminIcoM" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24" width="16"><path data-page-node-id="wbKadminPathM" d="M4 7h11M19 7h1M4 17h1M9 17h11"/><circle data-page-node-id="wbKadminC1M" cx="16" cy="7" r="2.2"/><circle data-page-node-id="wbKadminC2M" cx="6" cy="17" r="2.2"/></svg><!--pnid:wbKadminPnidM-->
+      课堂管理</button>
   <button data-page-node-id="wbKetangTabM" class="tab" data-view="ketang" type="button"><svg data-page-node-id="wbKetangIcoM" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24" width="16"><path data-page-node-id="wbKetangPathM" d="M3 9l9-4 9 4-9 4-9-4z"/><path data-page-node-id="wbKetangPathM2" d="M7 11v4c0 1.1 2.2 2 5 2s5-.9 5-2v-4"/></svg><!--pnid:wbKetangPnidM-->
       课堂小助手</button>
   <button data-page-node-id="7QCltRc5xAvDLWHLTPGRQf" class="tab" data-view="me" type="button"><svg data-page-node-id="6wrvvjDSzSjWV3WvBEysg1" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24" width="16"><path data-page-node-id="mllnNibKklTp1Mg8ECAOfJ" d="M20 21v-1.9a4.2 4.2 0 0 0-4.2-4.2H8.2A4.2 4.2 0 0 0 4 19.1V21"/><circle data-page-node-id="lMNDyyQ9HdvNtQAhcGZNAM" cx="12" cy="7.4" r="3.6"/></svg><!--pnid:j6NicdHvv82GFreDXw6ZuM-->
@@ -4210,6 +4216,37 @@ try {
       @media (max-width:560px){ #view-ketang .kt-grid { grid-template-columns:1fr; } #view-ketang .pk-grid { grid-template-columns:1fr 1fr; } #view-ketang .pk-grid > .field:first-child { grid-column:1 / -1; } }
     </style>
     <div class="s-wrap" id="ketangApp"><div class="empty">加载中…</div></div>
+  </section>
+
+  <section data-page-node-id="wbKadminSec" class="view" id="view-kadmin">
+    <style id="kadmin-css">
+      #view-kadmin { --primary:#007aff; --line:#e5e8f0; --text:#1c1c1e; --text-2:#6b7280; --shadow-s:0 2px 10px rgba(0,0,0,.06); --bg-sunken:#f2f4f7; background:#f5f7fb; min-height:100vh; }
+      #view-kadmin .s-wrap { max-width:1000px; margin:0 auto; padding:18px 14px 40px; }
+      #view-kadmin .sec-h { font-size:18px; font-weight:700; margin:4px 0 14px; }
+      #view-kadmin .ktabs { display:flex; gap:6px; background:#fff; padding:5px; border-radius:14px; margin-bottom:16px; box-shadow:var(--shadow-s); flex-wrap:wrap; }
+      #view-kadmin .ktab { flex:1; min-width:84px; height:40px; border:0; border-radius:10px; background:transparent; color:var(--text-2); font-weight:650; font-size:14px; cursor:pointer; font-family:inherit; }
+      #view-kadmin .ktab.on { background:var(--primary); color:#fff; }
+      #view-kadmin .kt-list { background:#fff; border-radius:14px; padding:6px 12px; box-shadow:var(--shadow-s); margin-bottom:16px; }
+      #view-kadmin .kt-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 2px; border-bottom:1px solid var(--line); }
+      #view-kadmin .kt-item:last-child { border-bottom:0; }
+      #view-kadmin .kt-item-main { flex:1; min-width:0; }
+      #view-kadmin .kt-form { background:#fff; border-radius:14px; padding:16px; box-shadow:var(--shadow-s); }
+      #view-kadmin .kt-form-h { font-weight:700; font-size:15px; margin-bottom:12px; }
+      #view-kadmin .empty { padding:24px; text-align:center; color:var(--text-2); }
+      #view-kadmin .chip { display:inline-flex; align-items:center; padding:1px 8px; border-radius:99px; background:var(--bg-sunken); font-size:12px; color:var(--text-2); margin-left:6px; }
+      #view-kadmin .chip.blue { background:rgba(0,122,255,.12); color:var(--primary); }
+      #view-kadmin .field { margin-top:10px; } #view-kadmin .field-label { display:block; font-size:12.5px; color:var(--text-2); margin-bottom:5px; }
+      #view-kadmin .input { width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid var(--line); border-radius:10px; font-size:14px; font-family:inherit; background:#fff; color:var(--text); }
+      #view-kadmin textarea.input { min-height:74px; resize:vertical; }
+      #view-kadmin .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px 14px; border:0; border-radius:12px; background:var(--bg-sunken); color:var(--text); font-weight:600; font-size:14px; cursor:pointer; font-family:inherit; }
+      #view-kadmin .btn.primary { background:var(--primary); color:#fff; margin-top:14px; }
+      #view-kadmin .btn.ghost { background:transparent; color:var(--primary); }
+      #view-kadmin .btn.sm { padding:7px 11px; font-size:13px; }
+    </style>
+    <div class="s-wrap">
+      <div class="sec-h">课堂管理 <span class="tiny muted">（课外 · 后台）</span></div>
+      <div id="kadminApp"><div class="empty">加载中…</div></div>
+    </div>
   </section>
 
 </div>
@@ -8209,18 +8246,44 @@ function ketangShellHTML(teacherName, title) {
     '<div class="kt-card"><div class="kt-card-h">' + KT_ICON.target + ' 抽任务</div><div class="kt-card-b" id="ktBodyPunish"></div></div>' +
     '</div>';
 }
+/* ===== 课堂小助手 数据层（双模：云端优先，本机兜底） =====
+   云端 databaseId 在发布线上时填入 KT_CLOUD；测试/本地（LOCAL_MODE）走 LocalDb。
+   db 已是双模：LOCAL_MODE 下是 LocalDb，线上是资料库 SDK，接口一致。 */
+var KT_CLOUD = { roll: '', material: '', roster: '', punish: '', rollrec: '' };
+var KT_LOCALID = { roll: 'kt_roll', material: 'kt_material', roster: 'kt_roster', punish: 'kt_punish', rollrec: 'kt_rollrec' };
+function ktActiveId(key) { return (!LOCAL_MODE && KT_CLOUD[key]) ? KT_CLOUD[key] : KT_LOCALID[key]; }
+function ktNorm(rec) {
+  var p = rec.properties || {};
+  for (var k in p) if (Object.prototype.hasOwnProperty.call(p, k)) rec[k] = p[k];
+  if (!rec.id && rec.recordId) rec.id = rec.recordId;
+  return rec;
+}
+function ktQuery(key) {
+  return db.query({ databaseId: ktActiveId(key), pageSize: 200 }).then(function (r) {
+    var arr = (r && (r.records || r.data || r.results)) || [];
+    return arr.map(ktNorm);
+  });
+}
+function ktAdd(key, props) {
+  return db.addRecord({ databaseId: ktActiveId(key), properties: props }).then(function (res) { return (res && (res.recordId || res.id)) || ''; });
+}
+function ktUpdate(key, rid, props) { return db.updateRecord({ databaseId: ktActiveId(key), recordId: rid, properties: props }); }
+function ktDelete(key, rid) { return db.deleteRecord({ databaseId: ktActiveId(key), recordId: rid }); }
+
 function initKetang() {
   ketangCur = null;
-  /* 先渲染四宫格外壳，保证“平铺”布局一定可见；后端失败也只影响卡片内容，不影响版式 */
+  /* 先渲染四宫格外壳，保证“平铺”布局一定可见；数据为空也只影响卡片内容，不影响版式 */
   qs('#ketangApp').innerHTML = ketangShellHTML('', '课堂小助手（加载中…）');
-  ketangApi('/public/link/' + KETANG_CODE).then(function (d) {
-    ketangData = d;
-    document.title = (d.link && d.link.title ? d.link.title : '课堂小助手') + ' · ' + ((d.teacher && d.teacher.nickname) || '');
+  Promise.all([ktQuery('roll'), ktQuery('material'), ktQuery('roster'), ktQuery('punish')]).then(function (res) {
+    ketangData = {
+      link: { title: '课堂小助手' },
+      teacher: { nickname: '老师', subject: '', school: '' },
+      roll: res[0] || [], materials: res[1] || [], rosters: res[2] || [], punishments: res[3] || []
+    };
     ketangPaint();
   }).catch(function (e) {
     var msg = (e && e.message) ? e.message : '加载失败';
-    var hint = '后端：' + ketangEsc(KETANG_API) + ' · 链接码：' + ketangEsc(KETANG_CODE) +
-      '<br>若提示网络 / CORS 错误，请在网址后加 <code>&amp;ketang_api=后端地址&amp;ketang_code=链接码</code> 指定，或确认后端已运行。';
+    var hint = LOCAL_MODE ? '本机存储为空或读取失败，请到「课堂管理」先添加数据。' : '云端表未配置，请先在线上创建课堂小助手数据表。';
     ['ktBodyCheckin', 'ktBodyMaterial', 'ktBodyRoll', 'ktBodyPunish'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.innerHTML = '<div class="card card-pad empty"><div class="em">' + KT_ICON.lock + '</div>' + ketangEsc(msg) + '<div class="tiny muted" style="margin-top:6px">' + hint + '</div></div>';
@@ -8264,10 +8327,13 @@ function ketangPaintCheckin() {
       var no = (me ? me.stu_no : '') || '';
       if (!name) { if (nameEl) nameEl.focus(); var ck0 = document.getElementById('ckmsg'); if (ck0) ck0.innerHTML = '<div class="tiny" style="color:var(--red)">请先填学号或姓名</div>'; return; }
       btns.forEach(function (x) { x.disabled = true; });
-      ketangApi('/public/link/' + KETANG_CODE + '/roll/' + s0.id, { name: name, stu_no: no, status: b.dataset.st }).then(function (r) {
+      ktAdd('rollrec', { session_id: s0.id, name: name, stu_no: no, status: b.dataset.st, ts: Date.now() }).then(function () {
         ktRemember({ name: name, stu_no: no });
-        var cnt = document.getElementById('cnt'); if (cnt) cnt.textContent = (r.present + r.late) + ' / ' + s0.expect;
-        document.getElementById('ckmsg').innerHTML = '<div class="ck-done">' + KT_ICON.check + ' 已登记：<b>' + (ST_LABEL[r.mine] || '已到') + '</b><div class="tiny muted" style="margin-top:4px">本班已签 ' + (r.present + r.late) + ' 人（含迟到 ' + r.late + '）</div><div class="tiny muted">如果点错了，可以直接再点一次改正</div><button class="btn ghost sm" id="notme" style="margin-top:8px">不是我，换个名字</button></div>';
+        ktQuery('rollrec').then(function (recs) {
+          var n = recs.filter(function (x) { return String(x.session_id) === String(s0.id); }).length;
+          var c2 = document.getElementById('cnt'); if (c2) c2.textContent = n + ' / ' + (s0.expect || '?');
+        });
+        document.getElementById('ckmsg').innerHTML = '<div class="ck-done">' + KT_ICON.check + ' 已登记：<b>' + (ST_LABEL[b.dataset.st] || '已到') + '</b><div class="tiny muted" style="margin-top:4px">' + (s0.expect ? ('本场应到 ' + s0.expect + ' 人') : '') + '</div><div class="tiny muted">点错了可再点一次改正</div><button class="btn ghost sm" id="notme" style="margin-top:8px">不是我，换个名字</button></div>';
         var nm = document.getElementById('notme'); if (nm) nm.onclick = function () { try { localStorage.removeItem(KT_ME_KEY); } catch (e) {} ketangPaintCheckin(); };
         try { navigator.vibrate && navigator.vibrate(60); } catch (e) {}
       }).catch(function (e) {
@@ -8275,7 +8341,7 @@ function ketangPaintCheckin() {
       }).then(function () { btns.forEach(function (x) { x.disabled = false; }); });
     };
   });
-  ketangApi('/public/link/' + KETANG_CODE).then(function (d) { var c = document.getElementById('cnt'); if (c && d.roll && d.roll[0]) c.textContent = '应到 ' + d.roll[0].expect; }).catch(function () {});
+  var c0 = document.getElementById('cnt'); if (c0) c0.textContent = '应到 ' + (s0.expect || '?');
 }
 function ketangPaintMaterials() {
   if (ketangCur) return ketangPaintMaterialDetail();
@@ -8286,23 +8352,24 @@ function ketangPaintMaterials() {
   qs('#ktBodyMaterial').querySelectorAll('[data-m]').forEach(function (d) { d.onclick = function () { ketangCur = Number(d.dataset.m); ketangPaintMaterialDetail(); }; });
 }
 function ketangPaintMaterialDetail() {
-  qs('#ktBodyMaterial').innerHTML = '<div class="card card-pad small muted">加载中…</div>';
-  ketangApi('/public/link/' + KETANG_CODE + '/materials/' + ketangCur).then(function (d) {
-    qs('#ktBodyMaterial').innerHTML = '<div class="card card-pad"><button class="btn ghost sm" id="back">‹ 返回列表</button><h2 style="margin:12px 0 4px;font-size:19px">' + ketangEsc(d.material.title) + '</h2><div class="tiny muted">' + ketangEsc(d.material.descr || '') + '</div><div class="col" style="margin-top:14px">' +
-      (d.files.length ? d.files.map(function (f) { return '<a class="btn ghost block" href="' + f.url + '" target="_blank" style="justify-content:flex-start;gap:10px"><span style="flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis">' + ketangEsc(f.name) + '</span><span class="tiny muted">' + (f.size / 1024 / 1024).toFixed(1) + ' MB</span></a>'; }).join('') : '<div class="muted small">这份资料还没有文件</div>') +
-      '</div><div class="row wrap" style="gap:8px;margin-top:14px">' +
-      (d.files.map(function (f) { return '<a class="btn soft sm" href="' + KETANG_API + '/api/public/link/' + KETANG_CODE + '/file/' + f.id + '?dl=1" download>' + KT_ICON.dl + ' 下载 ' + ketangEsc(f.name).slice(0, 12) + '</a>'; }).join('')) +
-      '</div><div class="tiny muted" style="margin-top:14px">看不到内容？请点“下载”后用 WPS / Office 打开；也可以在教室电脑上直接打开。</div></div>';
-    var bk = document.getElementById('back'); if (bk) bk.onclick = function () { ketangCur = null; ketangPaintMaterials(); };
-  }).catch(function (e) { qs('#ktBodyMaterial').innerHTML = '<div class="card card-pad">' + ketangEsc(e.message || '加载失败') + '</div>'; });
+  var m = (ketangData.materials || []).filter(function (x) { return String(x.id) === String(ketangCur); })[0];
+  if (!m) { qs('#ktBodyMaterial').innerHTML = '<div class="card card-pad">未找到该资料</div>'; return; }
+  var flist = String(m.files || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+  qs('#ktBodyMaterial').innerHTML = '<div class="card card-pad"><button class="btn ghost sm" id="back">‹ 返回列表</button>' +
+    '<h2 style="margin:12px 0 4px;font-size:19px">' + ketangEsc(m.title) + '</h2>' +
+    '<div class="tiny muted">' + ketangEsc([ketangCls(m.grade, m.class_name), m.descr || ''].filter(Boolean).join(' · ')) + '</div>' +
+    '<div class="col" style="margin-top:14px">' +
+    (flist.length ? flist.map(function (u) { return '<a class="btn ghost block" href="' + ketangEsc(u) + '" target="_blank" rel="noopener" style="justify-content:flex-start;gap:10px"><span style="flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis">' + ketangEsc(u) + '</span></a>'; }).join('') : '<div class="muted small">这份资料还没有文件链接</div>') +
+    '</div><div class="tiny muted" style="margin-top:14px">点击链接在新标签打开；也可复制到教室电脑打开。</div></div>';
+  var bk = document.getElementById('back'); if (bk) bk.onclick = function () { ketangCur = null; ketangPaintMaterials(); };
 }
 function ketangPaintRoll() {
   var rosters = ketangData.rosters || [];
   var liveCls = (ketangData.roll && ketangData.roll[0]) || null;
   var first = (liveCls && rosters.find(function (r) { return String(r.id) === String(liveCls.roster_id); })) || rosters[0] || { id: 0, grade: '', class_name: '', names: [], count: 0 };
-  var names0 = (first.names || []).filter(Boolean);
+  var names0 = String(first.names || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
   var hasNames = names0.length > 0;
-  var cnt0 = Math.max(1, Math.min(200, Number(first.count) || first.roster_count || names0.length || 40));
+  var cnt0 = Math.max(1, Math.min(200, Number(first.count) || names0.length || 40));
   var recentCls = (function () { try { return JSON.parse(localStorage.getItem('wb_pick_cls') || '[]').slice(0, 6); } catch (e) { return []; } })();
   qs('#ktBodyRoll').innerHTML = '<div class="card card-pad">' +
     '<div class="pk-grid">' +
@@ -8401,11 +8468,80 @@ function ketangPaintPunish() {
         if (pc && list.length) { var lf = ktLeftCount(list); pc.textContent = reshuffled ? ('这一轮 ' + list.length + ' 个都抽过了，已重新洗牌 · 还剩 ' + lf + ' 个没抽过') : ('盲盒里共 ' + list.length + ' 个任务 · 这一轮还剩 ' + lf + ' 个没抽过'); }
         qs('#spintxt').textContent = '再来一个';
         try { navigator.vibrate && navigator.vibrate([40, 60, 90]); } catch (e) {}
-        var cls = (ketangData.roll && ketangData.roll[0]) || {};
-        ketangApi('/public/link/' + KETANG_CODE + '/punish', { text: picked.text, stu_name: me ? me.name : '', grade: cls.grade || '', class_name: cls.class_name || '', roster_id: cls.roster_id || null }).catch(function () {});
+        /* 抽任务结果记一笔到记录表（status=punish），方便老师回看；失败不影响展示 */
+        ktAdd('rollrec', { session_id: 'punish', name: me ? me.name : '', text: picked.text, status: 'punish', ts: Date.now() }).catch(function () {});
       }
     }, 78);
   };
+}
+
+/* ===== 课堂管理后台（课外）：4 模块数据的增删 ===== */
+var KT_MODULES = {
+  roll: { name: '签到场次', fields: [
+    { k: 'grade', label: '年级', ph: '如 高一' },
+    { k: 'class_name', label: '班级', ph: '如 (3)班' },
+    { k: 'period_no', label: '节次', ph: '如 第3节' },
+    { k: 'subject', label: '科目', ph: '如 数学' },
+    { k: 'expect', label: '应到人数', ph: '40', type: 'number' },
+    { k: 'roster_id', label: '关联名单ID(可选)', ph: '点名单里的 id' }
+  ] },
+  material: { name: '课件', fields: [
+    { k: 'title', label: '标题', ph: '如 第3章课件' },
+    { k: 'grade', label: '年级', ph: '高一' },
+    { k: 'class_name', label: '班级', ph: '(3)班' },
+    { k: 'descr', label: '说明(可选)', ph: '' },
+    { k: 'files', label: '文件链接(每行一个)', ph: 'https://...', area: true }
+  ] },
+  roster: { name: '名单', fields: [
+    { k: 'grade', label: '年级', ph: '高一' },
+    { k: 'class_name', label: '班级', ph: '(3)班' },
+    { k: 'names', label: '姓名(每行一个)', ph: '张三\n李四', area: true },
+    { k: 'count', label: '人数(可选)', ph: '自动', type: 'number' }
+  ] },
+  punish: { name: '抽任务', fields: [
+    { k: 'text', label: '任务内容', ph: '如 唱一首歌', area: true },
+    { k: 'level', label: '难度', select: ['light', 'average', 'heavy'] }
+  ] }
+};
+var ktAdminTab = 'roll';
+function renderKetangAdmin() {
+  var tabs = ['roll', 'material', 'roster', 'punish'].map(function (k) {
+    return '<button class="ktab' + (ktAdminTab === k ? ' on' : '') + '" data-k="' + k + '">' + KT_MODULES[k].name + '</button>';
+  }).join('');
+  qs('#kadminApp').innerHTML = '<div class="ktabs">' + tabs + '</div><div id="ktAdminBody"></div>';
+  qs('#kadminApp').querySelectorAll('.ktab').forEach(function (b) { b.onclick = function () { ktAdminTab = b.getAttribute('data-k'); renderKetangAdmin(); }; });
+  ktAdminRenderBody();
+}
+function ktAdminRenderBody() {
+  var key = ktAdminTab, mod = KT_MODULES[key];
+  ktQuery(key).then(function (rows) {
+    var body = qs('#ktAdminBody'); if (!body) return;
+    var listHtml = rows.map(function (r) {
+      var title = r.title || r.text || ketangCls(r.grade, r.class_name) || (r.name || '未命名');
+      return '<div class="kt-item"><div class="kt-item-main"><b>' + ketangEsc(title) + '</b>' +
+        (r.subject ? ' <span class="tiny muted">' + ketangEsc(r.subject) + '</span>' : '') +
+        (r.expect ? ' <span class="chip blue">应到 ' + ketangEsc(r.expect) + '</span>' : '') +
+        (r.level ? ' <span class="chip">' + ketangEsc(r.level) + '</span>' : '') + '</div>' +
+        '<button class="btn ghost sm kt-del" data-id="' + ketangEsc(r.id) + '">删除</button></div>';
+    }).join('') || '<div class="empty">还没有数据，下面添加一条</div>';
+    var formHtml = '<div class="kt-form"><div class="kt-form-h">新增' + mod.name + '</div>' + mod.fields.map(function (f) {
+      var id = 'ktf_' + key + '_' + f.k;
+      if (f.area) return '<div class="field"><label class="field-label">' + f.label + '</label><textarea class="input" id="' + id + '" placeholder="' + ketangEsc(f.ph || '') + '"></textarea></div>';
+      if (f.select) return '<div class="field"><label class="field-label">' + f.label + '</label><select class="input" id="' + id + '">' + f.select.map(function (o) { return '<option value="' + o + '">' + o + '</option>'; }).join('') + '</select></div>';
+      return '<div class="field"><label class="field-label">' + f.label + '</label><input class="input" id="' + id + '" type="' + (f.type === 'number' ? 'number' : 'text') + '" placeholder="' + ketangEsc(f.ph || '') + '"></div>';
+    }).join('') + '<button class="btn primary" id="ktf_add">＋ 添加</button></div>';
+    body.innerHTML = '<div class="kt-list">' + listHtml + '</div>' + formHtml;
+    body.querySelectorAll('.kt-del').forEach(function (b) { b.onclick = function () { ktDelete(key, b.getAttribute('data-id')).then(ktAdminRenderBody); }; });
+    qs('#ktf_add', body).onclick = function () {
+      var props = {};
+      mod.fields.forEach(function (f) {
+        var v = qs('#ktf_' + key + '_' + f.k, body).value;
+        if (f.type === 'number') v = (v === '' ? '' : Number(v));
+        if (v !== '' && v != null) props[f.k] = v;
+      });
+      ktAdd(key, props).then(ktAdminRenderBody);
+    };
+  });
 }
 
 function refreshAll() {
@@ -19661,6 +19797,7 @@ function switchView(v) {
   else if (v === 'trash') qs('#view-trash').classList.add('on');
   else if (v === 'me') qs('#view-me').classList.add('on');
   else if (v === 'ketang') { qs('#view-ketang').classList.add('on'); initKetang(); }
+  else if (v === 'kadmin') { qs('#view-kadmin').classList.add('on'); renderKetangAdmin(); }
   else { state.catView = v; qs('#view-cat').classList.add('on'); }
   renderSideSub();
   refreshAll();
