@@ -17179,23 +17179,39 @@ function msWeekOf(t) {
 }
 function msSplitCourse(t) {
   t = String(t || '').replace(/\d{1,2}:\d{2}\s*[-–—~至]\s*\d{1,2}:\d{2}/g, ' ').replace(/\s+/g, ' ').trim();
-  var name = '', cls = '';
+  var name = '', cls = '', gradeSeg = '', si;
   var seg = t.split(/\s{2,}|\n/).filter(function (x) { return !!x.trim(); });
+  /* 跨年级的课导出时多带一段「高一 / 二高 / 三高」——单独拎出来当年级，别混进班级 */
+  var kept = [];
+  for (si = 0; si < seg.length; si++) {
+    if (/^(高一|高二|高三|全体|全部年级)$/.test(seg[si].trim())) { gradeSeg = seg[si].trim(); continue; }
+    kept.push(seg[si]);
+  }
+  seg = kept;
   if (seg.length >= 2) { name = seg[0].trim(); cls = seg.slice(1).join(' ').trim(); }
   else {
     var tk = t.split(/\s+/).filter(Boolean);
+    /* xlsx 里的换行读回来会变成空格，年级段要在空格分支也单独拎出来 */
+    var kept2 = [], si2;
+    for (si2 = 0; si2 < tk.length; si2++) {
+      if (/^(高一|高二|高三|全体|全部年级)$/.test(tk[si2].trim())) { gradeSeg = tk[si2].trim(); continue; }
+      kept2.push(tk[si2]);
+    }
+    tk = kept2;
     if (tk.length >= 2) { name = tk[0]; cls = tk.slice(1).join(' '); }
     else {
       var m = /^(.+?)[（(]([^）)]+)[）)]$/.exec(t);
       if (m) { name = m[1].trim(); cls = m[2].trim(); } else name = t;
     }
   }
-  var grade = '';
-  var g = /^(高一|高二|高三|全体)/.exec(cls);
-  if (g) grade = g[1];
-  else {
-    var g2 = /^(高一|高二|高三|全体)/.exec(name);
-    if (g2) grade = g2[1];
+  var grade = gradeSeg;
+  if (!grade) {
+    var g = /^(高一|高二|高三|全体)/.exec(cls);
+    if (g) grade = g[1];
+    else {
+      var g2 = /^(高一|高二|高三|全体)/.exec(name);
+      if (g2) grade = g2[1];
+    }
   }
   return { name: name, cls: cls, grade: grade };
 }
